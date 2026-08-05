@@ -1,0 +1,324 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    border: none;
+    text-decoration: none;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+*, 
+*:before, 
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    background-color: transparent; 
+}
+
+/* Navigation styles */
+.nav {
+    width: 80%;
+    margin: 15px auto 0 auto;
+    text-align: center;
+    padding: 10px 25px;
+    border-radius: 50px;
+    box-shadow: 0 30px 60px 0 rgba(27, 31, 10, 0.08);
+    background-color: #fff;
+}
+
+/* Navigation items */
+.nav-items {
+    padding: 0;
+    list-style: none;
+}
+
+.nav-item {
+    display: inline-block;
+    margin-right: 25px;
+}
+
+.nav-item:last-child {
+    margin-right: 0;
+}
+
+.nav-link,
+.nav-link:link, 
+.nav-link:visited, 
+.nav-link:active,
+.submenu-link,
+.submenu-link:link, 
+.submenu-link:visited, 
+.submenu-link:active {
+    display: block;
+    position: relative;
+    font-size: 14px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-decoration: none;
+    outline: none;
+}
+
+.nav-link,
+.nav-link:link, 
+.nav-link:visited, 
+.nav-link:active {
+    color: #333;
+    font-weight: bold;
+}
+
+.nav-link::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(0,0,0,0.2);
+    opacity: 0;
+    -webkit-transform: translate(0, 10px);
+    transform: translate(0, 10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.nav-link:hover::before,
+.nav-link:hover::before {
+    opacity: 1;
+    -webkit-transform: translate(0, 5px);
+    transform: translate(0, 5px);
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown .nav-link {
+    padding-right: 15px;
+    height: 17px;
+    line-height: 17px;
+}
+
+.dropdown .nav-link::after {
+    content: "";
+    position:absolute;
+    top: 6px;
+    right: 0;
+    border: 5px solid transparent;
+    border-top-color: #333;
+}
+
+/* Submenu styles */
+.submenu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    z-index: 100;
+    width: 200px;
+    margin-left: -100px;
+    background: #fff;
+    border-radius: 3px;
+    line-height: 1.46667;
+    margin-top: -5px;
+    box-shadow: 0 0 8px rgba(0,0,0,.3);
+    opacity:0;
+    -webkit-transform: translate(0, 0) scale(.85);
+    transform: translate(0, 0)scale(.85);
+    transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+    pointer-events: none;
+}
+
+.submenu::after, 
+.submenu::before {
+    content: ""; 
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -10px;
+    border: 10px solid transparent;
+    height: 0;
+}
+
+.submenu::after {
+    border-bottom-color: #333;
+}
+
+.submenu::before {
+    margin-left: -13px;
+    border: 13px solid transparent;
+    border-bottom-color: rgba(0,0,0,.1);
+    -webkit-filter:blur(1px);
+    filter:blur(1px);
+}
+
+.submenu-items {
+    list-style: none;
+    padding: 10px 0;
+}
+
+.submenu-item {
+    display: block;
+    text-align: left;
+}
+
+.submenu-link,
+.submenu-link:link, 
+.submenu-link:visited, 
+.submenu-link:active {
+    color: #333;
+    padding: 10px 20px;
+}
+
+.submenu-link:hover {
+    text-decoration: underline;
+}
+
+.submenu-seperator {
+    height: 0;
+    margin: 12px 10px;
+    border-top: 1px solid #333;
+}
+
+.show-submenu .submenu {
+    opacity: 1;
+    -webkit-transform: translate(0, 25px) scale(1);
+    transform: translate(0, 25px) scale(1);
+    pointer-events: auto;
+}
+
+/* Logout button */
+#logout {
+  background-color: #d70c0c;
+  padding: 10px 20px;
+  border-radius: 50px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#logout i {
+  font-size: 32px;
+}
+/* Form container */
+.form-modify {
+    width: 90%;
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Form title */
+.form-modify h3 {
+    margin-bottom: 20px;
+    font-size: 1.75em;
+    color: #333;
+    text-align: center;
+}
+
+/* Form control styles */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    font-size: 1em;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: #fafafa;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+/* Label styling */
+label {
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 5px;
+    display: block;
+    font-weight: bold;
+}
+
+/* Datalist options */
+datalist {
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+/* Container and alignment */
+.prepared_container {
+    margin-top: 20px;
+}
+
+.container {
+    overflow-y: auto;
+    max-height: 50vh;
+    margin-bottom: 20px;
+}
+
+.center {
+    text-align: center;
+}
+
+/* Button styles */
+button {
+    background-color: #d70c0c;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Centering buttons */
+button.proceed_display, button.send_request {
+    display: block;
+    width: 50%;
+    margin: 0 auto;
+}
+input[readonly] {
+    background-color: #fff8f8; /* Light gray background */
+    color: #555;               /* Dark gray text color */
+    cursor: not-allowed;        /* Change cursor to indicate it's not editable */
+  }
+/* Responsive design */
+@media (max-width: 768px) {
+    .form-modify {
+        width: 100%;
+        padding: 20px;
+    }
+
+    label, .form-control, .due_date {
+        font-size: 0.9em;
+    }
+
+    h3 {
+        font-size: 1.5em;
+    }
+
+    button.proceed_display, button.send_request {
+        width: 100%;
+    }
+}

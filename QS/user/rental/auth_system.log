@@ -1,0 +1,3 @@
+[2026-04-15 08:03:31] AUTH_LOG: FAILED: Wrong password attempt for Auti20235678
+[2026-04-15 08:03:45] AUTH_LOG: FAILED: Wrong password attempt for Auti20235678
+[2026-04-15 08:22:41] AUTH_LOG: SUCCESS: Migrated user Auti20235678 from MD5 to modern hash.

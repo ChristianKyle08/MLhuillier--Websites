@@ -1,0 +1,376 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    border: none;
+    text-decoration: none;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+*, 
+*:before, 
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    background-color: transparent; 
+}
+
+/* Navigation styles */
+.nav {
+    width: 80%;
+    margin: 15px auto 0 auto;
+    text-align: center;
+    padding: 10px 25px;
+    border-radius: 50px;
+    box-shadow: 0 30px 60px 0 rgba(27, 31, 10, 0.08);
+    background-color: #fff;
+}
+
+/* Navigation items */
+.nav-items {
+    padding: 0;
+    list-style: none;
+}
+
+.nav-item {
+    display: inline-block;
+    margin-right: 25px;
+}
+
+.nav-item:last-child {
+    margin-right: 0;
+}
+
+.nav-link,
+.nav-link:link, 
+.nav-link:visited, 
+.nav-link:active,
+.submenu-link,
+.submenu-link:link, 
+.submenu-link:visited, 
+.submenu-link:active {
+    display: block;
+    position: relative;
+    font-size: 14px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-decoration: none;
+    outline: none;
+}
+
+.nav-link,
+.nav-link:link, 
+.nav-link:visited, 
+.nav-link:active {
+    color: #333;
+    font-weight: bold;
+}
+
+.nav-link::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(0,0,0,0.2);
+    opacity: 0;
+    -webkit-transform: translate(0, 10px);
+    transform: translate(0, 10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.nav-link:hover::before,
+.nav-link:hover::before {
+    opacity: 1;
+    -webkit-transform: translate(0, 5px);
+    transform: translate(0, 5px);
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown .nav-link {
+    padding-right: 15px;
+    height: 17px;
+    line-height: 17px;
+}
+
+.dropdown .nav-link::after {
+    content: "";
+    position:absolute;
+    top: 6px;
+    right: 0;
+    border: 5px solid transparent;
+    border-top-color: #333;
+}
+
+/* Submenu styles */
+.submenu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    z-index: 100;
+    width: 200px;
+    margin-left: -100px;
+    background: #fff;
+    border-radius: 3px;
+    line-height: 1.46667;
+    margin-top: -5px;
+    box-shadow: 0 0 8px rgba(0,0,0,.3);
+    opacity:0;
+    -webkit-transform: translate(0, 0) scale(.85);
+    transform: translate(0, 0)scale(.85);
+    transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+    pointer-events: none;
+}
+
+.submenu::after, 
+.submenu::before {
+    content: ""; 
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -10px;
+    border: 10px solid transparent;
+    height: 0;
+}
+
+.submenu::after {
+    border-bottom-color: #333;
+}
+
+.submenu::before {
+    margin-left: -13px;
+    border: 13px solid transparent;
+    border-bottom-color: rgba(0,0,0,.1);
+    -webkit-filter:blur(1px);
+    filter:blur(1px);
+}
+
+.submenu-items {
+    list-style: none;
+    padding: 10px 0;
+}
+
+.submenu-item {
+    display: block;
+    text-align: left;
+}
+
+.submenu-link,
+.submenu-link:link, 
+.submenu-link:visited, 
+.submenu-link:active {
+    color: #333;
+    padding: 10px 20px;
+}
+
+.submenu-link:hover {
+    text-decoration: underline;
+}
+
+.submenu-seperator {
+    height: 0;
+    margin: 12px 10px;
+    border-top: 1px solid #333;
+}
+
+.show-submenu .submenu {
+    opacity: 1;
+    -webkit-transform: translate(0, 25px) scale(1);
+    transform: translate(0, 25px) scale(1);
+    pointer-events: auto;
+}
+
+/* Logout button */
+#logout {
+  background-color: #d70c0c;
+  padding: 10px 20px;
+  border-radius: 50px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#logout i {
+  font-size: 32px;
+}
+
+
+/* Container styling */
+.transaction_container { 
+    padding: 0px 15px;
+}
+
+/* Filter section styling */
+.filter {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    align-items: center;
+
+    width: 100%;
+    margin: 10px auto;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Label styling */
+.filter label {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Input styling */
+.filter input[type="date"], 
+.filter input[type="text"], select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Button styling */
+.filter button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    grid-column: span 1;
+}
+.filter #export_payout{
+    background-color: #22b346;
+
+}
+.filter #export_sendout{
+    background-color: #22b346;
+
+}
+.filter button:hover {
+    background-color: #0056b3;
+}
+/* .display_res{
+    overflow: auto;
+
+} */
+.table_wrap {
+    width: 100%;
+    padding: 10px 15px;
+    max-height: 50vh; /* Adjust as needed */
+    overflow-y: auto; /* Hide overflow to manage scroll behavior */
+}
+
+.table_container {
+    max-height: 50vh; /* Same height as .table_wrap for consistency */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+table th, table td {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+}
+
+table th {
+    background-color: #d70c0c;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    position: -webkit-sticky; /* For Safari */
+    position: sticky;
+    top: 0;
+    z-index: 1; /* Ensure header is above other content */
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+table tr td {
+    color: #555;
+}
+
+/* Responsive behavior */
+@media (max-width: 768px) {
+    .filter {
+        grid-template-columns: 1fr;
+    }
+
+    .filter label, 
+    .filter input, 
+    .filter button {
+        width: 100%;
+    }
+    
+    .filter input, 
+    .filter button {
+        margin-bottom: 10px;
+    }
+}
+
+.total-section {
+    margin: 20px 15px 5px 15px;
+    padding: 10px;
+    background-color: #f4f4f9;
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-label {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+}
+
+.total-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007BFF;
+    text-align: right;
+}
+
+.total-item {
+    width: 15%; /* Adjust width based on the number of totals */
+}
+
+.transaction_list{
+    overflow: auto;
+    height: auto;
+    max-height: 40vh;
+}

@@ -1,0 +1,17 @@
+{
+    "name": "cattleya/cattleya",
+    "description": "Cattleya web project for contract management",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Christian Kyle Autida",
+            "email": "christiankyleautida@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "phpmailer/phpmailer": "^7.0",
+        "phpoffice/phpspreadsheet": "^5.8"
+    }
+}

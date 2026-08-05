@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+body {
+    background-color: #fff;
+    color: #333;
+    font-family: 'poppins', sans-serif;
+  }
+.logo{
+    width: 50px;
+    height: 50px;
+  }
+  .navbar {
+    background-color: #fff;
+    padding: 0.5rem 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .navbar-brand {
+    font-weight: bold;
+    color: #d70c0c;
+    font-size: 1.5rem;
+  }
+
+  .nav-link {
+    color: #333 !important;
+    margin-left: 1rem;
+  }
+
+  .nav-link:hover {
+    color: #d70c0c !important;
+  }
+
+  .hero {
+    padding: 4rem 2rem;
+    background: linear-gradient(120deg, #fff 60%, #f9f9f9 100%);
+  }
+
+  .hero h1 {
+    font-weight: 700;
+    font-size: 2.5rem;
+  }
+
+  .hero .version {
+    color: #d70c0c;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+
+  .hero-btn {
+    background-color: #d70c0c;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 30px;
+    font-size: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .hero-btn:hover {
+    background-color: #a00909;
+  }
+
+  .hero img {
+    max-width: 100%;
+    border-radius: 10px;
+  }
+
+  .features {
+    padding: 3rem 2rem;
+    font-size: 12px;
+    background-color: #333;
+    color: #fff;
+  }
+
+  .feature-icon {
+    font-size: 2.5rem;
+    color: #d70c0c;
+  }
+  .feature-icon i{
+    padding: 12px;
+    background-color: #fff;
+    border-radius: 50%;
+  }
+  .custom-input {
+    width: 75%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+  #message_btn{
+    background-color: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+  }
+  #guide_btn{
+    background-color: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+  }
+  #view_btn{
+    background-color: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+  }
+  #messageClose{
+    background-color: #d70c0c;
+    color: #fff;
+  }
+  #messageClose:hover{
+    background-color: #9c0c0c;
+    color: #fff;
+  }
+  #message_btn:hover{
+    background-color: #fff;
+    color: #333;
+  }
+  #sendGmailBtn:hover{
+    background-color: #fff;
+    color: #333;
+  }
+  #guide_btn:hover{
+    background-color: #fff;
+    color: #333;
+  }
+  #view_btn:hover{
+    background-color: #fff;
+    color: #333;
+  }
+
+
+  .footer {
+    background-color: #a1a1a1;
+    padding: 2rem;
+    text-align: center;
+    border-top: 1px solid #eee;
+  }
+
+  .footer a {
+    margin: 0 10px;
+    color: #333;
+    font-size: 1.25rem;
+  }
+
+  .footer a:hover {
+    color: #d70c0c;
+  }

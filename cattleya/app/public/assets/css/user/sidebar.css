@@ -1,0 +1,336 @@
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap');
+
+.sidebar {
+    height: 100vh;
+    width: 280px; /* Reduced from 350px to better fit standard screens */
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #6B3E6D;
+    padding: 1.5rem 1rem;
+    color: #fff;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.05);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    box-sizing: border-box; /* Ensures padding doesn't add to width */
+}
+
+/* Logo Section */
+.sidebar .logo-wrapper {
+    padding: 0 0.5rem 1.5rem 0.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 1rem;
+    flex-shrink: 0; /* Prevents logo from squishing */
+}
+
+.sidebar h2 {
+    font-family: 'Dancing Script', cursive;
+    font-weight: 700;
+    font-size: 1.8rem;
+    margin: 0;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+/* --- SCROLLBAR HIDING LOGIC --- */
+.sidebar-menu {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 4px; /* Space for hidden scrollbar */
+    
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Sidebar links & Dropdown Button */
+.sidebar a, .dropdown-btn {
+    display: flex;
+    align-items: center;
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sidebar a:hover, .dropdown-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    transform: translateX(4px);
+}
+
+.sidebar a i, .dropdown-btn i {
+    font-size: 1.1rem;
+}
+
+/* Active link */
+.sidebar a.active {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Dropdown Container */
+.dropdown-container {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    padding-left: 0.5rem;
+}
+
+/* Container */
+.sidebar-profile {
+    position: relative;
+    padding: 1rem 0;
+}
+
+/* Profile Card */
+.user-info-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.user-info-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Avatar with Online Pulse */
+.avatar-container {
+    position: relative;
+}
+
+.user-avatar {
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+    color: #6B3E6D;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.status-indicator {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    background: #10b981; /* Success Green */
+    border: 2px solid #6B3E6D;
+    border-radius: 50%;
+}
+
+.user-name {
+    display: block;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #fff;
+    margin-bottom: 2px;
+}
+
+.user-role {
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 500;
+}
+
+.toggle-icon {
+    margin-left: auto;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+/* Popover Design */
+.profile-popover {
+    position: absolute;
+    bottom: calc(100% + 15px);
+    left: 0;
+    right: 0;
+    z-index: 1100;
+    display: none;
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.popover-inner {
+    background: #ffffff;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.popover-header {
+    background: #f8fafc;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-avatar {
+    width: 48px;
+    height: 48px;
+    background: #6B3E6D;
+    color: #fff;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.header-info h6 { color: #1e293b; font-size: 0.95rem; }
+.header-info p { color: #64748b; font-size: 0.8rem; }
+
+.popover-body {
+    padding: 10px;
+}
+
+.popover-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 14px;
+    text-decoration: none;
+    color: #475569 !important;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.popover-item:hover {
+    background: #f1f5f9;
+    color: #6B3E6D !important;
+}
+
+.icon-box {
+    width: 32px;
+    height: 32px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    transition: all 0.2s;
+}
+
+.popover-item:hover .icon-box {
+    background: #6B3E6D;
+    color: #fff;
+    border-color: #6B3E6D;
+}
+
+.logout-link:hover {
+    background: #fff1f2 !important;
+    color: #e11d48 !important;
+}
+
+.logout-link:hover .icon-box {
+    background: #e11d48;
+    color: #fff;
+    border-color: #e11d48;
+}
+
+.popover-divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 8px 12px;
+}
+
+/* Mobile Header Toggle (Add this to your HTML if not present) */
+.mobile-toggle-btn {
+    display: none; /* Hidden on desktop */
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1100;
+    background: #6B3E6D;
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+@media (max-width: 992px) {
+    .mobile-toggle-btn {
+        display: block; /* Show toggle on mobile */
+    }
+
+    .sidebar {
+        left: -280px; /* Hide sidebar off-screen by default */
+        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 280px;
+    }
+
+    /* Class to trigger showing sidebar on mobile */
+    .sidebar.show {
+        left: 0;
+        box-shadow: 20px 0 50px rgba(0,0,0,0.2);
+    }
+
+    /* Adjust profile popover for mobile spacing */
+    .profile-popover {
+        bottom: calc(100% + 10px);
+        width: 90%;
+        left: 5%;
+        right: 5%;
+    }
+
+    /* Ensure logo section is visible but compact */
+    .sidebar .logo-wrapper {
+        padding-top: 2.5rem; /* Space for the mobile toggle button */
+    }
+}
+
+/* For very small devices, ensure profile card text doesn't overflow */
+@media (max-width: 350px) {
+    .sidebar {
+        width: 240px;
+    }
+    .user-details {
+        display: none; /* Hide name/role if space is extremely tight */
+    }
+    .user-info-card {
+        justify-content: center;
+    }
+}

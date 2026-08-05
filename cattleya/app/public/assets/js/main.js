@@ -1,0 +1,1 @@
+console.log("Cattleya JS is ready!");

@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+
+*{
+   font-family: 'Poppins', sans-serif;
+   margin:0; padding:0;
+   box-sizing: border-box;
+   outline: none; border:none;
+   text-decoration: none;
+}
+
+@media screen and (max-width: 375px) and (max-height: 667px) {
+    .top-content {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 10px;
+    }
+  
+    .nav-container {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .nav-list {
+      flex-direction: column;
+      margin-top: 10px;
+    }
+  
+    .nav-list li {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+  
+    .dropdown-btn {
+      width: 100%;
+      margin-right: 0;
+      text-align: left;
+      padding: 10px;
+    }
+  
+    .header {
+      padding: 10px;
+      font-size: 16px;
+    }
+  
+    .content {
+      padding: 10px;
+      flex-direction: column;
+      min-height: auto;
+    }
+  
+    .footer {
+      padding: 10px;
+      font-size: 10px;
+    }
+  
+    .logout a {
+      padding: 5px;
+      font-size: 10px;
+    }
+  
+    .usernav h4, .usernav h5 {
+      font-size: 10px;
+    }
+
+    #search-div {
+        padding: 20px 5px 5px 5px;
+      }
+    
+      #search-input {
+        width: 80%;
+        padding: 5px;
+      }
+    
+      #search {
+        padding: 7px 10px;
+        margin-left: 5px;
+      }
+    
+      #search-results {
+        padding: 10px 0;
+      }
+    
+      th, td {
+        font-size: 10px;
+        padding: 4px 0;
+      }
+    
+      .right-div button {
+        padding: 2px;
+        width: 60px;
+        font-size: 10px;
+      }
+    
+      .right-div #add, .right-div #edit, .right-div #delete, .right-div #update {
+        padding: 2px 10px;
+        font-size: 10px;
+      }
+    
+      .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    
+      .form-group .left-div, .right-div {
+        width: 100%;
+        justify-content: flex-start;
+      }
+    
+      .right-div {
+        margin-top: 10px;
+      }
+
+      .dashboard {
+        flex-direction: column;
+        align-items: center;
+      }
+    
+      .card {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 10px;
+      }
+    
+      .fa {
+        font-size: 24px;
+      }
+    
+      .modal-content, .edit_modal-content, .register_modal-content {
+        width: 80%;
+      }
+    
+      .edit_modal-content .inputs input, .edit_modal-content input[type="checkbox"] {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+    
+      #edit_roles_list {
+        grid-template-columns: 1fr;
+      }
+    
+      #edit_roles_list li {
+        font-size: 14px;
+        padding: 5px;
+      }
+    
+      .logo img {
+        width: 100px;
+      }
+    
+      .form-btn {
+        font-size: 14px;
+        padding: 8px 16px;
+      }
+    
+      h3 {
+        font-size: 16px;
+      }
+    
+      #message h3 {
+        font-size: 10px;
+      }
+    
+      #message p {
+        font-size: 10px;
+      }
+    
+      .close {
+        font-size: 20px;
+      }
+    
+      .edit_modal-content .inputs .input-container label {
+        font-size: 10px;
+      }
+
+  }

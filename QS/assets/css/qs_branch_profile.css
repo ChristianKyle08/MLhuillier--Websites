@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+
+* {
+   font-family: 'Poppins', sans-serif;
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+   outline: none;
+   border: none;
+   text-decoration: none;
+}
+body {
+  background-color: #f4f6f8;
+  font-size: 12px;
+}
+
+.card-hover {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 24px rgba(0, 0, 0, 0.12);
+}
+
+.card-icon {
+  font-size: 40px;
+  color: #0d6efd;
+}
+
+.modal-lg {
+  max-width: 80%;
+}
+.back-btn {
+    transition: all 0.2s ease;
+    font-weight: 500;
+    background-color: #ffffff;
+  }
+
+  .back-btn:hover {
+    background-color: #f0f2f5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+  }
+  #add_modalClose {
+    background-color: #d70c0c;
+    color: #fff;
+    padding: 10px;
+  }
+  #add_modalClose:hover {
+    background-color: #9c0c0c;
+    color: #fff;
+    padding: 10px;
+  }
+  
+  #save_branch_profile {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+  }
+  #save_branch_profile:hover {
+    background-color: #000;
+    color: #fff;
+    padding: 10px;
+  }
+  
+  #updateButton {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  #updateButton:hover {
+    background-color: #000;
+    color: #fff;
+    padding: 10px;
+  }
+  
+  #updateButton.btn:disabled {
+    pointer-events: auto !important;
+  }
+  
+  #updateButton.btn:disabled:hover {
+    background-color: #888 !important;
+    color: #fff !important;
+    cursor: not-allowed !important;
+    opacity: 0.9 !important;
+  }
+  
+  
+  #edit_modalClose {
+    background-color: #d70c0c;
+    color: #fff;
+    padding: 10px;
+  }
+  #edit_modalClose:hover {
+    background-color: #9c0c0c;
+    color: #fff;
+    padding: 10px;
+  }
+  

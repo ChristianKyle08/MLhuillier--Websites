@@ -1,0 +1,108 @@
+<?php
+// Get the current date
+$currentDate = date("Y-m-d");
+
+// Calculate the date 5 months later
+$fiveMonthsLater = date("Y-m-d", strtotime("+5 months"));
+
+// Retrieve the user's email from the session
+$user_email = mysqli_real_escape_string($conn, $_SESSION['user_email']);
+
+// Query to get the user's roles, region, and area from the database
+$userQuery = "SELECT roles, region, area, mainzone FROM user_form WHERE email = '$user_email'";
+$userResult = mysqli_query($conn, $userQuery);
+
+// Initialize variables
+$userRegion = '';
+$userArea = '';
+$userMainzone = '';
+
+// Check if the query returned any rows
+if (mysqli_num_rows($userResult) > 0) {
+    $userRow = mysqli_fetch_assoc($userResult);
+
+    // Determine user's role and set the region, area, or mainzone accordingly
+    if ($userRow['roles'] == 'Am-Creator') {
+        $userRegion = $userRow['region'];
+        $userArea = $userRow['area'];
+        $sql = "SELECT contract_number, region, area, branch, branch_code, start_date, end_date, edit_amount_lessor
+                FROM create_contract 
+                WHERE end_date >= '$currentDate'
+                AND end_date <= '$fiveMonthsLater'
+                AND request_status = 'Approved'
+                AND region = '$userRegion'
+                AND area = '$userArea'";
+    } elseif ($userRow['roles'] == 'Rm-Reviewer') {
+        $userRegion = $userRow['region'];
+        $sql = "SELECT contract_number, region, area, branch, branch_code, start_date, end_date, edit_amount_lessor
+                FROM create_contract 
+                WHERE end_date >= '$currentDate'
+                AND end_date <= '$fiveMonthsLater'
+                AND request_status = 'Approved'
+                AND region = '$userRegion'";
+    } elseif ($userRow['roles'] == 'Vpo-Checker' || $userRow['roles'] == 'Vpo-Reviewer' || $userRow['roles'] == 'Vpo-Approver' || $userRow['roles'] == 'Finance' || $userRow['roles'] == 'Auditor') {
+        $userMainzone = $userRow['mainzone'];
+        $sql = "SELECT contract_number, region, area, branch, branch_code, start_date, end_date, edit_amount_lessor
+                FROM create_contract 
+                WHERE end_date >= '$currentDate'
+                AND end_date <= '$fiveMonthsLater'
+                AND request_status = 'Approved'
+                AND mainzone = '$userMainzone'";
+    } elseif ($userRow['roles'] == 'HO') {
+        $sql = "SELECT contract_number, region, area, branch, branch_code, start_date, end_date, edit_amount_lessor
+                FROM create_contract 
+                WHERE end_date >= '$currentDate'
+                AND end_date <= '$fiveMonthsLater'
+                AND request_status != ''";
+    }
+}
+
+$result = $conn->query($sql);
+
+$rowCount = 0;
+if ($result && $result->num_rows > 0) {
+    $rowCount = $result->num_rows;
+    // Output the bell icon with the count and notification container
+    echo '<div class="bell-icon" onclick="showNotifications()">';
+    echo '<i class="fa-regular fa-bell"></i><span class="notification-count">' . $rowCount . '</span>';
+    echo '</div>';
+    echo '<section id="notification-container" class="notification" style="display: none;">';
+    echo '<div class="notif-container">';
+    echo '<div class="notif notif-warning" role="alert">';
+    echo 'Some contracts are about to end within 5 months. Please review:';
+    echo '<table class="table">';
+    echo '<thead>';
+    echo '<tr>';
+    echo '<th>Contract Number</th>';
+    echo '<th>Region</th>';
+    echo '<th>Area</th>';
+    echo '<th>Branch</th>';
+    echo '<th>Branch Code</th>';
+    echo '<th>Start Date</th>';
+    echo '<th>End Date</th>';
+    echo '<th>Monthly Rental</th>';
+    echo '</tr>';
+    echo '</thead>';
+    echo '<tbody>';
+
+    while($row = $result->fetch_assoc()) {
+        echo '<tr>';
+        echo '<td>' . $row['contract_number'] . '</td>';
+        echo '<td>' . $row['region'] . '</td>';
+        echo '<td>' . $row['area'] . '</td>';
+        echo '<td>' . $row['branch'] . '</td>';
+        echo '<td>' . $row['branch_code'] . '</td>';
+        echo '<td>' . $row['start_date'] . '</td>';
+        echo '<td>' . $row['end_date'] . '</td>';
+        echo '<td>' . $row['edit_amount_lessor'] . '</td>';
+        echo '</tr>';
+    }
+
+    echo '</tbody>';
+    echo '</table>';
+    echo '</div>';
+    echo '</div>';
+    echo '</section>';
+}
+
+?>

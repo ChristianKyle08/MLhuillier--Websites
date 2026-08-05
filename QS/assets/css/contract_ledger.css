@@ -1,0 +1,859 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    border: none;
+    text-decoration: none;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+*, 
+*:before, 
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    background-color: transparent; 
+}
+
+.nav {
+    width: 80%;
+    margin: 15px auto 0 auto;
+    text-align: center;
+    padding: 10px 25px;
+    border-radius: 50px;
+    box-shadow: 0 30px 60px 0 rgba(27, 31, 10, 0.08);
+    background-color: #fff;
+}
+
+/* Navigation */
+.nav-items {
+    padding: 0;
+    list-style: none;
+}
+
+.nav-item {
+    
+    display: inline-block;
+    margin-right: 25px;
+}
+
+.nav-item:last-child {
+    margin-right: 0;
+}
+
+.nav-link,
+.nav-link:link, 
+.nav-link:visited, 
+.nav-link:active,
+.submenu-link,
+.submenu-link:link, 
+.submenu-link:visited, 
+.submenu-link:active {
+    display: block;
+    position: relative;
+    font-size: 14px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-decoration: none;
+    outline: none;
+}
+
+.nav-link,
+.nav-link:link, 
+.nav-link:visited, 
+.nav-link:active {
+    color: #333;
+    font-weight: bold;
+}
+
+.nav-link::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(0,0,0,0.2);
+    opacity: 0;
+    -webkit-transform: translate(0, 10px);
+    transform: translate(0, 10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.nav-link:hover::before,
+.nav-link:hover::before {
+    opacity: 1;
+    -webkit-transform: translate(0, 5px);
+    transform: translate(0, 5px);
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown .nav-link {
+    padding-right: 15px;
+    height: 17px;
+    line-height: 17px;
+}
+
+.dropdown .nav-link::after {
+    content: "";
+    position:absolute;
+    top: 6px;
+    right: 0;
+    border: 5px solid transparent;
+    border-top-color: #333;
+}
+
+.submenu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    z-index: 100;
+    width: 200px;
+    margin-left: -100px;
+    background: #fff;
+    border-radius: 3px;
+    line-height: 1.46667;
+    margin-top: -5px;
+    box-shadow: 0 0 8px rgba(0,0,0,.3);
+    opacity:0;
+    -webkit-transform: translate(0, 0) scale(.85);
+    transform: translate(0, 0)scale(.85);
+    transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+    pointer-events: none;
+}
+
+.submenu::after, 
+.submenu::before {
+    content: ""; 
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -10px;
+    border: 10px solid transparent;
+    height: 0;
+}
+
+.submenu::after {
+    border-bottom-color: #333;
+}
+
+.submenu::before {
+    margin-left: -13px;
+    border: 13px solid transparent;
+    border-bottom-color: rgba(0,0,0,.1);
+    -webkit-filter:blur(1px);
+    filter:blur(1px);
+}
+
+.submenu-items {
+    list-style: none;
+    padding: 10px 0;
+}
+
+.submenu-item {
+    display: block;
+    text-align: left;
+}
+
+.submenu-link,
+.submenu-link:link, 
+.submenu-link:visited, 
+.submenu-link:active {
+    color: #333;
+    padding: 10px 20px;
+}
+
+.submenu-link:hover {
+    text-decoration: underline;
+}
+
+.submenu-seperator {
+    height: 0;
+    margin: 12px 10px;
+    border-top: 1px solid #333;
+}
+
+.show-submenu .submenu {
+    opacity: 1;
+    -webkit-transform: translate(0, 25px) scale(1);
+    transform: translate(0, 25px) scale(1);
+    pointer-events: auto;
+}
+#logout{
+  background-color: #d70c0c;
+  padding: 10px 20px;
+  border-radius: 50px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#logout i{
+  font-size: 32px;
+
+}
+
+
+.swal_table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+.swal_table .swal_td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+        color: #333;
+    }
+
+.swal_table .swal_td strong {
+        font-weight: bold;
+    }
+
+.swal_table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+.swal_table tr:hover {
+        background-color: #f5f5f5;
+    }
+/* Prepared Container Styles */
+.contract_lg_container {
+    margin: 25px 25px 0px 25px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+/* Heading Styles */
+h4 {
+  color: #333;
+  font-weight: 700;
+  text-align: center;
+}
+.request{
+  margin-top: 75px;
+}
+
+/* Prepared Table Styles */
+.contract_lg_table {
+    width: 50%;
+    border-collapse: collapse;
+    white-space: nowrap;
+    margin: 0px;
+    height: auto;
+    text-align: center;
+}
+
+/* Table Header Styles */
+.contract_lg_table thead {
+    color: #333333;
+}
+/* Table Cell Styles */
+.contract_lg_table th, .contract_lg_table td {
+    text-align: center;
+}
+.contract_lg_table th{
+  padding: 5px;
+  font-size: 16px;
+
+}
+.contract_lg_table td{
+  padding: 10px;
+  font-size: 12px;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+    .contract_lg_table {
+        font-size: 12px;
+    }
+
+    .contract_lg_table th, .contract_lg_table td {
+        padding: 8px;
+    }
+}
+.contract_lg_container #review_contract{
+  padding: 5px 15px;
+  background-color: rgb(19, 174, 96);
+  color: #fff;
+  border-radius: 5px;
+}
+.contract_lg_container #approve_contract{
+  padding: 5px 15px;
+  background-color: #0686d0;
+  color: #fff;
+  border-radius: 5px;
+}
+.contract_lg_container #disapprove_contract{
+  padding: 5px 15px;
+  background-color: #d70c0c;
+  color: #fff;
+  border-radius: 5px;
+}
+.contract_lg_container #send_contract{
+  padding: 5px 15px;
+  background-color: rgb(19, 174, 96);
+  color: #fff;
+  border-radius: 5px;
+}
+
+.contract_lg_container #edit_contract{
+  padding: 5px 15px;
+  background-color: rgb(221, 152, 34);
+  color: #fff;
+  border-radius: 5px;
+}
+.contract_lg_container #cancel_contract{
+  padding: 5px 15px;
+  background-color: #d70c0c;
+  color: #fff;
+  border-radius: 50px;
+}
+#ledger_form{
+  margin-top: 0px;
+}
+.wrapper{
+  display: flex;
+  justify-content: space-between;
+}
+.wrapper input, select{
+  padding: 5px 15px;
+  margin: 10px;
+  border-radius: 5px;
+  width: fit-content;
+  font-size: 14px;
+  border: 1px solid #ccc
+}
+.wrapper button{
+  background-color: #0686d0;
+  color: #fff;
+  font-weight: 700;
+  padding: 5px 25px;
+  cursor: pointer;
+  border-radius: 50px;
+}
+.wrapper button:hover{
+  background-color: #0370b0;
+}
+.table_wrap{
+  margin: 0%;
+  overflow: auto;
+  display: block;
+  text-align: center;
+}
+/* Style for the modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    /* Style for the modal content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px 50px;
+        border: 1px solid #888;
+        width: 30%;
+        max-width: 30%; /* Set a maximum width if needed */
+      height: auto;
+      border-radius: 10px;
+
+    }
+.extract_modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px 20px;
+        border: 1px solid #888;
+        width: 20%;
+      height: auto;
+      border-radius: 10px;
+
+    }
+    /* Style for the close button */
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        text-align: right;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #d70c0c;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .reason_close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        text-align: right;
+    }
+
+    .reason_close:hover,
+    .reason_close:focus {
+        color: #d70c0c;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Style for the cancellation reason textarea */
+    #cancelReason {
+        width: 100%;
+        border: 1px solid #ccc;
+        margin-bottom: 25px;
+        resize: none; /* Disable resizing */
+        border-radius: 10px;    
+        padding: 15px;
+        font-size: 14px;   
+         
+    }
+    #cancelReason:focus{
+      border: 1px solid #0686d0;
+    }
+    #cancel_btn{
+      background-color: #d70c0c;
+      color: #fff;
+      padding: 10px;
+      width: 150px;
+    }
+.export_btn{
+  padding-top: 10px;
+  text-align: center;
+}
+#export_edi{
+  background-color: #31c45d;
+  color: #fff;
+  font-weight: 700;
+  padding: 5px 25px;
+  cursor: pointer;
+  border-radius: 50px;
+}
+#export_ledger{
+  background-color: #31c45d;
+  color: #fff;
+  font-weight: 700;
+  padding: 5px 25px;
+  cursor: pointer;
+  border-radius: 50px;
+}
+.extract_input{
+  text-align: center;
+}
+.extract_input input{
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin: 10px  auto;
+}
+.extract_input #download{
+  background-color: #31c45d;
+  padding: 10px 15px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 10px;
+  margin: 10px auto;
+}
+
+.request_date{
+  text-align: center;
+  padding: 0px 0px 25px 0px;
+}
+.request_date input{
+  border: 1px solid #ccc;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 10px;
+  margin-right: 10px;
+}
+.request_date button{
+  padding: 10px 25px;
+  background-color: #31c45d;
+  cursor: pointer;
+  border-radius: 50px;
+  color: white;
+  font-weight: 500;
+}
+.request_date button:hover{
+  background-color: #06b13a;
+}
+label{
+  font-size: 14px;
+}
+#show{
+  border: 2px solid #2b97e3;
+  padding: 5px 10px;
+  border-radius: 10px;
+  color: #2b97e3;
+  width: 75px;
+  font-weight: 700;
+}
+.downloadBtn{
+  border: 2px solid #31c45d;
+  padding: 5px 10px;
+  border-radius: 10px;
+  color: #2daf54;
+  width: fit-content;
+  font-weight: 700;
+}
+#request{
+  border: 2px solid #31c45d;
+  padding: 5px 10px;
+  border-radius: 10px;
+  color: #2daf54;
+  width: 75px;
+  font-weight: 700;
+}
+#show:hover{
+  background-color: #2b97e3;
+  color: white;
+  font-weight: 700;
+}
+#request:hover{
+  background-color: #31c45d;
+  color: #fff;
+  font-weight: 700;
+}
+#request_extract{
+  border: 2px solid #31c45d;
+  padding: 5px 15px;
+  border-radius: 10px;
+  color: #31c45d;
+  font-weight: 700;
+}
+#request_extract:hover{
+  background-color: #31c45d;
+  color: #fff;
+  font-weight: 700;
+}
+#review_extract{
+  border: 2px solid #31c45d;
+  padding: 5px 15px;
+  border-radius: 10px;
+  color: #31c45d;
+  font-weight: 700;
+}
+#review_extract:hover{
+  background-color: #31c45d;
+  color: #fff;
+  font-weight: 700;
+}
+#audit_extract{
+  border: 2px solid #31c45d;
+  padding: 5px 15px;
+  border-radius: 10px;
+  color: #31c45d;
+  font-weight: 700;
+}
+#audit_extract:hover{
+  background-color: #31c45d;
+  color: #fff;
+  font-weight: 700;
+}
+#extract_file{
+  border: 2px solid #31c45d;
+  padding: 5px 15px;
+  border-radius: 10px;
+  color: #31c45d;
+  font-weight: 700;
+}
+#extract_file:hover{
+  background-color: #31c45d;
+  color: #fff;
+  font-weight: 700;
+}
+/* Modal container */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+/* Modal content */
+.modal-content {
+    background-color: #fefefe;
+    margin: 2% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 100%;
+    height: 85vh;
+    overflow: auto;
+}
+
+/* Close button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+/* Table style for modal */
+.modal-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Table header style */
+.modal-table th {
+    padding: 12px;
+    background-color: #f0f0f0;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Table cell style */
+.modal-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    font-size: 12px;
+}
+
+/* Alternating row color */
+.modal-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+.total_div{
+    margin: 0px 450px;
+}
+.total_div span{
+  font-weight: 500;
+  font-size: 16px;
+  color: darkgreen;
+}
+.total_div input{
+  padding: 10px 5px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  cursor: default;
+  font-weight: 700;
+  color: darkgreen;
+}
+
+/* Modal container */
+.transactionModal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+    display: flex; /* Center content */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal content */
+.transactionModal .t-modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border: none;
+    width: 85%; /* Could be more or less, depending on screen size */
+    max-width: 85%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    position: relative; /* For positioning close button */
+    animation: fadeIn 0.3s ease-in-out;
+    margin-bottom: 30%; /* 5% margin from the top */
+}
+
+/* Modal header */
+.transactionModal .t-modal-content h4 {
+    margin-top: 0;
+    font-size: 24px;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+/* Modal body */
+.transactionModal .t-modal-content p {
+    margin: 20px 0;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* Modal footer */
+.transaction_modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+}
+
+/* Close button */
+.transaction_modal-footer .modal-close {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.transaction_modal-footer .modal-close:hover {
+    background-color: #0056b3;
+}
+
+/* Animation for modal */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Close button in the top-right corner */
+.transactionModal .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #aaa;
+    transition: color 0.2s ease;
+}
+
+.transactionModal .close-btn:hover {
+    color: #000;
+}
+
+.modal-footer {
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-footer .receivedBtn {
+        padding: 10px 20px;
+        margin: 0 10px;
+        background-color: #3f6ce9;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .modal-footer .receivedBtn:hover {
+        background-color: #1a5a9e;
+    }
+      .modal-footer .closeBtn {
+        padding: 10px 20px;
+        margin: 0 10px;
+        background-color: #d70c0c;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .modal-footer .closeBtn:hover {
+        background-color: #a52323;
+    }
+    .modal-footer .downloadFile {
+        padding: 10px 20px;
+        margin: 0 10px;
+        background-color: #11a335;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .modal-footer .downloadFile:hover {
+        background-color: #278c40;
+    }
+
+    .printing_div{
+      display: flex;
+      justify-content: right;
+      padding: 10px 150px;
+    }
+    .printing_div a{
+      text-decoration: underline;
+      font-size: 18px;
+      font-weight: 500;
+    }
+    .view-contracts{
+      text-decoration: underline;
+      color: #d70c0c;
+    }
+
+    .wrap-contract{
+      overflow: auto;
+    }
+
+    .view-contracts{
+      background-color: transparent;
+      border: 1px solid #0092e6;
+      padding: 5px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      color: #333;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+    .view-contracts:hover{
+      padding: 5px 10px;
+      font-size: 12px;
+      background-color: #0092e6;
+      color: #fff;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+    }

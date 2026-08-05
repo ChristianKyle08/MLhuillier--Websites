@@ -1,0 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&family=Dancing+Script:wght@700&display=swap');
+:root {
+    --primary: #6B3E6D;
+    --primary-light: #f4eff7;
+    --sidebar-width: 260px;
+    --surface: #ffffff;
+    --background: #f8f9fa;
+}
+
+body {
+    font-family: 'Manrope', sans-serif;
+    background: var(--background);
+    color: #2d3436;
+}
+
+/* Essential Layout Fix: No Sidebar Overlap */
+.main-wrapper {
+    margin-left: var(--sidebar-width);
+    padding: 2.5rem;
+    min-height: 100vh;
+    transition: all 0.3s ease;
+}
+
+/* Content Header */
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h2 {
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: -1px;
+}
+
+/* Modernized Cards */
+.glass-card {
+    background: var(--surface);
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #a0a0a0;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.section-title i {
+    margin-right: 10px;
+    color: var(--primary);
+}
+
+/* Form Controls */
+.form-control, .form-select {
+    border-radius: 12px;
+    padding: 12px 15px;
+    border: 1px solid #e9ecef;
+    background: #fdfdfd;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 4px rgba(107, 62, 109, 0.1);
+    border-color: var(--primary);
+}
+
+/* Table Styling */
+.custom-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.custom-table thead th {
+    background: transparent;
+    border: none;
+    color: #636e72;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    padding: 15px;
+}
+
+.custom-table tbody tr {
+    background: #fff;
+    transition: transform 0.2s ease;
+}
+
+.custom-table tbody tr:hover {
+    transform: scale(1.01);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.custom-table td {
+    padding: 15px;
+    border: none;
+    vertical-align: middle;
+}
+
+.custom-table td:first-child { border-radius: 12px 0 0 12px; }
+.custom-table td:last-child { border-radius: 0 12px 12px 0; }
+
+/* Badges */
+.status-pill {
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+.bg-active { background: #e3fcef; color: #00b894; }
+.bg-inactive { background: #ffeaa7; color: #d63031; }
+
+/* Action Buttons */
+.btn-action {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: var(--primary-light);
+    color: var(--primary);
+    transition: all 0.2s;
+}
+
+.btn-action:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+.btn-submit {
+    background: var(--primary);
+    color: white;
+    border-radius: 12px;
+    padding: 12px 25px;
+    font-weight: 700;
+    border: none;
+    transition: all 0.3s;
+}
+
+.btn-submit:hover {
+    background: #563158;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(107, 62, 109, 0.3);
+}
+
+/* Responsive Fixes */
+@media (max-width: 992px) {
+    .main-wrapper {
+        margin-left: 0;
+        padding: 1.5rem;
+    }
+}

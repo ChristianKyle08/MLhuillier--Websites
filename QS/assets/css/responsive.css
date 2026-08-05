@@ -1,0 +1,2875 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+
+*{
+   font-family: 'Poppins', sans-serif;
+   margin:0; padding:0;
+   box-sizing: border-box;
+   outline: none; border:none;
+   text-decoration: none;
+}
+
+/* Responsive styles for iPhone SE */
+@media screen and (max-width: 375px) and (max-height: 667px) {
+    .nav {
+        width: 100%;
+        margin: 10px auto;
+        padding: 10px 10px;
+        border-radius: 10px;
+    }
+
+    .nav-item {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .nav-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .nav-link {
+        font-size: 12px;
+        padding: 5px;
+    }
+
+    .dropdown .nav-link {
+        padding-right: 10px;
+        height: auto;
+        line-height: normal;
+    }
+
+    .submenu {
+        width: 100%;
+        left: 0;
+        margin-left: 0;
+    }
+
+    .submenu-link {
+        padding: 10px;
+    }
+
+    #logout {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    #logout i {
+        font-size: 24px;
+    }
+
+     /* add lessor profile */
+    .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      padding: 10px 20px; /* Adjust padding for smaller screen */
+   }
+
+   .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+   }
+
+   .profile-field label {
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-field input,
+   select {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-actions #save {
+      width: auto; /* Adjust button width */
+      padding: 8px 15px; /* Adjust padding */
+   }
+   /* end lessor profile */
+
+   /* edit lessor profile */
+   .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      }
+
+      .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+      }
+
+      .profile-field label {
+      font-size: 12px; /* Adjust font size */
+      }
+
+      .profile-field input {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+      }
+
+      #search_lessor {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+
+      #search_btn {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+   .profile-row{
+      display: block;
+   }
+   /* end edit lessor profile */
+
+      /* renew contract */
+   .contract-container {
+  width: 100%;
+  margin: 15px auto;
+  padding: 20px 20px; /* Adjusted padding for smaller screens */
+  border-radius: 10px;
+  /* background-color: #4CAF50; */
+}
+
+.contract-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.contract-header h3 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+
+.contract-form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr; /* Single column for smaller screens */
+  grid-template-rows: auto;
+  gap: 10px; /* Increased gap for better spacing */
+  font-size: 14px;
+  padding: 10px;
+  overflow: auto;
+}
+
+.contract-field {
+  width: 100%;
+  text-align: center;
+}
+
+.contract-field select,
+.contract-field input {
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%; /* Full width for better responsiveness */
+  text-align: center;
+  margin: 10px 0;
+  border: 1px solid lightgray;
+}
+
+input[type="file"] {
+  background-color: white;
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid lightgray;
+}
+
+#add_attachment,
+#add_attachment_second {
+  border: 2px solid #0686d0;
+  padding: 5px 15px;
+  width: fit-content;
+  color: #0686d0;
+  border-radius: 10px;
+  font-size: 12px;
+  margin: 10px auto; /* Center the button */
+  font-weight: 600;
+}
+
+#add_attachment:hover,
+#add_attachment_second:hover {
+  background-color: #0686d0;
+  color: white;
+  font-weight: 600;
+}
+
+#save {
+  margin: 15px 0;
+  background-color: #4CAF50; /* Green color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  width: 100%; /* Full width for better responsiveness */
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0.6; /* Disabled button style */
+}
+
+#save:hover {
+  opacity: 1; /* Button hover effect */
+  cursor: default; /* Remove hover effect for disabled button */
+}
+
+#save:disabled:hover {
+  cursor: not-allowed;
+}
+/* end renew contract */
+
+/* contract of lease */
+.search_div{
+  display: block;
+  text-align: center;
+  width: fit-content;
+}
+#proceed_btn{
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 25px;
+}
+.search_div select{
+  width: 100%;
+  margin: 2% 0%;
+}
+.table_wrap{
+  margin: 0%;
+  overflow: auto;
+}
+ .fa-regular.fa-building{
+  display: none;
+ }
+ .fa-solid.fa-file-signature{
+  display: none;
+ }
+  .contract_lg_table {
+    margin: 0%;
+    width: 100%;
+  }
+ .contract_lg_table th {
+  font-size: 12px;
+ }
+/* end contract of lease */
+
+ .modal-dialog {
+    margin: 5px auto;
+    max-width: 90%;
+  }
+
+  .edit-contract-modal-header, .edit-contract-modal-footer {
+    padding: 0.5rem;
+  }
+
+  .edit-contract-modal-title {
+    font-size: 1.2rem;
+  }
+
+  .edit-contract-modal-body {
+    padding: 0.5rem;
+    height: 70vh;
+  }
+
+  .form-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+
+  #btnClose, #btnSave {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+
+  #cancelRequest select {
+    padding: 5px 10px;
+    margin: 5px 0px;
+    width: 100%;
+  }
+  #proceed {
+    width: 100%;
+    padding: 5px 10px;
+  }
+  .tbl-contract {
+    width: 100%;
+  }
+  table, th, td {
+    font-size: 12px;
+  }
+  table {
+    margin: 10px 5px;
+  }
+  th, td {
+    padding: 3px;
+  }
+  #request_terminate, #review_terminate, #received_terminate, #check_terminate, #approve_terminate {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
+
+
+/* Responsive styles for iPhone XR */
+@media screen and (max-width: 414px) and (max-height: 896px) {
+    .nav {
+        width: 100%;
+        margin: 10px auto;
+        padding: 10px 10px;
+        border-radius: 10px;
+    }
+
+    .nav-item {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .nav-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .nav-link {
+        font-size: 12px;
+        padding: 5px;
+    }
+
+    .dropdown .nav-link {
+        padding-right: 10px;
+        height: auto;
+        line-height: normal;
+    }
+
+    .submenu {
+        width: 100%;
+        left: 0;
+        margin-left: 0;
+    }
+
+    .submenu-link {
+        padding: 10px;
+    }
+
+    #logout {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    #logout i {
+        font-size: 24px;
+    }
+
+     /* add lessor profile */
+    .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      padding: 10px 20px; /* Adjust padding for smaller screen */
+   }
+
+   .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+   }
+
+   .profile-field label {
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-field input,
+   select {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-actions #save {
+      width: auto; /* Adjust button width */
+      padding: 8px 15px; /* Adjust padding */
+   }
+   /* end lessor profile */
+
+   /* edit lessor profile */
+   .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      }
+
+      .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+      }
+
+      .profile-field label {
+      font-size: 12px; /* Adjust font size */
+      }
+
+      .profile-field input {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+      }
+
+      #search_lessor {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+
+      #search_btn {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+   .profile-row{
+      display: block;
+   }
+   /* end edit lessor profile */
+
+      /* renew contract */
+   .contract-container {
+  width: 100%;
+  margin: 15px auto;
+  padding: 20px 20px; /* Adjusted padding for smaller screens */
+  border-radius: 10px;
+  /* background-color: #4CAF50; */
+}
+
+.contract-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.contract-header h3 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.contract-form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr; /* Single column for smaller screens */
+  grid-template-rows: auto;
+  gap: 10px; /* Increased gap for better spacing */
+  font-size: 14px;
+  padding: 10px;
+  overflow: auto;
+}
+
+.contract-field {
+  width: 100%;
+  text-align: center;
+}
+
+.contract-field select,
+.contract-field input {
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%; /* Full width for better responsiveness */
+  text-align: center;
+  margin: 10px 0;
+  border: 1px solid lightgray;
+}
+
+input[type="file"] {
+  background-color: white;
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid lightgray;
+}
+
+#add_attachment,
+#add_attachment_second {
+  border: 2px solid #0686d0;
+  padding: 5px 15px;
+  width: fit-content;
+  color: #0686d0;
+  border-radius: 10px;
+  font-size: 12px;
+  margin: 10px auto; /* Center the button */
+  font-weight: 600;
+}
+
+#add_attachment:hover,
+#add_attachment_second:hover {
+  background-color: #0686d0;
+  color: white;
+  font-weight: 600;
+}
+
+#save {
+  margin: 15px 0;
+  background-color: #4CAF50; /* Green color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  width: 100%; /* Full width for better responsiveness */
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0.6; /* Disabled button style */
+}
+
+#save:hover {
+  opacity: 1; /* Button hover effect */
+  cursor: default; /* Remove hover effect for disabled button */
+}
+
+#save:disabled:hover {
+  cursor: not-allowed;
+}
+/* end renew contract */
+
+/* contract of lease */
+.search_div{
+  display: block;
+  text-align: center;
+  width: fit-content;
+}
+#proceed_btn{
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 25px;
+}
+.search_div select{
+  width: 100%;
+  margin: 2% 0%;
+}
+.table_wrap{
+  margin: 0%;
+  overflow: auto;
+}
+ .fa-regular.fa-building{
+  display: none;
+ }
+ .fa-solid.fa-file-signature{
+  display: none;
+ }
+  .contract_lg_table {
+    margin: 0%;
+    width: 100%;
+  }
+ .contract_lg_table th {
+  font-size: 12px;
+ }
+/* end contract of lease */
+
+ .modal-dialog {
+    margin: 5px auto;
+    max-width: 90%;
+  }
+
+  .edit-contract-modal-header, .edit-contract-modal-footer {
+    padding: 0.5rem;
+  }
+
+  .edit-contract-modal-title {
+    font-size: 1.2rem;
+  }
+
+  .edit-contract-modal-body {
+    padding: 0.5rem;
+    height: 70vh;
+  }
+
+  .form-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+
+  #btnClose, #btnSave {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+
+    #cancelRequest select {
+    padding: 5px 10px;
+    margin: 5px 0px;
+    width: 100%;
+  }
+  #proceed {
+    width: 100%;
+    padding: 5px 10px;
+  }
+  .tbl-contract {
+    width: 100%;
+  }
+  table, th, td {
+    font-size: 12px;
+  }
+  table {
+    margin: 10px 5px;
+  }
+  th, td {
+    padding: 3px;
+  }
+  #request_terminate, #review_terminate, #received_terminate, #check_terminate, #approve_terminate {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
+
+
+/* Responsive styles for iPhone 12 Pro */
+@media screen and (max-width: 390px) and (max-height: 844px) {
+    .nav {
+        width: 100%;
+        margin: 10px auto;
+        padding: 10px 10px;
+        border-radius: 10px;
+    }
+
+    .nav-item {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .nav-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .nav-link {
+        font-size: 12px;
+        padding: 5px;
+    }
+
+    .dropdown .nav-link {
+        padding-right: 10px;
+        height: auto;
+        line-height: normal;
+    }
+
+    .submenu {
+        width: 100%;
+        left: 0;
+        margin-left: 0;
+    }
+
+    .submenu-link {
+        padding: 10px;
+    }
+
+    #logout {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    #logout i {
+        font-size: 24px;
+    }
+
+    /* add lessor profile */
+    .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      padding: 10px 20px; /* Adjust padding for smaller screen */
+   }
+
+   .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+   }
+
+   .profile-field label {
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-field input,
+   select {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-actions #save {
+      width: auto; /* Adjust button width */
+      padding: 8px 15px; /* Adjust padding */
+   }
+   /* end lessor profile */
+
+   /* edit lessor profile */
+   .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      }
+
+      .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+      }
+
+      .profile-field label {
+      font-size: 12px; /* Adjust font size */
+      }
+
+      .profile-field input {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+      }
+
+      #search_lessor {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+
+      #search_btn {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+   .profile-row{
+      display: block;
+   }
+   /* end edit lessor profile */
+
+      /* renew contract */
+   .contract-container {
+  width: 100%;
+  margin: 15px auto;
+  padding: 20px 20px; /* Adjusted padding for smaller screens */
+  border-radius: 10px;
+  /* background-color: #4CAF50; */
+}
+
+.contract-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.contract-header h3 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.contract-form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr; /* Single column for smaller screens */
+  grid-template-rows: auto;
+  gap: 10px; /* Increased gap for better spacing */
+  font-size: 14px;
+  padding: 10px;
+  overflow: auto;
+}
+
+.contract-field {
+  width: 100%;
+  text-align: center;
+}
+
+.contract-field select,
+.contract-field input {
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%; /* Full width for better responsiveness */
+  text-align: center;
+  margin: 10px 0;
+  border: 1px solid lightgray;
+}
+
+input[type="file"] {
+  background-color: white;
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid lightgray;
+}
+
+#add_attachment,
+#add_attachment_second {
+  border: 2px solid #0686d0;
+  padding: 5px 15px;
+  width: fit-content;
+  color: #0686d0;
+  border-radius: 10px;
+  font-size: 12px;
+  margin: 10px auto; /* Center the button */
+  font-weight: 600;
+}
+
+#add_attachment:hover,
+#add_attachment_second:hover {
+  background-color: #0686d0;
+  color: white;
+  font-weight: 600;
+}
+
+#save {
+  margin: 15px 0;
+  background-color: #4CAF50; /* Green color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  width: 100%; /* Full width for better responsiveness */
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0.6; /* Disabled button style */
+}
+
+#save:hover {
+  opacity: 1; /* Button hover effect */
+  cursor: default; /* Remove hover effect for disabled button */
+}
+
+#save:disabled:hover {
+  cursor: not-allowed;
+}
+/* end renew contract */
+
+/* contract of lease */
+.search_div{
+  display: block;
+  text-align: center;
+  width: fit-content;
+}
+#proceed_btn{
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 25px;
+}
+.search_div select{
+  width: 100%;
+  margin: 2% 0%;
+}
+.table_wrap{
+  margin: 0%;
+  overflow: auto;
+}
+ .fa-regular.fa-building{
+  display: none;
+ }
+ .fa-solid.fa-file-signature{
+  display: none;
+ }
+  .contract_lg_table {
+    margin: 0%;
+    width: 100%;
+  }
+ .contract_lg_table th {
+  font-size: 12px;
+ }
+/* end contract of lease */
+ .modal-dialog {
+    margin: 5px auto;
+    max-width: 90%;
+  }
+
+  .edit-contract-modal-header, .edit-contract-modal-footer {
+    padding: 0.5rem;
+  }
+
+  .edit-contract-modal-title {
+    font-size: 1.2rem;
+  }
+
+  .edit-contract-modal-body {
+    padding: 0.5rem;
+    height: 70vh;
+  }
+
+  .form-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+
+  #btnClose, #btnSave {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+
+     #cancelRequest select {
+    padding: 5px 10px;
+    margin: 5px 0px;
+    width: 100%;
+  }
+  #proceed {
+    width: 100%;
+    padding: 5px 10px;
+  }
+  .tbl-contract {
+    width: 100%;
+  }
+  table, th, td {
+    font-size: 12px;
+  }
+  table {
+    margin: 10px 5px;
+  }
+  th, td {
+    padding: 3px;
+  }
+  #request_terminate, #review_terminate, #received_terminate, #check_terminate, #approve_terminate {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
+
+
+/* Responsive styles for iPhone 14 Pro Max */
+@media screen and (max-width: 430px) and (max-height: 932px) {
+    .nav {
+        width: 100%;
+        margin: 10px auto;
+        padding: 10px 10px;
+        border-radius: 10px;
+    }
+
+    .nav-item {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .nav-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .nav-link {
+        font-size: 12px;
+        padding: 5px;
+    }
+
+    .dropdown .nav-link {
+        padding-right: 10px;
+        height: auto;
+        line-height: normal;
+    }
+
+    .submenu {
+        width: 100%;
+        left: 0;
+        margin-left: 0;
+    }
+
+    .submenu-link {
+        padding: 10px;
+    }
+
+    #logout {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    #logout i {
+        font-size: 24px;
+    }
+
+    /* add lessor profile */
+    .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      padding: 10px 20px; /* Adjust padding for smaller screen */
+   }
+
+   .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+   }
+
+   .profile-field label {
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-field input,
+   select {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-actions #save {
+      width: auto; /* Adjust button width */
+      padding: 8px 15px; /* Adjust padding */
+   }
+   /* end lessor profile */
+
+   /* edit lessor profile */
+   .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      }
+
+      .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+      }
+
+      .profile-field label {
+      font-size: 12px; /* Adjust font size */
+      }
+
+      .profile-field input {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+      }
+
+      #search_lessor {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+
+      #search_btn {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+   .profile-row{
+      display: block;
+   }
+   /* end edit lessor profile */
+
+      /* renew contract */
+   .contract-container {
+  width: 100%;
+  margin: 15px auto;
+  padding: 20px 20px; /* Adjusted padding for smaller screens */
+  border-radius: 10px;
+  /* background-color: #4CAF50; */
+}
+
+.contract-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.contract-header h3 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.contract-form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr; /* Single column for smaller screens */
+  grid-template-rows: auto;
+  gap: 10px; /* Increased gap for better spacing */
+  font-size: 14px;
+  padding: 10px;
+  overflow: auto;
+}
+
+.contract-field {
+  width: 100%;
+  text-align: center;
+}
+
+.contract-field select,
+.contract-field input {
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%; /* Full width for better responsiveness */
+  text-align: center;
+  margin: 10px 0;
+  border: 1px solid lightgray;
+}
+
+input[type="file"] {
+  background-color: white;
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid lightgray;
+}
+
+#add_attachment,
+#add_attachment_second {
+  border: 2px solid #0686d0;
+  padding: 5px 15px;
+  width: fit-content;
+  color: #0686d0;
+  border-radius: 10px;
+  font-size: 12px;
+  margin: 10px auto; /* Center the button */
+  font-weight: 600;
+}
+
+#add_attachment:hover,
+#add_attachment_second:hover {
+  background-color: #0686d0;
+  color: white;
+  font-weight: 600;
+}
+
+#save {
+  margin: 15px 0;
+  background-color: #4CAF50; /* Green color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  width: 100%; /* Full width for better responsiveness */
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0.6; /* Disabled button style */
+}
+
+#save:hover {
+  opacity: 1; /* Button hover effect */
+  cursor: default; /* Remove hover effect for disabled button */
+}
+
+#save:disabled:hover {
+  cursor: not-allowed;
+}
+/* end renew contract */
+
+/* contract of lease */
+.search_div{
+  display: block;
+  text-align: center;
+  width: fit-content;
+}
+#proceed_btn{
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 25px;
+}
+.search_div select{
+  width: 100%;
+  margin: 2% 0%;
+}
+.table_wrap{
+  margin: 0%;
+  overflow: auto;
+}
+ .fa-regular.fa-building{
+  display: none;
+ }
+ .fa-solid.fa-file-signature{
+  display: none;
+ }
+  .contract_lg_table {
+    margin: 0%;
+    width: 100%;
+  }
+ .contract_lg_table th {
+  font-size: 12px;
+ }
+/* end contract of lease */
+ .modal-dialog {
+    margin: 5px auto;
+    max-width: 90%;
+  }
+
+  .edit-contract-modal-header, .edit-contract-modal-footer {
+    padding: 0.5rem;
+  }
+
+  .edit-contract-modal-title {
+    font-size: 1.2rem;
+  }
+
+  .edit-contract-modal-body {
+    padding: 0.5rem;
+    height: 70vh;
+  }
+
+  .form-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+
+  #btnClose, #btnSave {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+
+     #cancelRequest select {
+    padding: 5px 10px;
+    margin: 5px 0px;
+    width: 100%;
+  }
+  #proceed {
+    width: 100%;
+    padding: 5px 10px;
+  }
+  .tbl-contract {
+    width: 100%;
+  }
+  table, th, td {
+    font-size: 12px;
+  }
+  table {
+    margin: 10px 5px;
+  }
+  th, td {
+    padding: 3px;
+  }
+  #request_terminate, #review_terminate, #received_terminate, #check_terminate, #approve_terminate {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
+
+
+/* Responsive styles for iPad Mini */
+@media screen and (max-width: 768px) and (max-height: 1024px) {
+    .nav {
+        width: 100%;
+        margin: 10px auto;
+        padding: 10px 10px;
+        border-radius: 10px;
+    }
+
+    .nav-item {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .nav-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .nav-link {
+        font-size: 12px;
+        padding: 5px;
+    }
+
+    .dropdown .nav-link {
+        padding-right: 10px;
+        height: auto;
+        line-height: normal;
+    }
+
+    .submenu {
+        width: 100%;
+        left: 0;
+        margin-left: 0;
+    }
+
+    .submenu-link {
+        padding: 10px;
+    }
+
+    #logout {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    #logout i {
+        font-size: 24px;
+    }
+
+    /* add lessor profile */
+    .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      padding: 10px 20px; /* Adjust padding for smaller screen */
+   }
+
+   .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+   }
+
+   .profile-field label {
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-field input,
+   select {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-actions #save {
+      width: auto; /* Adjust button width */
+      padding: 8px 15px; /* Adjust padding */
+   }
+   /* end lessor profile */
+
+   /* edit lessor profile */
+   .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      }
+
+      .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+      }
+
+      .profile-field label {
+      font-size: 12px; /* Adjust font size */
+      }
+
+      .profile-field input {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+      }
+
+      #search_lessor {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+
+      #search_btn {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+   .profile-row{
+      display: block;
+   }
+   /* end edit lessor profile */
+
+      /* renew contract */
+   .contract-container {
+  width: 100%;
+  margin: 15px auto;
+  padding: 20px 20px; /* Adjusted padding for smaller screens */
+  border-radius: 10px;
+  /* background-color: #4CAF50; */
+}
+
+.contract-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.contract-header h3 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.contract-form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr; /* Single column for smaller screens */
+  grid-template-rows: auto;
+  gap: 10px; /* Increased gap for better spacing */
+  font-size: 14px;
+  padding: 10px;
+  overflow: auto;
+}
+
+.contract-field {
+  width: 100%;
+  text-align: center;
+}
+
+.contract-field select,
+.contract-field input {
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%; /* Full width for better responsiveness */
+  text-align: center;
+  margin: 10px 0;
+  border: 1px solid lightgray;
+}
+
+input[type="file"] {
+  background-color: white;
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid lightgray;
+}
+
+#add_attachment,
+#add_attachment_second {
+  border: 2px solid #0686d0;
+  padding: 5px 15px;
+  width: fit-content;
+  color: #0686d0;
+  border-radius: 10px;
+  font-size: 12px;
+  margin: 10px auto; /* Center the button */
+  font-weight: 600;
+}
+
+#add_attachment:hover,
+#add_attachment_second:hover {
+  background-color: #0686d0;
+  color: white;
+  font-weight: 600;
+}
+
+#save {
+  margin: 15px 0;
+  background-color: #4CAF50; /* Green color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  width: 100%; /* Full width for better responsiveness */
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0.6; /* Disabled button style */
+}
+
+#save:hover {
+  opacity: 1; /* Button hover effect */
+  cursor: default; /* Remove hover effect for disabled button */
+}
+
+#save:disabled:hover {
+  cursor: not-allowed;
+}
+/* end renew contract */
+
+/* contract of lease */
+.search_div{
+  display: block;
+  text-align: center;
+  width: fit-content;
+}
+#proceed_btn{
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 25px;
+}
+.search_div select{
+  width: 100%;
+  margin: 2% 0%;
+}
+.table_wrap{
+  margin: 0%;
+  overflow: auto;
+}
+ .fa-regular.fa-building{
+  display: none;
+ }
+ .fa-solid.fa-file-signature{
+  display: none;
+ }
+  .contract_lg_table {
+    margin: 0%;
+    width: 100%;
+  }
+ .contract_lg_table th {
+  font-size: 12px;
+ }
+/* end contract of lease */
+ .modal-dialog {
+    margin: 5px auto;
+    max-width: 90%;
+  }
+
+  .edit-contract-modal-header, .edit-contract-modal-footer {
+    padding: 0.5rem;
+  }
+
+  .edit-contract-modal-title {
+    font-size: 1.2rem;
+  }
+
+  .edit-contract-modal-body {
+    padding: 0.5rem;
+    height: 70vh;
+  }
+
+  .form-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+
+  #btnClose, #btnSave {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+}
+
+
+/* Responsive styles for iPad Air */
+@media screen and (max-width: 820px) and (max-height: 1180px) {
+    .nav {
+        width: 100%;
+        margin: 10px auto;
+        padding: 10px 10px;
+        border-radius: 10px;
+    }
+
+    .nav-item {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .nav-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .nav-link {
+        font-size: 12px;
+        padding: 5px;
+    }
+
+    .dropdown .nav-link {
+        padding-right: 10px;
+        height: auto;
+        line-height: normal;
+    }
+
+    .submenu {
+        width: 100%;
+        left: 0;
+        margin-left: 0;
+    }
+
+    .submenu-link {
+        padding: 10px;
+    }
+
+    #logout {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    #logout i {
+        font-size: 24px;
+    }
+
+    /* add lessor profile */
+    .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      padding: 10px 20px; /* Adjust padding for smaller screen */
+   }
+
+   .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+   }
+
+   .profile-field label {
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-field input,
+   select {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-actions #save {
+      width: auto; /* Adjust button width */
+      padding: 8px 15px; /* Adjust padding */
+   }
+   /* end lessor profile */
+
+   /* edit lessor profile */
+   .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      }
+
+      .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+      }
+
+      .profile-field label {
+      font-size: 12px; /* Adjust font size */
+      }
+
+      .profile-field input {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+      }
+
+      #search_lessor {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+
+      #search_btn {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+   .profile-row{
+      display: block;
+   }
+   /* end edit lessor profile */
+
+      /* renew contract */
+   .contract-container {
+  width: 100%;
+  margin: 15px auto;
+  padding: 20px 20px; /* Adjusted padding for smaller screens */
+  border-radius: 10px;
+  /* background-color: #4CAF50; */
+}
+
+.contract-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.contract-header h3 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.contract-form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr; /* Single column for smaller screens */
+  grid-template-rows: auto;
+  gap: 10px; /* Increased gap for better spacing */
+  font-size: 14px;
+  padding: 10px;
+  overflow: auto;
+}
+
+.contract-field {
+  width: 100%;
+  text-align: center;
+}
+
+.contract-field select,
+.contract-field input {
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%; /* Full width for better responsiveness */
+  text-align: center;
+  margin: 10px 0;
+  border: 1px solid lightgray;
+}
+
+input[type="file"] {
+  background-color: white;
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid lightgray;
+}
+
+#add_attachment,
+#add_attachment_second {
+  border: 2px solid #0686d0;
+  padding: 5px 15px;
+  width: fit-content;
+  color: #0686d0;
+  border-radius: 10px;
+  font-size: 12px;
+  margin: 10px auto; /* Center the button */
+  font-weight: 600;
+}
+
+#add_attachment:hover,
+#add_attachment_second:hover {
+  background-color: #0686d0;
+  color: white;
+  font-weight: 600;
+}
+
+#save {
+  margin: 15px 0;
+  background-color: #4CAF50; /* Green color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  width: 100%; /* Full width for better responsiveness */
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0.6; /* Disabled button style */
+}
+
+#save:hover {
+  opacity: 1; /* Button hover effect */
+  cursor: default; /* Remove hover effect for disabled button */
+}
+
+#save:disabled:hover {
+  cursor: not-allowed;
+}
+/* end renew contract */
+
+ .modal-dialog {
+    margin: 5px auto;
+    max-width: 90%;
+  }
+
+  .edit-contract-modal-header, .edit-contract-modal-footer {
+    padding: 0.5rem;
+  }
+
+  .edit-contract-modal-title {
+    font-size: 1.2rem;
+  }
+
+  .edit-contract-modal-body {
+    padding: 0.5rem;
+    height: 70vh;
+  }
+
+  .form-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+
+  #btnClose, #btnSave {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+
+}
+
+
+/* Responsive styles for iPad Pro */
+@media screen and (max-width: 1024px) and (max-height: 1366px) {
+    .nav {
+        width: 100%;
+        margin: 10px auto;
+        padding: 10px 10px;
+        border-radius: 10px;
+    }
+
+    .nav-item {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .nav-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .nav-link {
+        font-size: 12px;
+        padding: 5px;
+    }
+
+    .dropdown .nav-link {
+        padding-right: 10px;
+        height: auto;
+        line-height: normal;
+    }
+
+    .submenu {
+        width: 100%;
+        left: 0;
+        margin-left: 0;
+    }
+
+    .submenu-link {
+        padding: 10px;
+    }
+
+    #logout {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    #logout i {
+        font-size: 24px;
+    }
+    /* add lessor profile */
+    .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      padding: 10px 20px; /* Adjust padding for smaller screen */
+   }
+
+   .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+   }
+
+   .profile-field label {
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-field input,
+   select {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-actions #save {
+      width: auto; /* Adjust button width */
+      padding: 8px 15px; /* Adjust padding */
+   }
+   /* end lessor profile */
+   /* edit lessor profile */
+   .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      }
+
+      .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+      }
+
+      .profile-field label {
+      font-size: 12px; /* Adjust font size */
+      }
+
+      .profile-field input {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+      }
+
+      #search_lessor {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+
+      #search_btn {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+   .profile-row{
+      display: block;
+   }
+   /* end edit lessor profile */
+
+      /* renew contract */
+   .contract-container {
+  width: 100%;
+  margin: 15px auto;
+  padding: 20px 20px; /* Adjusted padding for smaller screens */
+  border-radius: 10px;
+  /* background-color: #4CAF50; */
+}
+
+.contract-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.contract-header h3 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.contract-form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr; /* Single column for smaller screens */
+  grid-template-rows: auto;
+  gap: 10px; /* Increased gap for better spacing */
+  font-size: 14px;
+  padding: 10px;
+  overflow: auto;
+}
+
+.contract-field {
+  width: 100%;
+  text-align: center;
+}
+
+.contract-field select,
+.contract-field input {
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%; /* Full width for better responsiveness */
+  text-align: center;
+  margin: 10px 0;
+  border: 1px solid lightgray;
+}
+
+input[type="file"] {
+  background-color: white;
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid lightgray;
+}
+
+#add_attachment,
+#add_attachment_second {
+  border: 2px solid #0686d0;
+  padding: 5px 15px;
+  width: fit-content;
+  color: #0686d0;
+  border-radius: 10px;
+  font-size: 12px;
+  margin: 10px auto; /* Center the button */
+  font-weight: 600;
+}
+
+#add_attachment:hover,
+#add_attachment_second:hover {
+  background-color: #0686d0;
+  color: white;
+  font-weight: 600;
+}
+
+#save {
+  margin: 15px 0;
+  background-color: #4CAF50; /* Green color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  width: 100%; /* Full width for better responsiveness */
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0.6; /* Disabled button style */
+}
+
+#save:hover {
+  opacity: 1; /* Button hover effect */
+  cursor: default; /* Remove hover effect for disabled button */
+}
+
+#save:disabled:hover {
+  cursor: not-allowed;
+}
+/* end renew contract */
+ .modal-dialog {
+    margin: 5px auto;
+    max-width: 90%;
+  }
+
+  .edit-contract-modal-header, .edit-contract-modal-footer {
+    padding: 0.5rem;
+  }
+
+  .edit-contract-modal-title {
+    font-size: 1.2rem;
+  }
+
+  .edit-contract-modal-body {
+    padding: 0.5rem;
+    height: 70vh;
+  }
+
+  .form-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+
+  #btnClose, #btnSave {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+}
+
+
+/* Responsive styles for Surface Pro 7 */
+@media screen and (max-width: 912px) and (max-height: 1368px) {
+    .nav {
+        width: 100%;
+        margin: 10px auto;
+        padding: 10px 10px;
+        border-radius: 10px;
+    }
+
+    .nav-item {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .nav-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .nav-link {
+        font-size: 12px;
+        padding: 5px;
+    }
+
+    .dropdown .nav-link {
+        padding-right: 10px;
+        height: auto;
+        line-height: normal;
+    }
+
+    .submenu {
+        width: 100%;
+        left: 0;
+        margin-left: 0;
+    }
+
+    .submenu-link {
+        padding: 10px;
+    }
+
+    #logout {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    #logout i {
+        font-size: 24px;
+    }
+     /* add lessor profile */
+    .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      padding: 10px 20px; /* Adjust padding for smaller screen */
+   }
+
+   .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+   }
+
+   .profile-field label {
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-field input,
+   select {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-actions #save {
+      width: auto; /* Adjust button width */
+      padding: 8px 15px; /* Adjust padding */
+   }
+   /* end lessor profile */
+   /* edit lessor profile */
+   .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      }
+
+      .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+      }
+
+      .profile-field label {
+      font-size: 12px; /* Adjust font size */
+      }
+
+      .profile-field input {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+      }
+
+      #search_lessor {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+
+      #search_btn {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+   .profile-row{
+      display: block;
+   }
+   /* end edit lessor profile */
+
+      /* renew contract */
+   .contract-container {
+  width: 100%;
+  margin: 15px auto;
+  padding: 20px 20px; /* Adjusted padding for smaller screens */
+  border-radius: 10px;
+  /* background-color: #4CAF50; */
+}
+
+.contract-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.contract-header h3 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.contract-form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr; /* Single column for smaller screens */
+  grid-template-rows: auto;
+  gap: 10px; /* Increased gap for better spacing */
+  font-size: 14px;
+  padding: 10px;
+  overflow: auto;
+}
+
+.contract-field {
+  width: 100%;
+  text-align: center;
+}
+
+.contract-field select,
+.contract-field input {
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%; /* Full width for better responsiveness */
+  text-align: center;
+  margin: 10px 0;
+  border: 1px solid lightgray;
+}
+
+input[type="file"] {
+  background-color: white;
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid lightgray;
+}
+
+#add_attachment,
+#add_attachment_second {
+  border: 2px solid #0686d0;
+  padding: 5px 15px;
+  width: fit-content;
+  color: #0686d0;
+  border-radius: 10px;
+  font-size: 12px;
+  margin: 10px auto; /* Center the button */
+  font-weight: 600;
+}
+
+#add_attachment:hover,
+#add_attachment_second:hover {
+  background-color: #0686d0;
+  color: white;
+  font-weight: 600;
+}
+
+#save {
+  margin: 15px 0;
+  background-color: #4CAF50; /* Green color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  width: 100%; /* Full width for better responsiveness */
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0.6; /* Disabled button style */
+}
+
+#save:hover {
+  opacity: 1; /* Button hover effect */
+  cursor: default; /* Remove hover effect for disabled button */
+}
+
+#save:disabled:hover {
+  cursor: not-allowed;
+}
+/* end renew contract */
+
+ .modal-dialog {
+    margin: 5px auto;
+    max-width: 90%;
+  }
+
+  .edit-contract-modal-header, .edit-contract-modal-footer {
+    padding: 0.5rem;
+  }
+
+  .edit-contract-modal-title {
+    font-size: 1.2rem;
+  }
+
+  .edit-contract-modal-body {
+    padding: 0.5rem;
+    height: 70vh;
+  }
+
+  .form-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+
+  #btnClose, #btnSave {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+
+     #cancelRequest select {
+    padding: 5px 10px;
+    margin: 5px 0px;
+    width: 100%;
+  }
+  #proceed {
+    width: 100%;
+    padding: 5px 10px;
+  }
+  .tbl-contract {
+    width: 100%;
+  }
+  table, th, td {
+    font-size: 12px;
+  }
+  table {
+    margin: 10px 5px;
+  }
+  th, td {
+    padding: 3px;
+  }
+  #request_terminate, #review_terminate, #received_terminate, #check_terminate, #approve_terminate {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
+
+
+/* Responsive styles for Nest Hub Max */
+@media screen and (max-width: 1280px) and (max-height: 800px) {
+    .nav {
+        width: 100%;
+        margin: 10px auto;
+        padding: 10px 10px;
+        border-radius: 10px;
+    }
+
+    .nav-item {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .nav-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .nav-link {
+        font-size: 12px;
+        padding: 5px;
+    }
+
+    .dropdown .nav-link {
+        padding-right: 10px;
+        height: auto;
+        line-height: normal;
+    }
+
+    .submenu {
+        width: 100%;
+        left: 0;
+        margin-left: 0;
+    }
+
+    .submenu-link {
+        padding: 10px;
+    }
+
+    #logout {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    #logout i {
+        font-size: 24px;
+    }
+    /* add lessor profile */
+    .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      padding: 10px 20px; /* Adjust padding for smaller screen */
+   }
+
+   .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+   }
+
+   .profile-field label {
+      font-size: 12px; /* Adjust font size */
+   }
+
+   .profile-field input,
+   select {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+   }
+   .under-number {
+    font-size: 12px;
+  }
+   .profile-actions #save {
+      width: auto; /* Adjust button width */
+      padding: 8px 15px; /* Adjust padding */
+   }
+   /* end lessor profile */
+   /* edit lessor profile */
+   .profile-container {
+      width: 90%; /* Adjust width to fit the smaller screen */
+      }
+
+      .profile-header h3 {
+      font-size: 22px; /* Adjust font size */
+      }
+
+      .profile-field label {
+      font-size: 12px; /* Adjust font size */
+      }
+
+      .profile-field input {
+      padding: 8px 8px; /* Adjust padding */
+      font-size: 12px; /* Adjust font size */
+      }
+
+      #search_lessor {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+
+      #search_btn {
+      width: 100%; /* Adjust width to fit the smaller screen */
+      margin: 8px 0; /* Adjust margin */
+      }
+   .profile-row{
+      display: block;
+   }
+   /* end edit lessor profile */
+
+      /* renew contract */
+   .contract-container {
+  width: 100%;
+  margin: 15px auto;
+  padding: 20px 20px; /* Adjusted padding for smaller screens */
+  border-radius: 10px;
+  /* background-color: #4CAF50; */
+}
+
+.contract-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.contract-header h3 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.contract-form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr; /* Single column for smaller screens */
+  grid-template-rows: auto;
+  gap: 10px; /* Increased gap for better spacing */
+  font-size: 14px;
+  padding: 10px;
+  overflow: auto;
+}
+
+.contract-field {
+  width: 100%;
+  text-align: center;
+}
+
+.contract-field select,
+.contract-field input {
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%; /* Full width for better responsiveness */
+  text-align: center;
+  margin: 10px 0;
+  border: 1px solid lightgray;
+}
+
+input[type="file"] {
+  background-color: white;
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid lightgray;
+}
+
+#add_attachment,
+#add_attachment_second {
+  border: 2px solid #0686d0;
+  padding: 5px 15px;
+  width: fit-content;
+  color: #0686d0;
+  border-radius: 10px;
+  font-size: 12px;
+  margin: 10px auto; /* Center the button */
+  font-weight: 600;
+}
+
+#add_attachment:hover,
+#add_attachment_second:hover {
+  background-color: #0686d0;
+  color: white;
+  font-weight: 600;
+}
+
+#save {
+  margin: 15px 0;
+  background-color: #4CAF50; /* Green color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  width: 100%; /* Full width for better responsiveness */
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0.6; /* Disabled button style */
+}
+
+#save:hover {
+  opacity: 1; /* Button hover effect */
+  cursor: default; /* Remove hover effect for disabled button */
+}
+
+#save:disabled:hover {
+  cursor: not-allowed;
+}
+/* end renew contract */
+ .modal-dialog {
+    margin: 5px auto;
+    max-width: 90%;
+  }
+
+  .edit-contract-modal-header, .edit-contract-modal-footer {
+    padding: 0.5rem;
+  }
+
+  .edit-contract-modal-title {
+    font-size: 1.2rem;
+  }
+
+  .edit-contract-modal-body {
+    padding: 0.5rem;
+    height: 70vh;
+  }
+
+  .form-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+
+  #btnClose, #btnSave {
+    padding: .25rem .5rem;
+    font-size: 12px;
+  }
+}
+
+
+/* ari */
+@media screen and (max-width: 1433px) and (max-height: 728px) {
+  
+   /* add lessor profile */
+  .profile-container {
+    width: 90%; /* Adjust width to fit the smaller screen */
+    padding: 10px 20px; /* Adjust padding for smaller screen */
+ }
+
+ .profile-header h3 {
+    font-size: 22px; /* Adjust font size */
+ }
+
+ .profile-field label {
+    font-size: 12px; /* Adjust font size */
+ }
+
+ .profile-field input,
+ select {
+    padding: 8px 8px; /* Adjust padding */
+    font-size: 12px; /* Adjust font size */
+ }
+
+ .profile-actions #save {
+    width: auto; /* Adjust button width */
+    padding: 8px 15px; /* Adjust padding */
+ }
+ /* end lessor profile */
+ /* edit lessor profile */
+ .profile-container {
+    width: 90%; /* Adjust width to fit the smaller screen */
+    }
+
+    .profile-header h3 {
+    font-size: 22px; /* Adjust font size */
+    }
+
+    .profile-field label {
+    font-size: 12px; /* Adjust font size */
+    }
+
+    .profile-field input {
+    padding: 8px 8px; /* Adjust padding */
+    font-size: 12px; /* Adjust font size */
+    }
+
+    #search_lessor {
+    width: 100%; /* Adjust width to fit the smaller screen */
+    margin: 8px 0; /* Adjust margin */
+    }
+
+    #search_btn {
+    width: 100%; /* Adjust width to fit the smaller screen */
+    margin: 8px 0; /* Adjust margin */
+    }
+ .profile-row{
+    display: block;
+ }
+ /* end edit lessor profile */
+
+    /* renew contract */
+ .contract-container {
+width: 100%;
+margin: 15px auto;
+padding: 20px 20px; /* Adjusted padding for smaller screens */
+border-radius: 10px;
+/* background-color: #4CAF50; */
+}
+
+.contract-header {
+text-align: center;
+margin-bottom: 15px;
+}
+
+.contract-header h3 {
+font-size: 18px;
+font-weight: 800;
+}
+
+.contract-form {
+width: 100%;
+display: grid;
+grid-template-columns: 1fr; /* Single column for smaller screens */
+grid-template-rows: auto;
+gap: 10px; /* Increased gap for better spacing */
+font-size: 14px;
+padding: 10px;
+overflow: auto;
+}
+
+.contract-field {
+width: 100%;
+text-align: center;
+}
+
+.contract-field select,
+.contract-field input {
+padding: 8px;
+border-radius: 10px;
+font-size: 14px;
+font-weight: 500;
+width: 100%; /* Full width for better responsiveness */
+text-align: center;
+margin: 10px 0;
+border: 1px solid lightgray;
+}
+
+input[type="file"] {
+background-color: white;
+margin: 8px 0;
+padding: 8px;
+border: 1px solid lightgray;
+}
+
+#add_attachment,
+#add_attachment_second {
+border: 2px solid #0686d0;
+padding: 5px 15px;
+width: fit-content;
+color: #0686d0;
+border-radius: 10px;
+font-size: 12px;
+margin: 10px auto; /* Center the button */
+font-weight: 600;
+}
+
+#add_attachment:hover,
+#add_attachment_second:hover {
+background-color: #0686d0;
+color: white;
+font-weight: 600;
+}
+
+#save {
+margin: 15px 0;
+background-color: #4CAF50; /* Green color */
+color: white;
+padding: 10px 20px;
+border: none;
+width: 100%; /* Full width for better responsiveness */
+border-radius: 5px;
+cursor: pointer;
+opacity: 0.6; /* Disabled button style */
+}
+
+#save:hover {
+opacity: 1; /* Button hover effect */
+cursor: default; /* Remove hover effect for disabled button */
+}
+
+#save:disabled:hover {
+cursor: not-allowed;
+}
+/* end renew contract */
+
+.modal-dialog {
+  margin: 5px auto;
+  max-width: 90%;
+}
+
+.edit-contract-modal-header, .edit-contract-modal-footer {
+  padding: 0.5rem;
+}
+
+.edit-contract-modal-title {
+  font-size: 1.2rem;
+}
+
+.edit-contract-modal-body {
+  padding: 0.5rem;
+  height: 70vh;
+}
+
+.form-group {
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  padding: .25rem .5rem;
+  font-size: 12px;
+}
+
+#btnClose, #btnSave {
+  padding: .25rem .5rem;
+  font-size: 12px;
+}
+
+   #cancelRequest select {
+  padding: 5px 10px;
+  margin: 5px 0px;
+  width: 100%;
+}
+#proceed {
+  width: 100%;
+  padding: 5px 10px;
+}
+.tbl-contract {
+  width: 100%;
+}
+table, th, td {
+  font-size: 12px;
+}
+table {
+  margin: 10px 5px;
+}
+th, td {
+  padding: 3px;
+}
+#request_terminate, #review_terminate, #received_terminate, #check_terminate, #approve_terminate {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+}
+
+
+/* Responsive styles for Nest Hub Max */
+@media screen and (max-width: 1280px) and (max-height: 800px) {
+  .nav {
+      width: 100%;
+      margin: 10px auto;
+      padding: 10px 10px;
+      border-radius: 10px;
+  }
+
+  .nav-item {
+      display: block;
+      margin-right: 0;
+      margin-bottom: 10px;
+  }
+
+  .nav-item:last-child {
+      margin-bottom: 0;
+  }
+
+  .nav-link {
+      font-size: 12px;
+      padding: 5px;
+  }
+
+  .dropdown .nav-link {
+      padding-right: 10px;
+      height: auto;
+      line-height: normal;
+  }
+
+  .submenu {
+      width: 100%;
+      left: 0;
+      margin-left: 0;
+  }
+
+  .submenu-link {
+      padding: 10px;
+  }
+
+  #logout {
+      padding: 10px 15px;
+      font-size: 14px;
+  }
+
+  #logout i {
+      font-size: 24px;
+  }
+  /* add lessor profile */
+  .profile-container {
+    width: 90%; /* Adjust width to fit the smaller screen */
+    padding: 10px 20px; /* Adjust padding for smaller screen */
+ }
+
+ .profile-header h3 {
+    font-size: 22px; /* Adjust font size */
+ }
+
+ .profile-field label {
+    font-size: 12px; /* Adjust font size */
+ }
+
+ .profile-field input,
+ select {
+    padding: 8px 8px; /* Adjust padding */
+    font-size: 12px; /* Adjust font size */
+ }
+ .under-number {
+  font-size: 12px;
+}
+ .profile-actions #save {
+    width: auto; /* Adjust button width */
+    padding: 8px 15px; /* Adjust padding */
+ }
+ /* end lessor profile */
+ /* edit lessor profile */
+ .profile-container {
+    width: 90%; /* Adjust width to fit the smaller screen */
+    }
+
+    .profile-header h3 {
+    font-size: 22px; /* Adjust font size */
+    }
+
+    .profile-field label {
+    font-size: 12px; /* Adjust font size */
+    }
+
+    .profile-field input {
+    padding: 8px 8px; /* Adjust padding */
+    font-size: 12px; /* Adjust font size */
+    }
+
+    #search_lessor {
+    width: 100%; /* Adjust width to fit the smaller screen */
+    margin: 8px 0; /* Adjust margin */
+    }
+
+    #search_btn {
+    width: 100%; /* Adjust width to fit the smaller screen */
+    margin: 8px 0; /* Adjust margin */
+    }
+ .profile-row{
+    display: block;
+ }
+ /* end edit lessor profile */
+
+    /* renew contract */
+ .contract-container {
+width: 100%;
+margin: 15px auto;
+padding: 20px 20px; /* Adjusted padding for smaller screens */
+border-radius: 10px;
+/* background-color: #4CAF50; */
+}
+
+.contract-header {
+text-align: center;
+margin-bottom: 15px;
+}
+
+.contract-header h3 {
+font-size: 18px;
+font-weight: 800;
+}
+
+.contract-form {
+width: 100%;
+display: grid;
+grid-template-columns: 1fr; /* Single column for smaller screens */
+grid-template-rows: auto;
+gap: 10px; /* Increased gap for better spacing */
+font-size: 14px;
+padding: 10px;
+overflow: auto;
+}
+
+.contract-field {
+width: 100%;
+text-align: center;
+}
+
+.contract-field select,
+.contract-field input {
+padding: 8px;
+border-radius: 10px;
+font-size: 14px;
+font-weight: 500;
+width: 100%; /* Full width for better responsiveness */
+text-align: center;
+margin: 10px 0;
+border: 1px solid lightgray;
+}
+
+input[type="file"] {
+background-color: white;
+margin: 8px 0;
+padding: 8px;
+border: 1px solid lightgray;
+}
+
+#add_attachment,
+#add_attachment_second {
+border: 2px solid #0686d0;
+padding: 5px 15px;
+width: fit-content;
+color: #0686d0;
+border-radius: 10px;
+font-size: 12px;
+margin: 10px auto; /* Center the button */
+font-weight: 600;
+}
+
+#add_attachment:hover,
+#add_attachment_second:hover {
+background-color: #0686d0;
+color: white;
+font-weight: 600;
+}
+
+#save {
+margin: 15px 0;
+background-color: #4CAF50; /* Green color */
+color: white;
+padding: 10px 20px;
+border: none;
+width: 100%; /* Full width for better responsiveness */
+border-radius: 5px;
+cursor: pointer;
+opacity: 0.6; /* Disabled button style */
+}
+
+#save:hover {
+opacity: 1; /* Button hover effect */
+cursor: default; /* Remove hover effect for disabled button */
+}
+
+#save:disabled:hover {
+cursor: not-allowed;
+}
+/* end renew contract */
+.modal-dialog {
+  margin: 5px auto;
+  max-width: 90%;
+}
+
+.edit-contract-modal-header, .edit-contract-modal-footer {
+  padding: 0.5rem;
+}
+
+.edit-contract-modal-title {
+  font-size: 1.2rem;
+}
+
+.edit-contract-modal-body {
+  padding: 0.5rem;
+  height: 70vh;
+}
+
+.form-group {
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  padding: .25rem .5rem;
+  font-size: 12px;
+}
+
+#btnClose, #btnSave {
+  padding: .25rem .5rem;
+  font-size: 12px;
+}
+}

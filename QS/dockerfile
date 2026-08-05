@@ -1,0 +1,28 @@
+# Use the official PHP image as the base image
+FROM php:8.1-apache
+
+# Set the working directory inside the container
+WORKDIR /var/www/html
+
+# Install dependencies and enable mysqli extension
+RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+
+# Create uploads directory and set permissions
+RUN mkdir -p /var/www/html/uploads && \
+    chown -R www-data:www-data /var/www/html/uploads && \
+    chmod -R 755 /var/www/html/uploads
+
+# Copy the application code to the working directory
+COPY . /var/www/html
+
+# Copy custom php.ini configuration
+COPY php.ini /usr/local/etc/php/
+
+# Enable Apache mod_rewrite module
+RUN a2enmod rewrite
+
+# Expose port 80 to the host
+EXPOSE 80
+
+# Start the Apache service
+CMD ["apache2-foreground"]

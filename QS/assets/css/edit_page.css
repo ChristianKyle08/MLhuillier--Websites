@@ -1,0 +1,458 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    border: none;
+    text-decoration: none;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+*, 
+*:before, 
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    background-color: transparent; 
+}
+
+.nav {
+    width: 80%;
+    margin: 15px auto 0 auto;
+    text-align: center;
+    padding: 10px 25px;
+    border-radius: 50px;
+    box-shadow: 0 30px 60px 0 rgba(27, 31, 10, 0.08);
+    background-color: #fff;
+}
+
+/* Navigation */
+.nav-items {
+    padding: 0;
+    list-style: none;
+}
+
+.nav-item {
+    
+    display: inline-block;
+    margin-right: 25px;
+}
+
+.nav-item:last-child {
+    margin-right: 0;
+}
+
+.nav-link,
+.nav-link:link, 
+.nav-link:visited, 
+.nav-link:active,
+.submenu-link,
+.submenu-link:link, 
+.submenu-link:visited, 
+.submenu-link:active {
+    display: block;
+    position: relative;
+    font-size: 14px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-decoration: none;
+    outline: none;
+}
+
+.nav-link,
+.nav-link:link, 
+.nav-link:visited, 
+.nav-link:active {
+    color: #333;
+    font-weight: bold;
+}
+
+.nav-link::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(0,0,0,0.2);
+    opacity: 0;
+    -webkit-transform: translate(0, 10px);
+    transform: translate(0, 10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.nav-link:hover::before,
+.nav-link:hover::before {
+    opacity: 1;
+    -webkit-transform: translate(0, 5px);
+    transform: translate(0, 5px);
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown .nav-link {
+    padding-right: 15px;
+    height: 17px;
+    line-height: 17px;
+}
+
+.dropdown .nav-link::after {
+    content: "";
+    position:absolute;
+    top: 6px;
+    right: 0;
+    border: 5px solid transparent;
+    border-top-color: #333;
+}
+
+.submenu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    z-index: 100;
+    width: 200px;
+    margin-left: -100px;
+    background: #fff;
+    border-radius: 3px;
+    line-height: 1.46667;
+    margin-top: -5px;
+    box-shadow: 0 0 8px rgba(0,0,0,.3);
+    opacity:0;
+    -webkit-transform: translate(0, 0) scale(.85);
+    transform: translate(0, 0)scale(.85);
+    transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+    pointer-events: none;
+}
+
+.submenu::after, 
+.submenu::before {
+    content: ""; 
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -10px;
+    border: 10px solid transparent;
+    height: 0;
+}
+
+.submenu::after {
+    border-bottom-color: #333;
+}
+
+.submenu::before {
+    margin-left: -13px;
+    border: 13px solid transparent;
+    border-bottom-color: rgba(0,0,0,.1);
+    -webkit-filter:blur(1px);
+    filter:blur(1px);
+}
+
+.submenu-items {
+    list-style: none;
+    padding: 10px 0;
+}
+
+.submenu-item {
+    display: block;
+    text-align: left;
+}
+
+.submenu-link,
+.submenu-link:link, 
+.submenu-link:visited, 
+.submenu-link:active {
+    color: #333;
+    padding: 10px 20px;
+}
+
+.submenu-link:hover {
+    text-decoration: underline;
+}
+
+.submenu-seperator {
+    height: 0;
+    margin: 12px 10px;
+    border-top: 1px solid #333;
+}
+
+.show-submenu .submenu {
+    opacity: 1;
+    -webkit-transform: translate(0, 25px) scale(1);
+    transform: translate(0, 25px) scale(1);
+    pointer-events: auto;
+}
+#logout{
+  background-color: #d70c0c;
+  padding: 10px 20px;
+  border-radius: 50px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#logout i{
+  font-size: 32px;
+
+}
+/* General Styling */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+  color: #000;
+}
+
+/* Profile Container (Search Form) */
+.profile-container {
+  background-color: whitesmoke;
+  padding: 20px;
+  margin: 20px auto;
+  width: 80%;
+  border-radius: 10px;
+  color: #fff;
+}
+
+.profile-container form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-container input[type="text"],
+.profile-container input[list],
+.profile-container button {
+  font-size: 14px;
+  padding: 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: none;
+  width: 100%;
+  outline: none;
+}
+
+.profile-container input[type="text"] {
+  flex: 1;
+  border: 2px solid #ff0000;
+  background-color: #fff;
+  color: #333;
+}
+
+.profile-container input[type="text"]::placeholder {
+  color: #777;
+}
+
+.profile-container button {
+  background-color: #d70c0c;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  width: 15%;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.profile-container button:hover {
+  background-color: #ffcc00;
+  color: #333;
+  font-weight: 700;
+}
+
+/* Edit Container (Edit Form) */
+.edit-container {
+  background-color: #fff;
+  padding: 20px;
+  margin: 20px auto;
+  width: 50%;
+  border-radius: 10px;
+  border: 1px solid #d1d1d1;
+}
+
+.edit-container form {
+  display: grid;
+  grid-template-columns: 0.5fr 2fr;
+  gap: 15px;
+  width: 100%;
+}
+
+.edit-container label {
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
+
+.edit-container input[type="text"],
+.edit-container input[type="number"],
+.edit-container button {
+  font-size: 12px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #333;
+  outline: none;
+  font-weight: 700;
+  background-color: #fff;
+  color: #333;
+}
+
+.edit-container input[type="text"]:focus,
+.edit-container input[type="number"]:focus {
+  border-color: #ffcc00;
+  background-color: #fff;
+}
+
+.edit-container button {
+  grid-column: span 2;
+  background-color: #d70c0c;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  transition: background-color 0.3s;
+  cursor: pointer;
+  padding: 15px;
+}
+
+.edit-container button:hover {
+  background-color: #ffcc00;
+  color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-container form,
+  .edit-container form {
+      flex-direction: column;
+      gap: 10px;
+  }
+
+  .edit-container form {
+      grid-template-columns: 1fr;
+  }
+}
+
+/* Lessor List Styling */
+.list_profile {
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 50px 10px 50px;
+}
+
+.list_p {
+  background-color: #ffffff;
+  padding: 5px 15px;
+  margin-bottom: 5px;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.list_p:hover {
+  background-color: #f1f1f1;
+}
+
+/* No Lessors Found Message */
+p {
+  padding: 15px;
+  background-color: #ffe0e0;
+  color: #a00;
+  border: 1px solid #f5a5a5;
+  border-radius: 4px;
+}
+
+/* Button Styling for Close */
+.file-modal-close {
+  cursor: pointer;
+  color: #555;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  right: 20px;
+  top: 5px;
+  transition: color 0.2s ease;
+}
+
+.file-modal-close:hover {
+  color: #a00;
+}
+
+/* Modal Container Styling */
+#lessorModal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.file-modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  overflow: auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 60%;
+  max-height: 50vh;
+  position: relative;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .file-modal-content {
+      width: 90%;
+      padding: 15px;
+  }
+
+  li {
+      font-size: 14px;
+      padding: 8px 10px;
+  }
+}
+
+.search-div{
+  width: 50%;
+}
+#searchLessorInput{
+  border: 1px solid #ddd;
+  border-radius: 15px;
+}
+#searchLessorInput:focus{
+  border: 1px solid #d70c0c;
+}
+
+.pagination {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.page-btn {
+  padding: 5px 10px;
+  margin: 2px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  background-color: #f1f1f1;
+}
+
+.page-btn:hover {
+  background-color: #ddd;
+}
+
+.page-btn.active {
+  font-weight: bold;
+  background-color: #007bff;
+  color: white;
+}

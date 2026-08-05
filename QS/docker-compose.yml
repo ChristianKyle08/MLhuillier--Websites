@@ -1,0 +1,42 @@
+services:
+  web:
+    build: .
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
+      - sessions:/var/lib/php/sessions
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=Password1
+      - DB_NAME=qs
+    networks:
+      - backend
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Password1
+      MYSQL_DATABASE: qs
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  db_data:
+  sessions:

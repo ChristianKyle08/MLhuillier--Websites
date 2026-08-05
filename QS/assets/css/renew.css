@@ -1,0 +1,335 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    border: none;
+    text-decoration: none;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+*, 
+*:before, 
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    background-color: transparent; 
+}
+
+.nav {
+    width: 80%;
+    margin: 15px auto 0 auto;
+    text-align: center;
+    padding: 10px 25px;
+    border-radius: 50px;
+    box-shadow: 0 30px 60px 0 rgba(27, 31, 10, 0.08);
+    background-color: #fff;
+}
+
+/* Navigation */
+.nav-items {
+    padding: 0;
+    list-style: none;
+}
+
+.nav-item {
+    
+    display: inline-block;
+    margin-right: 25px;
+}
+
+.nav-item:last-child {
+    margin-right: 0;
+}
+
+.nav-link,
+.nav-link:link, 
+.nav-link:visited, 
+.nav-link:active,
+.submenu-link,
+.submenu-link:link, 
+.submenu-link:visited, 
+.submenu-link:active {
+    display: block;
+    position: relative;
+    font-size: 14px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-decoration: none;
+    outline: none;
+}
+
+.nav-link,
+.nav-link:link, 
+.nav-link:visited, 
+.nav-link:active {
+    color: #333;
+    font-weight: bold;
+}
+
+.nav-link::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(0,0,0,0.2);
+    opacity: 0;
+    -webkit-transform: translate(0, 10px);
+    transform: translate(0, 10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.nav-link:hover::before,
+.nav-link:hover::before {
+    opacity: 1;
+    -webkit-transform: translate(0, 5px);
+    transform: translate(0, 5px);
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown .nav-link {
+    padding-right: 15px;
+    height: 17px;
+    line-height: 17px;
+}
+
+.dropdown .nav-link::after {
+    content: "";
+    position:absolute;
+    top: 6px;
+    right: 0;
+    border: 5px solid transparent;
+    border-top-color: #333;
+}
+
+.submenu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    z-index: 100;
+    width: 200px;
+    margin-left: -100px;
+    background: #fff;
+    border-radius: 3px;
+    line-height: 1.46667;
+    margin-top: -5px;
+    box-shadow: 0 0 8px rgba(0,0,0,.3);
+    opacity:0;
+    -webkit-transform: translate(0, 0) scale(.85);
+    transform: translate(0, 0)scale(.85);
+    transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+    pointer-events: none;
+}
+
+.submenu::after, 
+.submenu::before {
+    content: ""; 
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -10px;
+    border: 10px solid transparent;
+    height: 0;
+}
+
+.submenu::after {
+    border-bottom-color: #333;
+}
+
+.submenu::before {
+    margin-left: -13px;
+    border: 13px solid transparent;
+    border-bottom-color: rgba(0,0,0,.1);
+    -webkit-filter:blur(1px);
+    filter:blur(1px);
+}
+
+.submenu-items {
+    list-style: none;
+    padding: 10px 0;
+}
+
+.submenu-item {
+    display: block;
+    text-align: left;
+}
+
+.submenu-link,
+.submenu-link:link, 
+.submenu-link:visited, 
+.submenu-link:active {
+    color: #333;
+    padding: 10px 20px;
+}
+
+.submenu-link:hover {
+    text-decoration: underline;
+}
+
+.submenu-seperator {
+    height: 0;
+    margin: 12px 10px;
+    border-top: 1px solid #333;
+}
+
+.show-submenu .submenu {
+    opacity: 1;
+    -webkit-transform: translate(0, 25px) scale(1);
+    transform: translate(0, 25px) scale(1);
+    pointer-events: auto;
+}
+#logout{
+  background-color: #d70c0c;
+  padding: 10px 20px;
+  border-radius: 50px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#logout i{
+  font-size: 32px;
+
+}
+
+
+.swal_table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        white-space: nowrap;
+        font-size: 12px;
+    }
+
+.swal_table .swal_td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+        color: #333;
+    }
+
+.swal_table .swal_td strong {
+        font-weight: bold;
+    }
+
+.swal_table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+.swal_table tr:hover {
+        background-color: #f5f5f5;
+    }
+.contract-container {
+  width: 100%; /* Adjust width as needed */
+  margin: 15px auto;
+  padding: 20px 50px;
+  border-radius: 10px;
+  /* background-color: #4CAF50; */
+}
+
+.contract-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.contract-header h3 {
+  font-size: 18px;
+  font-weight: 800;
+}
+.contract-form{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, auto);
+    gap: 2px;
+    font-size: 14px;
+    padding: 10px;
+    overflow: auto;
+}
+
+.contract-field{
+    width: fit-content;
+    text-align: center;
+}
+.contract-field select, input{
+    padding: 8px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    width: 350px;
+    text-align: center;
+    margin: 10px;
+    border: 1px solid lightgray;
+}
+input[type="file"]{
+  background-color: white;
+  margin: 8px;
+  padding: 8px;
+  border: 1px solid lightgray;
+
+}
+#add_attachment{
+    border: 2px solid #0686d0;
+  padding: 5px 15px;
+  width: fit-content;
+  color: #0686d0;
+  border-radius: 10px;
+  font-size: 12px;
+  margin-left: 10px;
+  font-weight: 600;
+}
+#add_attachment:hover{
+  background-color: #0686d0;
+  color: white;
+  font-weight: 600;
+}
+
+#add_attachment_second{
+    border: 2px solid #0686d0;
+  padding: 5px 15px;
+  width: fit-content;
+  color: #0686d0;
+  border-radius: 10px;
+  font-size: 12px;
+  margin-left: 10px;
+  font-weight: 600;
+}
+#add_attachment_second:hover{
+  background-color: #0686d0;
+  color: white;
+  font-weight: 600;
+}
+#save {
+  margin: 15px 0px;
+  background-color: #4CAF50; /* Green color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  width: 100px;
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0.6; /* Disabled button style */
+}
+
+#save:hover {
+  opacity: 1; /* Button hover effect */
+  cursor: default; /* Remove hover effect for disabled button */
+}
+
+#save:disabled:hover {
+  cursor: not-allowed;
+
+}

@@ -1,0 +1,265 @@
+/* =========================
+    1. GLOBAL & VARIABLES
+========================= */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap');
+
+:root {
+    /* Updated to 280px to match your sidebar exactly */
+    --sidebar-width: 280px; 
+    --theme-purple: #6B3E6D;
+    --theme-light-purple: #A96CC3;
+    --bg-light: #f8f9fa;
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.85rem;
+    background-color: var(--bg-light);
+    color: #334155;
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden; /* Prevents horizontal scroll */
+}
+
+/* =========================
+    2. LAYOUT & RESPONSIVENESS 
+    (Prevents Sidebar Overlap)
+========================= */
+.content {
+    margin-left: var(--sidebar-width);
+    padding: 2rem;
+    transition: var(--transition);
+    min-height: 100vh;
+    /* Forces content to stay within the remaining viewport width */
+    width: calc(100% - var(--sidebar-width)); 
+    box-sizing: border-box;
+}
+
+/* Handle screens smaller than 992px (Matches your sidebar.css) */
+@media (max-width: 992px) {
+    .content {
+        margin-left: 0;
+        width: 100%;
+        padding: 1.5rem;
+        /* Adds space at top for mobile toggle button if needed */
+        padding-top: 5rem; 
+    }
+    
+    .small-card {
+        margin-bottom: 10px;
+    }
+}
+
+/* =========================
+    3. MODERN DASHBOARD CARDS
+========================= */
+.small-card {
+    position: relative;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 1.25rem;
+    border: none;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    height: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.small-card::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--theme-purple), var(--theme-light-purple));
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.small-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(107, 62, 109, 0.1);
+}
+
+.small-card:hover::after {
+    opacity: 1;
+}
+
+.small-card h6 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 0.5rem;
+}
+
+.small-card h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.small-icon {
+    font-size: 1.25rem;
+    color: var(--theme-purple);
+    background: rgba(107, 62, 109, 0.08);
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    transition: var(--transition);
+}
+
+.small-card:hover .small-icon {
+    background: var(--theme-purple);
+    color: #fff;
+    transform: rotate(-10deg);
+}
+
+/* =========================
+    4. TABLES & DATA CARDS
+========================= */
+.modern-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: var(--card-shadow);
+    padding: 1.5rem;
+    border: none;
+    margin-top: 1.5rem;
+    overflow-x: auto; /* Ensures tables don't break the layout on small screens */
+}
+
+.table-responsive {
+    border-radius: 12px;
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+}
+
+.modern-table thead th {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0 1rem;
+}
+
+.modern-table tbody tr {
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    border-radius: 12px;
+    transition: var(--transition);
+}
+
+.modern-table tbody tr:hover {
+    background: #fdfaff;
+    transform: scale(1.005);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.modern-table td {
+    padding: 1.2rem 1rem;
+    border: none;
+    vertical-align: middle;
+}
+
+.modern-table td:first-child { border-radius: 12px 0 0 12px; }
+.modern-table td:last-child { border-radius: 0 12px 12px 0; }
+
+/* =========================
+    5. UI COMPONENTS
+========================= */
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--theme-purple), var(--theme-light-purple));
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(107, 62, 109, 0.2);
+}
+
+.badge-modern {
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.btn-modern {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    transition: var(--transition);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.btn-success.btn-modern { background-color: #10b981; color: #fff; }
+.btn-danger.btn-modern { background-color: #ef4444; color: #fff; }
+.btn-purple { background-color: var(--theme-purple); color: #fff; }
+
+/* =========================
+    6. MODALS & FORMS
+========================= */
+.modal-content {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.modal-header.bg-gradient {
+    background: linear-gradient(90deg, var(--theme-purple), var(--theme-light-purple));
+    padding: 1.5rem;
+}
+
+.token-box {
+    background: #f1f5f9;
+    border: 2px dashed #cbd5e1;
+    padding: 1rem;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    color: var(--theme-purple);
+    word-break: break-all;
+}
+
+/* =========================
+    7. CHARTS & UTILS
+========================= */
+.chart-card {
+    border-radius: 24px;
+    background: #ffffff;
+    padding: 2rem;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+}
+
+.text-muted { color: #64748b !important; }
+.fw-bold { font-weight: 700 !important; }

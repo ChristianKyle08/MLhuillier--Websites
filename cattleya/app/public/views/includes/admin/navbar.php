@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cattleya - Admin Suite</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        :root {
+            /* Cattleya Theme Colors */
+            --brand-primary: #2a6279; /* Deep Teal */
+            --brand-dark: #1e4a5c;    /* Darker Teal */
+            --brand-accent: #9dc44d;  /* Lime Green */
+            --brand-light: rgba(255, 255, 255, 0.1);
+            --sidebar-width: 280px;
+            --sidebar-collapsed-width: 85px;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f4f7fe;
+            margin: 0;
+            transition: var(--transition-smooth);
+        }
+
+        /* --- SIDEBAR CONTAINER --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0; top: 0;
+            background: linear-gradient(180deg, var(--brand-primary) 0%, var(--brand-dark) 100%);
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition-smooth);
+            box-shadow: 12px 0 50px rgba(42, 98, 121, 0.15);
+            z-index: 1000;
+            will-change: width;
+        }
+
+        /* Logo Section */
+        .logo-wrapper {
+            padding: 2.5rem 1.5rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition-smooth);
+        }
+        .logo-wrapper h2 {
+            font-weight: 800;
+            color: white;
+            letter-spacing: -1.5px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-wrapper h2::before {
+            content: '';
+            width: 8px; height: 24px;
+            background: var(--brand-accent); border-radius: 4px;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        /* Desktop Toggle Trigger Button */
+        .desktop-toggle-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        .desktop-toggle-btn:hover {
+            background: var(--brand-accent);
+            color: var(--brand-dark);
+        }
+
+        /* --- NAVIGATION --- */
+        .sidebar-menu {
+            flex-grow: 1;
+            padding: 0 1.2rem;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .menu-label {
+            color: #9dc44d;
+            font-size: 0.60rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            padding: 1.5rem 1.2rem 0.8rem;
+            transition: opacity 0.2s ease;
+        }
+
+        .nav-link-custom, .dropdown-btn {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 12px;
+            margin-bottom: 6px;
+            transition: var(--transition-smooth);
+            border: none;
+            background: transparent;
+            width: 100%;
+            font-size: 0.85rem; /* Slightly bumped up for legibility */
+            white-space: nowrap;
+        }
+
+        .nav-link-custom:hover, .dropdown-btn:hover {
+            background: var(--brand-light);
+            color: white;
+        }
+
+        .nav-link-custom.active {
+            background: white;
+            color: var(--brand-primary);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        /* ICON ALIGNMENT FIX */
+        .nav-link-custom i:first-child, 
+        .dropdown-btn i:first-child {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            width: 32px; /* Fixed width ensures perfect vertical column */
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centers the icon within its fixed width */
+            margin-right: 12px; /* Replaces bootstrap 'me-3' for better control */
+            transition: margin 0.3s ease;
+        }
+
+        /* --- ENHANCED DROPDOWN --- */
+        .dropdown-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+            margin-left: 22px;
+            border-left: 2px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+        }
+
+        .dropdown-container.show {
+            max-height: 1000px;
+            transition: max-height 0.5s ease-in-out;
+            opacity: 1;
+        }
+
+        .dropdown-container a {
+            padding: 8px 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            display: block;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .dropdown-container a::after {
+            content: '';
+            position: absolute;
+            left: 0; top: 50%;
+            width: 12px; height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-50%);
+        }
+
+        .dropdown-container a:hover {
+            color: white;
+            padding-left: 25px;
+        }
+
+        .arrow { 
+            transition: transform 0.4s ease; 
+            font-size: 0.75rem;
+        }
+        .rotate-arrow { transform: rotate(180deg); }
+
+        /* --- PROFILE CARD --- */
+        .sidebar-profile {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.05);
+            margin: 15px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .user-info-card {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 42px; height: 42px;
+            background: white;
+            color: var(--brand-primary);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+
+        .user-name { color: white; font-size: 0.85rem; margin-bottom: 0; white-space: nowrap; }
+        .user-role { color: rgba(255,255,255,0.5); font-size: 0.72rem; white-space: nowrap; }
+
+        /* Popover UI */
+        .profile-popover {
+            display: none;
+            position: absolute;
+            bottom: 100px; left: 20px; right: 20px;
+            background: white; border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            z-index: 1100;
+            animation: cubic-bezier(0.68, -0.55, 0.27, 1.55) fadeInPop 0.4s forwards;
+        }
+
+        @keyframes fadeInPop {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .popover-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #475569;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .popover-item:hover { background: #f8fafc; color: var(--brand-primary); }
+
+        /* --- COLLAPSED STATES PERFORMANCE & DESIGN DESIGNATION --- */
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+        .sidebar.collapsed .sidebar-text,
+        .sidebar.collapsed .menu-label,
+        .sidebar.collapsed .arrow,
+        .sidebar.collapsed .user-details,
+        .sidebar.collapsed .user-info-card .bi-three-dots-vertical,
+        .sidebar.collapsed .dropdown-container {
+            display: none !important;
+        }
+        .sidebar.collapsed .logo-wrapper {
+            padding: 2.5rem 0; /* Adjusted for better centering */
+            justify-content: center;
+        }
+        .sidebar.collapsed .logo-wrapper h2 {
+            justify-content: center;
+        }
+        .sidebar.collapsed .desktop-toggle-btn {
+            position: absolute;
+            right: -14px;
+            top: 42px;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            background: var(--brand-primary);
+            border: 2px solid white;
+            z-index: 1050;
+        }
+        .sidebar.collapsed .nav-link-custom,
+        .sidebar.collapsed .dropdown-btn {
+            justify-content: center;
+            padding: 12px 0;
+        }
+        
+        /* CENTERING FIX FOR COLLAPSED ICONS */
+        .sidebar.collapsed .nav-link-custom i:first-child,
+        .sidebar.collapsed .dropdown-btn i:first-child {
+            margin-right: 0 !important;
+        }
+
+        .sidebar.collapsed .sidebar-profile {
+            padding: 10px;
+            margin: 10px;
+            border-radius: 16px;
+        }
+        .sidebar.collapsed .user-info-card {
+            justify-content: center;
+        }
+        /* Transforms profile popover to float gracefully when collapsed */
+        .sidebar.collapsed .profile-popover {
+            left: 75px;
+            bottom: 10px;
+            right: auto;
+            width: 230px;
+        }
+
+        /* --- MOBILE HELPERS --- */
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .mobile-toggle-btn { display: flex; align-items: center; justify-content: center; }
+            .desktop-toggle-btn { display: none !important; }
+        }
+         /* Modern Premium Table Scrollbar */
+         ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="sidebar" id="mainSidebar">
+    <div class="logo-wrapper">
+        <h2><span class="sidebar-text">Cattleya</span></h2>
+        <button class="desktop-toggle-btn d-none d-lg-flex" id="desktopSidebarToggle">
+            <i class="bi bi-chevron-left" id="desktopToggleIcon"></i>
+        </button>
+    </div>
+    <div class="sidebar-menu">
+        <div class="menu-label">Main Menu</div>
+        
+        <a href="/admin/dashboard" class="nav-link-custom <?= (strpos($_SERVER['REQUEST_URI'] ?? '', 'dashboard') !== false) ? 'active' : '' ?>">
+            <i class="bi bi-house-door-fill"></i> <span class="sidebar-text">Home</span>
+        </a>
+
+        <div class="menu-label">Operations</div>
+
+        <button class="dropdown-btn">
+            <i class="bi bi-gear-wide-connected"></i> <span class="sidebar-text">Maintenance</span>
+            <i class="bi bi-chevron-down arrow ms-auto"></i>
+        </button>
+        <div class="dropdown-container" id="maintenanceDropdown">
+            <a href="/admin/users">Manage Users</a>
+        </div>
+    </div>
+
+    <?php 
+        $user_name = $_SESSION['user_name'] ?? 'Encoder User';
+        $words = explode(" ", $user_name);
+        $user_initials = strtoupper(($words[0][0] ?? '') . ($words[1][0] ?? ''));
+    ?>
+
+    <div class="sidebar-profile">
+        <div class="profile-popover" id="profileMenu">
+            <div class="p-3 bg-light border-bottom">
+                <p class="fw-bold mb-0 text-dark" style="font-size: 0.9rem;"><?= $user_name ?></p>
+                <small class="text-muted"><?= $_SESSION['user_email'] ?? 'encoder@cattleya.com' ?></small>
+            </div>
+            <a href="/views/includes/admin/profile" class="popover-item">
+                <i class="bi bi-person-gear"></i> Settings
+            </a>
+            <a href="#" class="popover-item text-danger" id="logoutBtn">
+                <i class="bi bi-box-arrow-right"></i> Sign Out
+            </a>
+        </div>
+
+        <div class="user-info-card" id="profileToggle">
+            <div class="user-avatar"><?= $user_initials ?></div>
+            <div class="user-details flex-grow-1">
+                <p class="user-name fw-bold"><?= $user_name ?></p>
+                <p class="user-role mb-0"><?= ucfirst($_SESSION['role'] ?? 'Encoder') ?></p>
+            </div>
+            <i class="bi bi-three-dots-vertical text-white-50"></i>
+        </div>
+    </div>
+</div>
+
+<script>
+    const sidebar = document.getElementById('mainSidebar');
+    const desktopSidebarToggle = document.getElementById('desktopSidebarToggle');
+    const desktopToggleIcon = document.getElementById('desktopToggleIcon');
+
+    // --- DESKTOP SIDEBAR COLLAPSE TOGGLE ---
+    if(desktopSidebarToggle) {
+        desktopSidebarToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            sidebar.classList.toggle('collapsed');
+            
+            if(sidebar.classList.contains('collapsed')) {
+                desktopToggleIcon.classList.replace('bi-chevron-left', 'bi-chevron-right');
+            } else {
+                desktopToggleIcon.classList.replace('bi-chevron-right', 'bi-chevron-left');
+            }
+        });
+    }
+
+    // --- DROPDOWN ANIMATION ---
+    document.querySelectorAll(".dropdown-btn").forEach(btn => {
+        btn.addEventListener("click", function() {
+            // Intelligent UX Feature: Auto-expand sidebar if minimized and user clicks menu
+            if(sidebar.classList.contains('collapsed')) {
+                sidebar.classList.remove('collapsed');
+                if(desktopToggleIcon) desktopToggleIcon.classList.replace('bi-chevron-right', 'bi-chevron-left');
+            }
+
+            const menu = this.nextElementSibling;
+            const arrow = this.querySelector(".arrow");
+            
+            menu.classList.toggle("show");
+            if(arrow) arrow.classList.toggle("rotate-arrow");
+
+            if (menu.classList.contains("show")) {
+                this.style.background = "rgba(255,255,255,0.1)";
+            } else {
+                this.style.background = "transparent";
+            }
+        });
+    });
+
+    // --- PROFILE POPOVER ---
+    const profileToggle = document.getElementById('profileToggle');
+    const profileMenu = document.getElementById('profileMenu');
+
+    profileToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = profileMenu.style.display === 'block';
+        profileMenu.style.display = isOpen ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', () => { profileMenu.style.display = 'none'; });
+
+    // --- MOBILE SIDEBAR ---
+    const toggle = document.getElementById('sidebarToggle');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    if(toggle) {
+        toggle.addEventListener('click', () => {
+            sidebar.classList.add('show');
+            overlay.classList.add('active');
+        });
+    }
+
+    if(overlay) {
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('show');
+            overlay.classList.remove('active');
+        });
+    }
+
+    // --- LOGOUT MODAL ---
+    const logoutBtn = document.getElementById('logoutBtn');
+    if(logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                html: `
+                    <div class="logout-modal-container" style="perspective: 1000px;">
+                        <div id="iconContainer" class="d-inline-flex align-items-center justify-content-center rounded-4 mb-4" 
+                             style="width: 70px; height: 70px; background: linear-gradient(135deg, #2a6279 0%, #448098 100%); 
+                                    color: white; box-shadow: 0 10px 20px rgba(42, 98, 121, 0.3); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                            <i class="bi bi-door-open-fill" style="font-size: 2rem;"></i>
+                        </div>
+                        
+                        <div class="reveal-text">
+                            <h3 class="fw-800 text-dark mb-2" style="letter-spacing: -0.03em; opacity: 0; transform: translateY(10px); transition: all 0.4s ease 0.1s;">
+                                Confirm Sign Out
+                            </h3>
+                            <p class="text-muted mb-0 mx-auto" style="max-width: 260px; font-size: 0.95rem; opacity: 0; transform: translateY(10px); transition: all 0.4s ease 0.2s;">
+                                Are you sure you want to end your current session?
+                            </p>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Sign Out',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
+                buttonsStyling: false,
+                
+                customClass: {
+                    popup: 'rounded-5 border-0 shadow-2xl p-4 overflow-hidden',
+                    confirmButton: 'btn btn-lg px-5 py-3 fw-bold ms-3 rounded-pill transition-all',
+                    cancelButton: 'btn btn-lg px-4 py-3 text-muted fw-semibold rounded-pill transition-all'
+                },
+
+                didOpen: (modal) => {
+                    const confirmBtn = Swal.getConfirmButton();
+                    const cancelBtn = Swal.getCancelButton();
+                    const icon = document.getElementById('iconContainer');
+                    const texts = modal.querySelectorAll('.reveal-text > *');
+
+                    setTimeout(() => {
+                        texts.forEach(t => {
+                            t.style.opacity = '1';
+                            t.style.transform = 'translateY(0)';
+                        });
+                    }, 50);
+
+                    confirmBtn.style.backgroundColor = '#2a6279';
+                    confirmBtn.style.color = '#fff';
+                    confirmBtn.style.fontSize = '0.95rem';
+                    confirmBtn.style.border = 'none';
+                    
+                    cancelBtn.style.backgroundColor = '#f1f5f9';
+                    cancelBtn.style.fontSize = '0.9rem';
+                    cancelBtn.style.marginRight = '10px';
+
+                    confirmBtn.onmouseenter = () => {
+                        confirmBtn.style.transform = 'scale(1.05) translateY(-2px)';
+                        confirmBtn.style.backgroundColor = '#1e4a5c';
+                        confirmBtn.style.boxShadow = '0 10px 20px rgba(42, 98, 121, 0.3)';
+                        icon.style.transform = 'rotateY(180deg) scale(1.1)'; 
+                    };
+
+                    confirmBtn.onmouseleave = () => {
+                        confirmBtn.style.transform = 'scale(1) translateY(0)';
+                        confirmBtn.style.boxShadow = 'none';
+                        icon.style.transform = 'rotateY(0deg) scale(1)';
+                    };
+
+                    cancelBtn.onmouseenter = () => {
+                        cancelBtn.style.backgroundColor = '#e2e8f0';
+                        cancelBtn.style.color = '#1e293b';
+                    };
+                },
+
+                backdrop: `rgba(15, 23, 42, 0.8) blur(12px)`,
+                showClass: {
+                    popup: 'animate__animated animate__zoomIn animate__faster'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__zoomOut animate__faster'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const container = document.querySelector('.logout-modal-container');
+                    container.style.transition = 'all 0.5s ease';
+                    container.style.opacity = '0';
+                    container.style.transform = 'scale(0.9)';
+                    
+                    Swal.showLoading();
+                    setTimeout(() => {
+                        window.location.href = '/cattleya/logout';
+                    }, 300);
+                }
+            });
+        });
+    }
+</script>
+</body>
+</html>
