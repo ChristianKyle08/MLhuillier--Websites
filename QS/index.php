@@ -146,7 +146,7 @@ font-size:11px;
       <!-- Text Content -->
       <div class="col-md-6 text-center text-md-start mb-5 mb-md-0 animate__animated animate__fadeInLeft">
         <h1 class="display-5 fw-bold">ML Rental Management System</h1>
-        <p class="mt-2 mb-3"><span class="badge bg-dark">Version 6.0</span></p>
+        <p class="mt-2 mb-3"><span class="badge bg-dark">Version 6.1</span></p>
         <p class="lead text-muted fs-6">One-stop solution for managing branches, contracts, reports, and more — designed to scale with your business.</p>
         <div class="d-flex gap-3 mt-4">
           <a href="user/rental/login_form.php" class="btn btn-danger px-4 py-2">
