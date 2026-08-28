@@ -16,42 +16,35 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `brokers`
+-- Table structure for table `services`
 --
 
-DROP TABLE IF EXISTS `brokers`;
+DROP TABLE IF EXISTS `services`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `brokers` (
+CREATE TABLE `services` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `broker_id` varchar(50) DEFAULT NULL,
-  `firstname` varchar(50) NOT NULL,
-  `middlename` varchar(50) DEFAULT NULL,
-  `lastname` varchar(50) NOT NULL,
-  `suffix` varchar(10) DEFAULT NULL,
-  `gender` enum('Male','Female','Other') DEFAULT NULL,
-  `address` text,
-  `contact_number` varchar(20) DEFAULT NULL,
-  `email_address` varchar(100) DEFAULT NULL,
-  `status` enum('Active','Inactive') DEFAULT 'Active',
-  `created_by` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_by` varchar(150) DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `services_name` varchar(255) NOT NULL,
+  `fee` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `add_by` varchar(100) NOT NULL,
+  `add_date` date NOT NULL DEFAULT (curdate()),
+  `update_by` varchar(100) DEFAULT NULL,
+  `update_date` date DEFAULT NULL,
+  `gl_code` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email_address` (`email_address`),
-  UNIQUE KEY `broker_id_unique` (`broker_id`)
+  KEY `fk_services_gl_code` (`gl_code`),
+  CONSTRAINT `fk_services_gl_code` FOREIGN KEY (`gl_code`) REFERENCES `gl_code` (`gl_code`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `brokers`
+-- Dumping data for table `services`
 --
 
-LOCK TABLES `brokers` WRITE;
-/*!40000 ALTER TABLE `brokers` DISABLE KEYS */;
-INSERT INTO `brokers` VALUES (1,'BRK-000001','John Jeff Vearl','Paredes','Autida',NULL,'Male','Tuboran, Bien Unido, Bohol','09354879654','Jeffvearl@gmail.com','Active','Kyle Paredes','2026-04-11 02:02:30',NULL,'2026-04-11 02:02:30');
-/*!40000 ALTER TABLE `brokers` ENABLE KEYS */;
+LOCK TABLES `services` WRITE;
+/*!40000 ALTER TABLE `services` DISABLE KEYS */;
+INSERT INTO `services` VALUES (1,'Chair',120.00,'Kyle Paredes','2026-06-16','Kyle Paredes','2026-06-16','10101');
+/*!40000 ALTER TABLE `services` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -63,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-17 13:43:18
+-- Dump completed on 2026-08-28 11:54:28

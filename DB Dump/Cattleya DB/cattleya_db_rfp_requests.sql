@@ -16,44 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `unit_managers`
+-- Table structure for table `rfp_requests`
 --
 
-DROP TABLE IF EXISTS `unit_managers`;
+DROP TABLE IF EXISTS `rfp_requests`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `unit_managers` (
+CREATE TABLE `rfp_requests` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `um_id` varchar(50) DEFAULT NULL,
-  `broker_id` varchar(50) NOT NULL,
-  `firstname` varchar(50) NOT NULL,
-  `middlename` varchar(50) DEFAULT NULL,
-  `lastname` varchar(50) NOT NULL,
-  `suffix` varchar(10) DEFAULT NULL,
-  `gender` enum('Male','Female','Other') DEFAULT NULL,
-  `address` text,
-  `contact_number` varchar(20) DEFAULT NULL,
-  `email_address` varchar(100) DEFAULT NULL,
-  `status` enum('Active','Inactive') DEFAULT 'Active',
-  `created_by` varchar(255) DEFAULT NULL,
+  `requisition_slip_no` varchar(100) NOT NULL,
+  `status` varchar(45) NOT NULL DEFAULT 'pending_review',
+  `created_by` varchar(150) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_by` varchar(150) DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email_address` (`email_address`),
-  UNIQUE KEY `um_id_unique` (`um_id`),
-  KEY `broker_id` (`broker_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `uq_requisition_slip_no` (`requisition_slip_no`),
+  KEY `idx_rfp_status` (`status`),
+  KEY `idx_rfp_created_by` (`created_by`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `unit_managers`
+-- Dumping data for table `rfp_requests`
 --
 
-LOCK TABLES `unit_managers` WRITE;
-/*!40000 ALTER TABLE `unit_managers` DISABLE KEYS */;
-INSERT INTO `unit_managers` VALUES (1,'UM-000001','BRK-000001','Maryjoy Maedawnna','Paredes','Autida',NULL,'Female','Sweden','09364812335','maryjoymaedawnna@gmail.com','Active','Kyle Paredes','2026-04-11 02:03:39',NULL,'2026-04-11 02:03:39');
-/*!40000 ALTER TABLE `unit_managers` ENABLE KEYS */;
+LOCK TABLES `rfp_requests` WRITE;
+/*!40000 ALTER TABLE `rfp_requests` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rfp_requests` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -65,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-17 13:43:16
+-- Dump completed on 2026-08-28 11:54:30

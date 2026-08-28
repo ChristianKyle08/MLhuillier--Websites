@@ -50,7 +50,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (1,'Lawn Lots','BLK-001','LT-001','Regular','NONE',25000.00,23000.00,0.00,0.00,0.00,0.00,'sold',NULL,'2026-04-22 00:59:06','Kyle Paredes'),(2,'Lawn Lots','BLK-001B','LT-001B','Regular','BASAK',514298.00,500000.00,0.00,0.00,0.00,0.00,'available',NULL,'2026-04-22 01:05:37','Kyle Paredes'),(3,'Lawn Lots','BLK-001','LT-002','Regular','NONE',399300.00,319440.00,0.00,0.00,0.00,0.00,'available',NULL,'2026-04-22 01:20:59','Kyle Paredes'),(4,'Lawn Lots','BLK-001B','LT-002B','Regular','NONE',421534.00,337227.00,0.00,0.00,0.00,0.00,'available',NULL,'2026-04-22 01:22:38','Kyle Paredes'),(5,'Lawn Lots','BLK-001','LT-003','Regular','NONE',428050.00,400000.00,0.00,0.00,0.00,0.00,'available',NULL,'2026-04-22 01:24:08','Kyle Paredes'),(6,'Lawn Lots','BLK-001B','LT-003B','Regular','NONE',451885.00,450000.00,0.00,0.00,0.00,0.00,'available',NULL,'2026-04-22 01:50:50','Kyle Paredes'),(7,'Lawn Lots','BLK-001','LT-004','Premium','NONE',428050.00,450000.00,0.00,0.00,0.00,0.00,'available',NULL,'2026-04-24 00:07:46','Kyle Paredes'),(8,'Wall Niche','BLW-01','LTW-01','Regular','NONE',250000.00,240000.00,0.00,0.00,0.00,0.00,'sold',NULL,'2026-06-09 23:57:22','Kyle Paredes');
+INSERT INTO `product` VALUES (1,'Lawn Lots','BLK-001','LT-001','Regular','NONE',25000.00,23000.00,0.00,0.00,0.00,0.00,'sold',NULL,'2026-04-22 00:59:06','Kyle Paredes'),(2,'Lawn Lots','BLK-001B','LT-001B','Regular','BASAK',514298.00,500000.00,0.00,0.00,0.00,0.00,'available',NULL,'2026-04-22 01:05:37','Kyle Paredes'),(3,'Lawn Lots','BLK-001','LT-002','Regular','NONE',399300.00,319440.00,0.00,0.00,0.00,0.00,'available',NULL,'2026-04-22 01:20:59','Kyle Paredes'),(4,'Lawn Lots','BLK-001B','LT-002B','Regular','NONE',421534.00,337227.00,0.00,0.00,0.00,0.00,'available',NULL,'2026-04-22 01:22:38','Kyle Paredes'),(5,'Lawn Lots','BLK-001','LT-003','Regular','NONE',428050.00,400000.00,0.00,0.00,0.00,0.00,'available',NULL,'2026-04-22 01:24:08','Kyle Paredes'),(6,'Lawn Lots','BLK-001B','LT-003B','Regular','NONE',451885.00,450000.00,0.00,0.00,0.00,0.00,'available',NULL,'2026-04-22 01:50:50','Kyle Paredes'),(7,'Lawn Lots','BLK-001','LT-004','Premium','NONE',428050.00,450000.00,0.00,0.00,0.00,0.00,'available',NULL,'2026-04-24 00:07:46','Kyle Paredes'),(8,'Wall Niche','BLW-01','LTW-01','Regular','NONE',250000.00,240000.00,0.00,0.00,0.00,0.00,'available',NULL,'2026-06-09 23:57:22','Kyle Paredes');
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -63,4 +63,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-17 13:43:18
+-- Dump completed on 2026-08-28 11:54:30

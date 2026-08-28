@@ -16,32 +16,34 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `gl_code`
+-- Table structure for table `rfp_request_items`
 --
 
-DROP TABLE IF EXISTS `gl_code`;
+DROP TABLE IF EXISTS `rfp_request_items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `gl_code` (
+CREATE TABLE `rfp_request_items` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `gl_code` varchar(45) NOT NULL,
-  `gl_description` varchar(150) NOT NULL,
-  `add_by` varchar(50) NOT NULL,
-  `add_date` date NOT NULL,
-  `status` varchar(20) DEFAULT 'Active',
+  `rfp_id` int NOT NULL,
+  `payment_id` int NOT NULL,
+  `commission_role` varchar(20) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `gl_code` (`gl_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `idx_rfp_request_items_rfp_id` (`rfp_id`),
+  KEY `idx_rfp_request_items_payment_id` (`payment_id`),
+  KEY `idx_rfp_request_items_role` (`commission_role`),
+  CONSTRAINT `fk_rfp_request_items_payment` FOREIGN KEY (`payment_id`) REFERENCES `payments` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_rfp_request_items_rfp` FOREIGN KEY (`rfp_id`) REFERENCES `rfp_requests` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `gl_code`
+-- Dumping data for table `rfp_request_items`
 --
 
-LOCK TABLES `gl_code` WRITE;
-/*!40000 ALTER TABLE `gl_code` DISABLE KEYS */;
-INSERT INTO `gl_code` VALUES (1,'10101','Other Income','Kyle Paredes','2026-06-16','Active');
-/*!40000 ALTER TABLE `gl_code` ENABLE KEYS */;
+LOCK TABLES `rfp_request_items` WRITE;
+/*!40000 ALTER TABLE `rfp_request_items` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rfp_request_items` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-17 13:43:17
+-- Dump completed on 2026-08-28 11:54:26

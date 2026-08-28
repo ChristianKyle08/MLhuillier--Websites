@@ -51,7 +51,7 @@ CREATE TABLE `sales` (
   `cancelled_at` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`sale_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -60,7 +60,7 @@ CREATE TABLE `sales` (
 
 LOCK TABLES `sales` WRITE;
 /*!40000 ALTER TABLE `sales` DISABLE KEYS */;
-INSERT INTO `sales` VALUES (1,'Lawn Lots','BLK-001','LT-001','Regular',25000.00,23000.00,'CUST-2026-000001','Genobaten, Jon Anthony T.','09684958673','AGT-000001','Autida, Christian Kyle','UM-000001','Autida, Maryjoy Maedawnna','BRK-000001','Autida, John Jeff Vearl','Installment','No',24,'2026-07-15','2028-06-15',1041.67,'sold',NULL,NULL,NULL,'2026-06-15 03:00:10'),(2,'Wall Niche','BLW-01','LTW-01','Regular',250000.00,240000.00,'CUST-2026-000001','Genobaten, Jon Anthony T.','09684958673','AGT-000001','Autida, Christian Kyle','UM-000001','Autida, Maryjoy Maedawnna','BRK-000001','Autida, John Jeff Vearl','Installment','No',24,'2026-03-15','2028-02-15',10416.67,'sold',NULL,NULL,NULL,'2026-06-15 05:33:29');
+INSERT INTO `sales` VALUES (1,'Lawn Lots','BLK-001','LT-001','Regular',25000.00,23000.00,'CUST-2026-000001','Genobaten, Jon Anthony T.','09684958673','AGT-000001','Autida, Christian Kyle','UM-000001','Autida, Maryjoy Maedawnna','BRK-000001','Autida, John Jeff Vearl','Installment','No',24,'2026-05-08','2028-04-08',1041.67,'sold',NULL,NULL,NULL,'2026-08-28 01:15:49');
 /*!40000 ALTER TABLE `sales` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -73,4 +73,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-17 13:43:16
+-- Dump completed on 2026-08-28 11:54:27
