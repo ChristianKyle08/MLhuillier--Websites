@@ -85,11 +85,27 @@ try {
             break;
     
         case 'finance':
-            header("Location: /cattleya/finance/dashboard");
+            header("Location: /cattleya/user/finance/dashboard");
+            break;
+
+        case 'cfo':
+            // No dedicated CFO view exists yet, so this shares the finance
+            // dashboard for now. Point this at its own route (and add a
+            // matching entry to router.php's $featureMap) once one exists.
+            header("Location: /cattleya/user/cfo/dashboard");
             break;
     
         case 'auditor':
-            header("Location: /cattleya/auditor/dashboard");
+            header("Location: /cattleya/user/auditor/dashboard");
+            break;
+
+        case 'operation_manager':
+            // Maps to the existing "vpo" route already defined in router.php.
+            header("Location: /cattleya/user/operation_manager/dashboard");
+            break;
+
+        case 'cashier':
+            header("Location: /cattleya/user/cashier/dashboard");
             break;
     
         case 'encoder':

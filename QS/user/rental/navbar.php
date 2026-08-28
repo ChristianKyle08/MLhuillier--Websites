@@ -663,6 +663,7 @@ if (($row['roles'] ?? '') === 'Am-Creator') {
           <div class="collapse" id="dataExtraction">
             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
               <?php if (in_array($row['roles'], ['Vpo-Checker', 'HO'])) { ?><li><a href="request_data_extraction.php" class="nav-link">Create Data</a></li><?php } ?>
+              <?php if (in_array($row['roles'], ['Vpo-Checker', 'HO'])) { ?><li><a href="unsettled_transaction.php" class="nav-link">Unsettled Payments</a></li><?php } ?>
               <?php if ($row['roles'] == 'Finance') { ?><li><a href="extract_request_finance.php" class="nav-link">Batch Upload</a></li><?php } ?>
             </ul>
           </div>

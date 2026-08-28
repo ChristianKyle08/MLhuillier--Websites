@@ -3,210 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cattleya - Admin Suite</title>
-    
+    <title>Cattleya Admin Suite</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
     <style>
         :root {
-            /* Cattleya Theme Colors */
-            --brand-primary: #2a6279; /* Deep Teal */
-            --brand-dark: #1e4a5c;    /* Darker Teal */
-            --brand-accent: #9dc44d;  /* Lime Green */
-            --brand-light: rgba(255, 255, 255, 0.1);
-            --sidebar-width: 280px;
-            --sidebar-collapsed-width: 85px;
-            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Modernized Professional Palette with Artistic Accents */
+            --sb-bg-color: #ffffff;
+            --sb-text-main: #0f172a;        
+            --sb-text-muted: #64748b;       
+            --sb-accent: #15803d;          
+            --sb-accent-light: #f0fdf4;    
+            --sb-hover-bg: #f8fafc;        
+            --sb-border: #f1f5f9;          
+            --sb-danger: #e11d48;          
+            
+            --sidebar-width: 278px;
+            --sidebar-collapsed-width: 84px;
+            --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
+        
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f4f7fe;
+            background-color: #f8fafc; 
             margin: 0;
+            padding-left: var(--sidebar-width);
             transition: var(--transition-smooth);
         }
 
-        /* --- SIDEBAR CONTAINER --- */
+        body.content-collapsed {
+            padding-left: var(--sidebar-collapsed-width);
+        }
+
+        /* Artistic Glass-Clean Sidebar */
         .sidebar {
             width: var(--sidebar-width);
             height: 100vh;
             position: fixed;
             left: 0; top: 0;
-            background: linear-gradient(180deg, var(--brand-primary) 0%, var(--brand-dark) 100%);
+            background: var(--sb-bg-color);
             display: flex;
             flex-direction: column;
             transition: var(--transition-smooth);
-            box-shadow: 12px 0 50px rgba(42, 98, 121, 0.15);
+            border-right: 1px solid var(--sb-border);
             z-index: 1000;
-            will-change: width;
+            will-change: width, transform;
+            box-shadow: 4px 0 24px rgba(15, 23, 42, 0.02);
         }
 
-        /* Logo Section */
+        /* Artistic Branding Section */
         .logo-wrapper {
-            padding: 2.5rem 1.5rem;
+            padding: 1.75rem 1.5rem 1.25rem;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: space-between;
             transition: var(--transition-smooth);
         }
-        .logo-wrapper h2 {
-            font-weight: 800;
-            color: white;
-            letter-spacing: -1.5px;
-            margin: 0;
+        
+        .brand-badge {
             display: flex;
             align-items: center;
-            gap: 12px;
-        }
-        .logo-wrapper h2::before {
-            content: '';
-            width: 8px; height: 24px;
-            background: var(--brand-accent); border-radius: 4px;
-            display: inline-block;
-            flex-shrink: 0;
+            gap: 14px;
+            text-decoration: none;
         }
 
-        /* Desktop Toggle Trigger Button */
+        .logo-icon-artistic {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            box-shadow: 0 8px 20px rgba(21, 128, 61, 0.22);
+            flex-shrink: 0;
+            position: relative;
+            padding: 8px;
+        }
+
+        .logo-icon-artistic svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .logo-text-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text {
+            font-weight: 800;
+            color: var(--sb-text-main);
+            letter-spacing: -0.03em;
+            font-size: 1.25rem;
+            line-height: 1.2;
+        }
+
+        .logo-eyebrow {
+            font-size: 0.7rem;
+            color: var(--sb-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+        }
+
+        /* Floating Artistic Toggle Button */
         .desktop-toggle-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: none;
-            color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
+            position: absolute;
+            right: -15px;
+            top: 2.2rem;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: var(--sb-text-muted);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: var(--transition-smooth);
-        }
-        .desktop-toggle-btn:hover {
-            background: var(--brand-accent);
-            color: var(--brand-dark);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            z-index: 10;
         }
 
-        /* --- NAVIGATION --- */
+        .desktop-toggle-btn:hover {
+            color: var(--sb-accent);
+            border-color: var(--sb-accent);
+            background: var(--sb-accent-light);
+            transform: scale(1.08);
+        }
+
+        /* Navigation Links Layout */
         .sidebar-menu {
             flex-grow: 1;
-            padding: 0 1.2rem;
+            padding: 0 1.15rem;
             overflow-y: auto;
             overflow-x: hidden;
         }
 
         .menu-label {
-            color: #9dc44d;
-            font-size: 0.60rem;
+            color: #94a3b8;
+            font-size: 0.68rem;
             text-transform: uppercase;
             font-weight: 800;
-            letter-spacing: 1.2px;
-            padding: 1.5rem 1.2rem 0.8rem;
+            letter-spacing: 0.1em;
+            padding: 1.5rem 0.75rem 0.5rem;
             transition: opacity 0.2s ease;
         }
 
         .nav-link-custom, .dropdown-btn {
             display: flex;
             align-items: center;
-            padding: 12px 16px;
-            color: rgba(255, 255, 255, 0.7);
+            padding: 11px 14px;
+            color: var(--sb-text-muted);
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 500;
             border-radius: 12px;
             margin-bottom: 6px;
             transition: var(--transition-smooth);
             border: none;
             background: transparent;
             width: 100%;
-            font-size: 0.85rem; /* Slightly bumped up for legibility */
+            font-size: 0.875rem;
             white-space: nowrap;
+            cursor: pointer;
         }
 
         .nav-link-custom:hover, .dropdown-btn:hover {
-            background: var(--brand-light);
-            color: white;
+            background: var(--sb-hover-bg);
+            color: var(--sb-text-main);
+            transform: translateX(3px);
         }
 
         .nav-link-custom.active {
-            background: white;
-            color: var(--brand-primary);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            background: var(--sb-accent-light);
+            color: var(--sb-accent);
+            font-weight: 700;
+            box-shadow: inset 3px 0 0 var(--sb-accent);
         }
 
-        /* ICON ALIGNMENT FIX */
-        .nav-link-custom i:first-child, 
-        .dropdown-btn i:first-child {
-            font-size: 1.2rem;
+        .nav-link-custom i, .dropdown-btn i {
+            font-size: 1.15rem;
             flex-shrink: 0;
-            width: 32px; /* Fixed width ensures perfect vertical column */
-            display: flex;
-            align-items: center;
-            justify-content: center; /* Centers the icon within its fixed width */
-            margin-right: 12px; /* Replaces bootstrap 'me-3' for better control */
-            transition: margin 0.3s ease;
+            width: 24px;
+            text-align: center;
+            transition: var(--transition-smooth);
         }
 
-        /* --- ENHANCED DROPDOWN --- */
+        .nav-link-custom.active i {
+            color: var(--sb-accent);
+        }
+
+        /* Refined Elegant Submenus */
         .dropdown-container {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
-            margin-left: 22px;
-            border-left: 2px solid rgba(255, 255, 255, 0.1);
+            transition: max-height 0.4s cubic-bezier(0, 1, 0, 1), opacity 0.3s ease;
+            margin-left: 24px;
+            padding-left: 12px;
+            border-left: 2px solid #f1f5f9;
             opacity: 0;
         }
 
         .dropdown-container.show {
-            max-height: 1000px;
-            transition: max-height 0.5s ease-in-out;
+            max-height: 500px;
+            transition: max-height 0.4s ease-in-out, opacity 0.3s ease;
             opacity: 1;
+            margin-top: 6px;
+            margin-bottom: 10px;
         }
 
         .dropdown-container a {
-            padding: 8px 20px;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.85rem;
-            display: block;
+            padding: 9px 12px 9px 14px;
+            color: var(--sb-text-muted);
+            font-size: 0.825rem;
+            display: flex;
+            align-items: center;
             text-decoration: none;
             font-weight: 500;
-            transition: 0.3s;
-            position: relative;
+            border-radius: 10px;
+            transition: var(--transition-smooth);
             white-space: nowrap;
-        }
-
-        .dropdown-container a::after {
-            content: '';
-            position: absolute;
-            left: 0; top: 50%;
-            width: 12px; height: 2px;
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-50%);
+            margin-bottom: 3px;
+            position: relative;
         }
 
         .dropdown-container a:hover {
-            color: white;
-            padding-left: 25px;
+            color: var(--sb-text-main);
+            background: var(--sb-hover-bg);
+            padding-left: 17px;
+        }
+
+        /* Enhanced Active Submenu Item Design */
+        .dropdown-container a.active, 
+        .dropdown-container a.sub-active {
+            background: var(--sb-accent-light) !important;
+            color: var(--sb-accent) !important;
+            font-weight: 700 !important;
+            padding-left: 18px !important;
+            box-shadow: 0 3px 10px rgba(21, 128, 61, 0.05);
+        }
+
+        /* Polished Glowing Radio/Dot Indicator Style */
+        .dropdown-container a.active::before,
+        .dropdown-container a.sub-active::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--sb-accent);
+            border-radius: 50%;
+            margin-right: 10px;
+            box-shadow: 0 0 0 4px rgba(21, 128, 61, 0.15);
+            flex-shrink: 0;
+            transition: var(--transition-smooth);
         }
 
         .arrow { 
-            transition: transform 0.4s ease; 
-            font-size: 0.75rem;
+            transition: transform 0.3s ease; 
+            font-size: 0.7rem !important;
+            width: auto !important;
         }
         .rotate-arrow { transform: rotate(180deg); }
 
-        /* --- PROFILE CARD --- */
+        /* Artistic User Profile Card Area */
         .sidebar-profile {
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.05);
-            margin: 15px;
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            margin: 1.15rem;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.02);
             transition: var(--transition-smooth);
             position: relative;
+        }
+
+        .sidebar-profile:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
         }
 
         .user-info-card {
@@ -216,362 +296,344 @@
             gap: 12px;
         }
 
-        .user-avatar {
-            width: 42px; height: 42px;
-            background: white;
-            color: var(--brand-primary);
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        .avatar-container {
+            position: relative;
             flex-shrink: 0;
         }
 
-        .user-name { color: white; font-size: 0.85rem; margin-bottom: 0; white-space: nowrap; }
-        .user-role { color: rgba(255,255,255,0.5); font-size: 0.72rem; white-space: nowrap; }
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            background: var(--sb-accent);
+            color: #ffffff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 12px rgba(21, 128, 61, 0.2);
+        }
 
-        /* Popover UI */
+        .status-indicator {
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 10px;
+            height: 10px;
+            background-color: #22c55e;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+        }
+
+        .user-name { color: var(--sb-text-main); font-size: 0.85rem; margin-bottom: 0; white-space: nowrap; font-weight: 700; }
+        .user-role { color: var(--sb-text-muted); font-size: 0.72rem; white-space: nowrap; }
+
         .profile-popover {
             display: none;
             position: absolute;
-            bottom: 100px; left: 20px; right: 20px;
-            background: white; border-radius: 18px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            bottom: calc(100% + 12px); 
+            left: 0; right: 0;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.12);
             overflow: hidden;
             z-index: 1100;
-            animation: cubic-bezier(0.68, -0.55, 0.27, 1.55) fadeInPop 0.4s forwards;
+            border: 1px solid #e2e8f0;
+            animation: fadeInPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .profile-popover.show {
+            display: block;
         }
 
         @keyframes fadeInPop {
-            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .popover-item {
-            padding: 12px 20px;
+            padding: 11px 18px;
             display: flex;
             align-items: center;
             gap: 12px;
-            color: #475569;
+            color: var(--sb-text-main);
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.9rem;
-            transition: 0.2s;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
         }
-        .popover-item:hover { background: #f8fafc; color: var(--brand-primary); }
+        .popover-item:hover { background: var(--sb-hover-bg); color: var(--sb-accent); padding-left: 22px; }
+        .popover-item.text-danger:hover { color: var(--sb-danger) !important; background: #fff1f2; }
 
-        /* --- COLLAPSED STATES PERFORMANCE & DESIGN DESIGNATION --- */
-        .sidebar.collapsed {
-            width: var(--sidebar-collapsed-width);
-        }
+        /* Collapsed Sidebar Modern Adaptation */
+        .sidebar.collapsed { width: var(--sidebar-collapsed-width); }
         .sidebar.collapsed .sidebar-text,
         .sidebar.collapsed .menu-label,
         .sidebar.collapsed .arrow,
         .sidebar.collapsed .user-details,
+        .sidebar.collapsed .status-indicator,
         .sidebar.collapsed .user-info-card .bi-three-dots-vertical,
         .sidebar.collapsed .dropdown-container {
             display: none !important;
         }
         .sidebar.collapsed .logo-wrapper {
-            padding: 2.5rem 0; /* Adjusted for better centering */
+            padding: 1.75rem 0.5rem;
             justify-content: center;
-        }
-        .sidebar.collapsed .logo-wrapper h2 {
-            justify-content: center;
-        }
-        .sidebar.collapsed .desktop-toggle-btn {
-            position: absolute;
-            right: -14px;
-            top: 42px;
-            border-radius: 50%;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            background: var(--brand-primary);
-            border: 2px solid white;
-            z-index: 1050;
         }
         .sidebar.collapsed .nav-link-custom,
         .sidebar.collapsed .dropdown-btn {
             justify-content: center;
             padding: 12px 0;
         }
-        
-        /* CENTERING FIX FOR COLLAPSED ICONS */
-        .sidebar.collapsed .nav-link-custom i:first-child,
-        .sidebar.collapsed .dropdown-btn i:first-child {
-            margin-right: 0 !important;
+        .sidebar.collapsed .nav-link-custom i,
+        .sidebar.collapsed .dropdown-btn i {
+            margin: 0 !important;
+            font-size: 1.25rem;
         }
-
         .sidebar.collapsed .sidebar-profile {
-            padding: 10px;
-            margin: 10px;
-            border-radius: 16px;
+            padding: 8px; margin: 10px 8px; border-radius: 12px;
         }
-        .sidebar.collapsed .user-info-card {
-            justify-content: center;
-        }
-        /* Transforms profile popover to float gracefully when collapsed */
+        .sidebar.collapsed .user-info-card { justify-content: center; }
         .sidebar.collapsed .profile-popover {
-            left: 75px;
-            bottom: 10px;
-            right: auto;
-            width: 230px;
+            left: 76px; bottom: 0; right: auto; width: 230px;
         }
 
-        /* --- MOBILE HELPERS --- */
+        /* Mobile Controls */
+        .mobile-toggle-btn {
+            display: none;
+            position: fixed;
+            top: 15px; left: 15px;
+            width: 44px; height: 44px;
+            background: #ffffff;
+            color: var(--sb-text-main);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+            z-index: 999;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        .mobile-toggle-btn:hover { background: var(--sb-hover-bg); color: var(--sb-accent); }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(4px);
+            z-index: 995; opacity: 0; visibility: hidden;
+            transition: var(--transition-smooth);
+        }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
         @media (max-width: 992px) {
+            body { padding-left: 0 !important; }
             .sidebar { transform: translateX(-100%); }
             .sidebar.show { transform: translateX(0); }
             .mobile-toggle-btn { display: flex; align-items: center; justify-content: center; }
             .desktop-toggle-btn { display: none !important; }
         }
-         /* Modern Premium Table Scrollbar */
-         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 8px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+
+        /* Custom Modern Scrollbar */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .main-content { padding: 2.5rem; }
     </style>
 </head>
 <body>
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<div class="sidebar" id="mainSidebar">
-    <div class="logo-wrapper">
-        <h2><span class="sidebar-text">Cattleya</span></h2>
-        <button class="desktop-toggle-btn d-none d-lg-flex" id="desktopSidebarToggle">
-            <i class="bi bi-chevron-left" id="desktopToggleIcon"></i>
-        </button>
-    </div>
-    <div class="sidebar-menu">
-        <div class="menu-label">Main Menu</div>
+    <!-- Inserted Navbar Content Markup -->
+    <button class="mobile-toggle-btn" id="sidebarToggle" aria-label="Open menu">
+        <i class="bi bi-list fs-5"></i>
+    </button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="sidebar" id="mainSidebar">
+        <div class="logo-wrapper">
+            <a href="#" class="brand-badge">
+                <div class="logo-icon-artistic">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M12 2C14.2 4.5 14.2 7.8 12 10C9.8 7.8 9.8 4.5 12 2Z" fill="white"/>
+                        <path d="M12 22C9.8 19.5 9.8 16.2 12 14C14.2 16.2 14.2 19.5 12 22Z" fill="white"/>
+                        <path d="M2 12C4.5 9.8 7.8 9.8 10 12C7.8 14.2 4.5 14.2 2 12Z" fill="white" fill-opacity="0.8"/>
+                        <path d="M22 12C19.5 14.2 16.2 14.2 14 12C16.2 9.8 19.5 9.8 22 12Z" fill="white" fill-opacity="0.8"/>
+                        <circle cx="12" cy="12" r="2.3" fill="white"/>
+                    </svg>
+                </div>
+                <div class="logo-text-group sidebar-text">
+                    <h2 class="mb-0"><span class="logo-text">Cattleya</span></h2>
+                    <span class="logo-eyebrow">Admin Suite</span>
+                </div>
+            </a>
+            <button class="desktop-toggle-btn d-none d-lg-flex" id="desktopSidebarToggle" aria-label="Collapse sidebar">
+                <i class="bi bi-chevron-left" id="desktopToggleIcon"></i>
+            </button>
+        </div>
         
-        <a href="/admin/dashboard" class="nav-link-custom <?= (strpos($_SERVER['REQUEST_URI'] ?? '', 'dashboard') !== false) ? 'active' : '' ?>">
-            <i class="bi bi-house-door-fill"></i> <span class="sidebar-text">Home</span>
-        </a>
+        <div class="sidebar-menu">
+            <div class="menu-label">Main Menu</div>
+            
+            <a href="/admin/dashboard" class="nav-link-custom <?= (strpos($_SERVER['REQUEST_URI'] ?? '', 'dashboard') !== false) ? 'active' : '' ?>">
+               <i class="bi bi-house-door"></i>
+            <span class="sidebar-text ms-3">Dashboard</span>
+            </a>
 
-        <div class="menu-label">Operations</div>
+            <div class="menu-label">Operations</div>
 
-        <button class="dropdown-btn">
-            <i class="bi bi-gear-wide-connected"></i> <span class="sidebar-text">Maintenance</span>
-            <i class="bi bi-chevron-down arrow ms-auto"></i>
-        </button>
-        <div class="dropdown-container" id="maintenanceDropdown">
-            <a href="/admin/users">Manage Users</a>
+            <?php 
+                $isMaintenanceActive = (strpos($_SERVER['REQUEST_URI'] ?? '', 'users') !== false || strpos($_SERVER['REQUEST_URI'] ?? '', 'maintenance') !== false);
+            ?>
+
+            <button class="dropdown-btn" data-dropdown="maintenanceDropdown">
+                 <i class="bi bi-gear"></i> 
+            <span class="sidebar-text ms-3">Maintenance</span>
+            <i class="bi bi-chevron-down arrow <?= $isMaintenanceActive ? 'rotate-arrow' : '' ?> ms-auto"></i>
+            </button>
+            <div class="dropdown-container <?= $isMaintenanceActive ? 'show' : '' ?>" id="maintenanceDropdown">
+                <a href="/admin/users" class="<?= (strpos($_SERVER['REQUEST_URI'] ?? '', 'users') !== false) ? 'sub-active active' : '' ?>">Manage Users</a>
+            </div>
+        </div>
+
+        <?php 
+            $user_name = $_SESSION['user_name'] ?? 'Encoder User';
+            $words = explode(" ", $user_name);
+            $user_initials = strtoupper(($words[0][0] ?? '') . ($words[1][0] ?? ''));
+        ?>
+
+        <div class="sidebar-profile">
+            <div class="profile-popover" id="profileMenu">
+                <div class="p-3 bg-light border-bottom">
+                    <p class="fw-bold mb-0 text-dark" style="font-size: 0.88rem;"><?= htmlspecialchars($user_name) ?></p>
+                    <small class="text-muted" style="font-size: 0.75rem;"><?= htmlspecialchars($_SESSION['user_email'] ?? 'encoder@cattleya.com') ?></small>
+                </div>
+                <a href="/views/includes/admin/profile" class="popover-item">
+                    <i class="bi bi-gear-wide-connected"></i> Settings
+                </a>
+                <a href="#" class="popover-item text-danger" id="logoutBtn">
+                    <i class="bi bi-box-arrow-right"></i> Sign Out
+                </a>
+            </div>
+
+            <div class="user-info-card" id="profileToggle">
+                <div class="avatar-container">
+                    <div class="user-avatar"><?= $user_initials ?></div>
+                    <div class="status-indicator"></div>
+                </div>
+                <div class="user-details flex-grow-1 min-width-0">
+                    <p class="user-name fw-bold text-truncate"><?= htmlspecialchars($user_name) ?></p>
+                    <p class="user-role mb-0 text-truncate"><?= ucfirst($_SESSION['role'] ?? 'Encoder') ?></p>
+                </div>
+                <i class="bi bi-three-dots-vertical text-muted ms-auto"></i>
+            </div>
         </div>
     </div>
 
-    <?php 
-        $user_name = $_SESSION['user_name'] ?? 'Encoder User';
-        $words = explode(" ", $user_name);
-        $user_initials = strtoupper(($words[0][0] ?? '') . ($words[1][0] ?? ''));
-    ?>
+    <!-- JavaScript Controller Logic -->
+    <script>
+        // Desktop Collapse Controls
+        const mainSidebar = document.getElementById('mainSidebar');
+        const body = document.body;
+        const desktopSidebarToggle = document.getElementById('desktopSidebarToggle');
+        const desktopToggleIcon = document.getElementById('desktopToggleIcon');
 
-    <div class="sidebar-profile">
-        <div class="profile-popover" id="profileMenu">
-            <div class="p-3 bg-light border-bottom">
-                <p class="fw-bold mb-0 text-dark" style="font-size: 0.9rem;"><?= $user_name ?></p>
-                <small class="text-muted"><?= $_SESSION['user_email'] ?? 'encoder@cattleya.com' ?></small>
-            </div>
-            <a href="/views/includes/admin/profile" class="popover-item">
-                <i class="bi bi-person-gear"></i> Settings
-            </a>
-            <a href="#" class="popover-item text-danger" id="logoutBtn">
-                <i class="bi bi-box-arrow-right"></i> Sign Out
-            </a>
-        </div>
-
-        <div class="user-info-card" id="profileToggle">
-            <div class="user-avatar"><?= $user_initials ?></div>
-            <div class="user-details flex-grow-1">
-                <p class="user-name fw-bold"><?= $user_name ?></p>
-                <p class="user-role mb-0"><?= ucfirst($_SESSION['role'] ?? 'Encoder') ?></p>
-            </div>
-            <i class="bi bi-three-dots-vertical text-white-50"></i>
-        </div>
-    </div>
-</div>
-
-<script>
-    const sidebar = document.getElementById('mainSidebar');
-    const desktopSidebarToggle = document.getElementById('desktopSidebarToggle');
-    const desktopToggleIcon = document.getElementById('desktopToggleIcon');
-
-    // --- DESKTOP SIDEBAR COLLAPSE TOGGLE ---
-    if(desktopSidebarToggle) {
-        desktopSidebarToggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            sidebar.classList.toggle('collapsed');
+        desktopSidebarToggle.addEventListener('click', () => {
+            mainSidebar.classList.toggle('collapsed');
+            body.classList.toggle('content-collapsed');
             
-            if(sidebar.classList.contains('collapsed')) {
-                desktopToggleIcon.classList.replace('bi-chevron-left', 'bi-chevron-right');
+            if (mainSidebar.classList.contains('collapsed')) {
+                desktopToggleIcon.classList.remove('bi-chevron-left');
+                desktopToggleIcon.classList.add('bi-chevron-right');
             } else {
-                desktopToggleIcon.classList.replace('bi-chevron-right', 'bi-chevron-left');
+                desktopToggleIcon.classList.remove('bi-chevron-right');
+                desktopToggleIcon.classList.add('bi-chevron-left');
             }
         });
-    }
 
-    // --- DROPDOWN ANIMATION ---
-    document.querySelectorAll(".dropdown-btn").forEach(btn => {
-        btn.addEventListener("click", function() {
-            // Intelligent UX Feature: Auto-expand sidebar if minimized and user clicks menu
-            if(sidebar.classList.contains('collapsed')) {
-                sidebar.classList.remove('collapsed');
-                if(desktopToggleIcon) desktopToggleIcon.classList.replace('bi-chevron-right', 'bi-chevron-left');
-            }
+        // Mobile View Controllers
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-            const menu = this.nextElementSibling;
-            const arrow = this.querySelector(".arrow");
-            
-            menu.classList.toggle("show");
-            if(arrow) arrow.classList.toggle("rotate-arrow");
-
-            if (menu.classList.contains("show")) {
-                this.style.background = "rgba(255,255,255,0.1)";
-            } else {
-                this.style.background = "transparent";
-            }
+        sidebarToggle.addEventListener('click', () => {
+            mainSidebar.classList.toggle('show');
+            sidebarOverlay.classList.toggle('active');
         });
-    });
 
-    // --- PROFILE POPOVER ---
-    const profileToggle = document.getElementById('profileToggle');
-    const profileMenu = document.getElementById('profileMenu');
-
-    profileToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = profileMenu.style.display === 'block';
-        profileMenu.style.display = isOpen ? 'none' : 'block';
-    });
-
-    document.addEventListener('click', () => { profileMenu.style.display = 'none'; });
-
-    // --- MOBILE SIDEBAR ---
-    const toggle = document.getElementById('sidebarToggle');
-    const overlay = document.getElementById('sidebarOverlay');
-
-    if(toggle) {
-        toggle.addEventListener('click', () => {
-            sidebar.classList.add('show');
-            overlay.classList.add('active');
+        sidebarOverlay.addEventListener('click', () => {
+            mainSidebar.classList.remove('show');
+            sidebarOverlay.classList.remove('active');
         });
-    }
 
-    if(overlay) {
-        overlay.addEventListener('click', () => {
-            sidebar.classList.remove('show');
-            overlay.classList.remove('active');
-        });
-    }
+        // Dropdown Accordion Toggle Logic
+        const dropdownBtns = document.querySelectorAll('.dropdown-btn');
+        dropdownBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-dropdown');
+                const dropdownContent = document.getElementById(targetId);
+                const arrowIcon = btn.querySelector('.arrow');
 
-    // --- LOGOUT MODAL ---
-    const logoutBtn = document.getElementById('logoutBtn');
-    if(logoutBtn) {
-        logoutBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-
-            Swal.fire({
-                html: `
-                    <div class="logout-modal-container" style="perspective: 1000px;">
-                        <div id="iconContainer" class="d-inline-flex align-items-center justify-content-center rounded-4 mb-4" 
-                             style="width: 70px; height: 70px; background: linear-gradient(135deg, #2a6279 0%, #448098 100%); 
-                                    color: white; box-shadow: 0 10px 20px rgba(42, 98, 121, 0.3); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-                            <i class="bi bi-door-open-fill" style="font-size: 2rem;"></i>
-                        </div>
-                        
-                        <div class="reveal-text">
-                            <h3 class="fw-800 text-dark mb-2" style="letter-spacing: -0.03em; opacity: 0; transform: translateY(10px); transition: all 0.4s ease 0.1s;">
-                                Confirm Sign Out
-                            </h3>
-                            <p class="text-muted mb-0 mx-auto" style="max-width: 260px; font-size: 0.95rem; opacity: 0; transform: translateY(10px); transition: all 0.4s ease 0.2s;">
-                                Are you sure you want to end your current session?
-                            </p>
-                        </div>
-                    </div>
-                `,
-                showCancelButton: true,
-                confirmButtonText: 'Sign Out',
-                cancelButtonText: 'Cancel',
-                reverseButtons: true,
-                buttonsStyling: false,
-                
-                customClass: {
-                    popup: 'rounded-5 border-0 shadow-2xl p-4 overflow-hidden',
-                    confirmButton: 'btn btn-lg px-5 py-3 fw-bold ms-3 rounded-pill transition-all',
-                    cancelButton: 'btn btn-lg px-4 py-3 text-muted fw-semibold rounded-pill transition-all'
-                },
-
-                didOpen: (modal) => {
-                    const confirmBtn = Swal.getConfirmButton();
-                    const cancelBtn = Swal.getCancelButton();
-                    const icon = document.getElementById('iconContainer');
-                    const texts = modal.querySelectorAll('.reveal-text > *');
-
-                    setTimeout(() => {
-                        texts.forEach(t => {
-                            t.style.opacity = '1';
-                            t.style.transform = 'translateY(0)';
-                        });
-                    }, 50);
-
-                    confirmBtn.style.backgroundColor = '#2a6279';
-                    confirmBtn.style.color = '#fff';
-                    confirmBtn.style.fontSize = '0.95rem';
-                    confirmBtn.style.border = 'none';
-                    
-                    cancelBtn.style.backgroundColor = '#f1f5f9';
-                    cancelBtn.style.fontSize = '0.9rem';
-                    cancelBtn.style.marginRight = '10px';
-
-                    confirmBtn.onmouseenter = () => {
-                        confirmBtn.style.transform = 'scale(1.05) translateY(-2px)';
-                        confirmBtn.style.backgroundColor = '#1e4a5c';
-                        confirmBtn.style.boxShadow = '0 10px 20px rgba(42, 98, 121, 0.3)';
-                        icon.style.transform = 'rotateY(180deg) scale(1.1)'; 
-                    };
-
-                    confirmBtn.onmouseleave = () => {
-                        confirmBtn.style.transform = 'scale(1) translateY(0)';
-                        confirmBtn.style.boxShadow = 'none';
-                        icon.style.transform = 'rotateY(0deg) scale(1)';
-                    };
-
-                    cancelBtn.onmouseenter = () => {
-                        cancelBtn.style.backgroundColor = '#e2e8f0';
-                        cancelBtn.style.color = '#1e293b';
-                    };
-                },
-
-                backdrop: `rgba(15, 23, 42, 0.8) blur(12px)`,
-                showClass: {
-                    popup: 'animate__animated animate__zoomIn animate__faster'
-                },
-                hideClass: {
-                    popup: 'animate__animated animate__zoomOut animate__faster'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const container = document.querySelector('.logout-modal-container');
-                    container.style.transition = 'all 0.5s ease';
-                    container.style.opacity = '0';
-                    container.style.transform = 'scale(0.9)';
-                    
-                    Swal.showLoading();
-                    setTimeout(() => {
-                        window.location.href = '/cattleya/logout';
-                    }, 300);
-                }
+                dropdownContent.classList.toggle('show');
+                arrowIcon.classList.toggle('rotate-arrow');
             });
         });
-    }
-</script>
+
+        // Profile Popover Card Controller
+        const profileToggle = document.getElementById('profileToggle');
+        const profileMenu = document.getElementById('profileMenu');
+
+        profileToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileMenu.classList.toggle('show');
+        });
+
+        window.addEventListener('click', () => {
+            if (profileMenu.classList.contains('show')) {
+                profileMenu.classList.remove('show');
+            }
+        });
+
+        // Logout Modal
+    document.getElementById('logoutBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+
+        Swal.fire({
+            html: `
+                <div class="logout-modal-container text-center">
+                    <div id="iconContainer" class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" 
+                         style="width: 60px; height: 60px; background: #fee2e2; color: #e11d48;">
+                        <i class="bi bi-box-arrow-right" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold text-dark mb-2">Sign Out</h4>
+                        <p class="text-muted mb-0 mx-auto" style="max-width: 260px; font-size: 0.9rem;">
+                            Are you sure you want to end your current session?
+                        </p>
+                    </div>
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Sign Out',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+            buttonsStyling: false,
+            customClass: {
+                popup: 'rounded-4 border-0 shadow-lg p-4',
+                confirmButton: 'btn btn-danger px-4 py-2 fw-semibold ms-2 rounded-3',
+                cancelButton: 'btn btn-light px-4 py-2 text-dark fw-semibold rounded-3 border'
+            },
+            backdrop: `rgba(15, 23, 42, 0.4) blur(4px)`
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.showLoading();
+                setTimeout(() => {
+                    window.location.href = '/cattleya/logout';
+                }, 250);
+            }
+        });
+    });
+    </script>
 </body>
 </html>

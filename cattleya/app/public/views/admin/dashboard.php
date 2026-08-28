@@ -1,6 +1,6 @@
 <?php
-require __DIR__ . '/../../../config/database.php'; 
-require __DIR__ . '/../includes/session_check.php'; 
+require __DIR__ . '/../../../config/database.php';
+require __DIR__ . '/../includes/session_check.php';
 
 if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_token'])) {
     $token = $_COOKIE['remember_token'];
@@ -17,7 +17,7 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_token'])) {
 }
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: /login");
+    header("Location: /cattleya/login");
     exit;
 }
 
@@ -32,236 +32,491 @@ $user_name = $_SESSION['user_name'];
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Dashboard | Cattleya</title>
+    <title>Command Center | Cattleya Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
     :root {
-        /* Cattleya Brand Palette Updated */
-        --brand-color: #2a6279; /* Cattleya Navy */
-        --brand-gradient: linear-gradient(135deg, #2a6279 0%, #1e4a5c 100%);
-        --bg-color: #f8fafc;
-        --sidebar-width: 280px;
-        --card-border: rgba(42, 98, 121, 0.1);
-        --text-main: #1e293b;
-        --text-muted: #64748b;
-        --accent-lime: #9dc44d; /* Cattleya Green */
+        --brand-primary: #044e3b; 
+        --brand-primary-dark: #022c22;
+        --brand-accent: #10b981;
+        --brand-glow: rgba(16, 185, 129, 0.15);
+        --surface: #ffffff;
+        --surface-glass: rgba(255, 255, 255, 0.92);
+        --text-primary: #0f172a;
+        --text-secondary: #64748b;
+        --border-subtle: #e2e8f0;
+        --shadow-subtle: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+        --shadow-card: 0 12px 32px -5px rgba(4, 78, 59, 0.08);
+        --brand-primary-soft: rgba(4, 78, 59, 0.07);
+        --brand-accent-soft: rgba(16, 185, 129, 0.1);
+        --radius-lg: 20px;
+        --radius-xl: 24px;
+        --shadow-elevated: 0 20px 45px -15px rgba(4, 78, 59, 0.16);
     }
 
     body {
-        font-family: 'Manrope', sans-serif;
-        background-color: var(--bg-color);
-        color: var(--text-main);
+        background-color: #f8fafc;
+        background-image: 
+            radial-gradient(circle at 100% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 35%),
+            radial-gradient(circle at 0% 100%, rgba(4, 78, 59, 0.04) 0%, transparent 35%);
+        background-attachment: fixed;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: var(--text-primary);
         letter-spacing: -0.01em;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
     }
 
-    /* Layout Customization */
-    .content {
-        margin-left: var(--sidebar-width);
-        padding: 2.5rem;
-        transition: all 0.3s ease;
-    }
+    .dashboard-container { padding: 2rem 2.5rem; max-width: 1550px; margin: 0 auto; }
+    @media (max-width: 991.98px) { .dashboard-container { padding: 1.25rem; } }
 
-    @media (max-width: 991.98px) { .content { margin-left: 0; padding: 1.5rem; } }
-
-    /* Modern Card & Stat Refinement */
-    .modern-card {
-        background: #ffffff;
-        border-radius: 20px;
-        border: 1px solid var(--card-border);
-        padding: 1.75rem;
-        box-shadow: 0 10px 30px rgba(42, 98, 121, 0.05);
+    /* Modern Executive Header */
+    .exec-header {
+        background: var(--surface-glass);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem 2rem;
+        box-shadow: var(--shadow-subtle);
         margin-bottom: 2rem;
-    }
-
-    .stat-card {
-        background: #ffffff;
-        border-radius: 20px;
-        padding: 1.25rem;
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        border: 1px solid var(--card-border);
-        box-shadow: 0 4px 20px rgba(42, 98, 121, 0.03);
+        flex-wrap: wrap;
+        gap: 1rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .exec-header::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent), transparent);
     }
 
-    .stat-icon-wrapper {
-        width: 56px;
-        height: 56px;
+    /* Pulse dot animation */
+    .pulse-dot {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
         border-radius: 50%;
+        background-color: var(--brand-accent);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        animation: pulse-green 2s infinite;
+    }
+    @keyframes pulse-green {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* Bento KPI Cards */
+    .kpi-card {
+        background: var(--surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-subtle);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+    }
+    .kpi-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 1.5rem; right: 1.5rem;
+        height: 3px;
+        border-radius: 0 0 3px 3px;
+        background: linear-gradient(90deg, var(--brand-accent), transparent 85%);
+        opacity: 0.7;
+    }
+    .kpi-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-card);
+        border-color: #cbd5e1;
+    }
+    .kpi-icon {
+        width: 48px; height: 48px; border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.25rem; margin-bottom: 1rem;
+    }
+    .kpi-blue { background: rgba(59, 130, 246, 0.08); color: #2563eb; }
+    .kpi-emerald { background: rgba(16, 185, 129, 0.08); color: #059669; }
+    .kpi-amber { background: rgba(245, 158, 11, 0.08); color: #d97706; }
+    .kpi-rose { background: rgba(239, 68, 68, 0.08); color: #dc2626; }
+
+    .kpi-label { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; }
+    .kpi-value { font-size: 2rem; font-weight: 800; color: var(--text-primary); line-height: 1.1; margin-top: 0.25rem; }
+
+    /* Workspace Cards */
+    .workspace-card {
+        background: var(--surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-xl);
+        padding: 1.75rem;
+        box-shadow: var(--shadow-subtle);
+        margin-top: 2rem;
+        transition: box-shadow 0.3s ease;
+    }
+    .workspace-header {
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        justify-content: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #f1f5f9;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    /* Modern Minimalist Tables */
+    .table-custom { width: 100%; border-collapse: separate !important; border-spacing: 0 8px !important; }
+    .table-custom thead th {
+        border: none; padding: 0 1rem 0.5rem; color: var(--text-secondary);
+        text-transform: uppercase; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em;
+    }
+    .table-custom tbody tr {
+        background: #f8fafc;
+        transition: all 0.2s ease;
+    }
+    .table-custom tbody tr:hover {
+        background: #f1f5f9;
+        transform: scale(1.001);
+        box-shadow: 0 4px 14px -6px rgba(15, 23, 42, 0.08);
+    }
+    .table-custom tbody td { border: none; padding: 1rem; vertical-align: middle; }
+    .table-custom tbody td:first-child { border-radius: 14px 0 0 14px; }
+    .table-custom tbody td:last-child { border-radius: 0 14px 14px 0; }
+
+    /* Empty states */
+    .empty-state { padding: 2.5rem 1rem; text-align: center; }
+    .empty-state-icon {
+        width: 56px; height: 56px; margin: 0 auto 0.85rem;
+        border-radius: 16px;
+        background: var(--brand-accent-soft);
+        color: var(--brand-primary);
+        display: flex; align-items: center; justify-content: center;
         font-size: 1.5rem;
-        margin-right: 1rem;
+    }
+
+    /* Avatars & Elements */
+    .user-avatar {
+        width: 40px; height: 40px; border-radius: 12px;
+        background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-accent) 100%);
+        color: #fff; font-weight: 700; font-size: 0.85rem;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 4px 12px rgba(4, 78, 59, 0.15);
         flex-shrink: 0;
     }
 
-    .stat-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-bottom: 2px; }
-    .stat-value { font-size: 1.5rem; font-weight: 800; color: var(--brand-color); }
-
-    /* Table Design */
-    .modern-table thead th {
-        background: transparent;
-        color: var(--brand-color);
-        text-transform: uppercase;
-        font-size: 0.7rem;
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        padding: 1rem;
-        border-bottom: 1.5px solid var(--card-border);
+    /* Controls & Buttons */
+    .btn-action {
+        width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--border-subtle);
+        background: #fff; color: var(--text-secondary); display: inline-flex;
+        align-items: center; justify-content: center; transition: all 0.2s ease;
     }
+    .btn-action:hover { background: #f8fafc; color: var(--text-primary); border-color: #cbd5e1; transform: translateY(-1px); }
+    .btn-action-approve:hover { background: #ecfdf5 !important; color: #059669 !important; border-color: #a7f3d0 !important; }
+    .btn-action-deny:hover { background: #fef2f2 !important; color: #dc2626 !important; border-color: #fecaca !important; }
 
-    .modern-table tbody td { padding: 1rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-    
-    .avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
-        background: var(--brand-gradient);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 0.9rem;
+    .btn-primary-glow {
+        background: var(--brand-primary); color: #fff; border: none;
+        border-radius: 10px; font-weight: 700; font-size: 0.78rem; padding: 0.5rem 1rem;
+        box-shadow: 0 4px 12px rgba(4, 78, 59, 0.2); transition: all 0.2s ease;
     }
+    .btn-primary-glow:hover { background: var(--brand-primary-dark); color: #fff; transform: translateY(-1px); }
 
-    /* Buttons */
-    .btn-action-icon {
-        width: 36px; height: 36px; border-radius: 10px; border: none;
-        display: inline-flex; align-items: center; justify-content: center;
-        transition: all 0.2s;
+    /* Select Inputs */
+    .select-pill-wrapper { position: relative; }
+    .select-pill-wrapper i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--brand-primary); font-size: 0.8rem; z-index: 2; }
+    .select-pill {
+        background-color: #fff; border: 1px solid var(--border-subtle);
+        border-radius: 10px; padding: 0.45rem 0.75rem 0.45rem 2.1rem;
+        color: var(--text-primary); font-size: 0.78rem; font-weight: 600; cursor: pointer;
+        transition: all 0.2s ease; width: 100%;
     }
-    .btn-modern-success { background: rgba(157, 196, 77, 0.15); color: #7ea336; }
-    .btn-modern-success:hover { background: var(--accent-lime); color: #fff; }
-    .btn-modern-danger { background: #feebeb; color: #ee5d50; }
-    .btn-modern-danger:hover { background: #ee5d50; color: #fff; }
+    .select-pill:focus { border-color: var(--brand-accent); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12); outline: none; }
 
-    /* Badges */
-    .badge-soft-pending { background: #fff8e5; color: #ffb800; border-radius: 8px; padding: 6px 12px; font-weight: 700; font-size: 0.75rem; }
-    .badge-soft-role { background: rgba(42, 98, 121, 0.08); color: var(--brand-color); border-radius: 8px; padding: 6px 12px; font-weight: 700; font-size: 0.75rem; }
-
-    /* Modal Design */
-    .modal-content { border-radius: 24px; border: none; overflow: hidden; }
-    .bg-gradient { background: var(--brand-gradient) !important; }
-    .token-display-box { background: #f0f7f9; border: 2px dashed var(--brand-color); border-radius: 15px; }
-
-    /* Link and Primary Color overrides */
-    .text-primary { color: var(--brand-color) !important; }
-    .btn-primary { background-color: var(--brand-color); border-color: var(--brand-color); }
-    .btn-primary:hover { background-color: #1e4a5c; border-color: #1e4a5c; }
-    /* Container for the select to allow for custom icon placement */
-    .role-select-wrapper {
-        position: relative;
-        max-width: 200px;
+    /* Seamless Professional Modals */
+    .modal-backdrop.show {
+        background-color: rgba(15, 23, 42, 0.55);
+        backdrop-filter: blur(8px);
     }
-
-    .role-select-wrapper i {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #9e9e9e;
-        pointer-events: none;
-        font-size: 0.9rem;
+    .modal-content {
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.25);
+        background: #ffffff;
+        overflow: hidden;
     }
-
-    /* The actual select styling */
-    .modern-role-select {
-        padding-left: 35px !important; /* Space for the icon */
-        border: 1px solid #e2e8f0;
-        border-radius: 10px !important;
-        background-color: #f8fafc;
-        color: #475569;
-        font-size: 0.85rem;
-        font-weight: 500;
+    .modal-header {
+        border-bottom: 1px solid #f1f5f9;
+        padding: 1.25rem 1.5rem;
+    }
+    .modal-body {
+        padding: 1.5rem;
+    }
+    .modal-content .btn-close {
+        background-color: #f1f5f9;
+        border-radius: 50%;
+        padding: 0.6rem;
+        opacity: 0.7;
         transition: all 0.2s ease;
-        cursor: pointer;
+    }
+    .modal-content .btn-close:hover {
+        opacity: 1;
+        background-color: #e2e8f0;
+        transform: rotate(90deg);
     }
 
-    .modern-role-select:hover {
-        background-color: #ffffff;
-        border-color: #cbd5e1;
+    /* Team Composition */
+    .role-bar-row { width: 100%; }
+    .role-bar-label { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem; }
+    .role-bar-track { height: 8px; background: #f1f5f9; border-radius: 999px; overflow: hidden; }
+    .role-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
+        border-radius: 999px;
+        transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .modern-role-select:focus {
-        border-color: #a777e3;
-        background-color: #ffffff;
-        box-shadow: 0 0 0 3px rgba(167, 119, 227, 0.1);
-        color: #1e293b;
+    @media (prefers-reduced-motion: reduce) {
+        .animate__animated { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+        .kpi-card, .workspace-card, .table-custom tbody tr, .btn-action, .btn-primary-glow, .role-bar-fill {
+            transition: none !important;
+        }
     }
 
-    /* Style for the options inside */
-    .modern-role-select option {
-        font-weight: 400;
-        color: #1e293b;
-    }
+    /* Modern Glassmorphic SweetAlert Backdrop & Dialog */
+.swal2-container {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+
+.sa-modern-popup {
+    border-radius: 28px !important;
+    padding: 2.25rem 2rem !important;
+    background: #ffffff !important;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Typography Hierarchy */
+.sa-title {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    font-size: 1.25rem !important;
+    letter-spacing: -0.02em !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.sa-html-container {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-weight: 500 !important;
+    color: #64748b !important;
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+    padding: 0 0.5rem !important;
+}
+
+/* Custom Buttons & Hover States */
+.sa-btn-confirm {
+    background: linear-gradient(135deg, #044e3b 0%, #065f46 100%) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 0.8125rem !important;
+    padding: 0.7rem 1.6rem !important;
+    border-radius: 12px !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(4, 78, 59, 0.25) !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.sa-btn-confirm:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(4, 78, 59, 0.35) !important;
+    background: linear-gradient(135deg, #022c22 0%, #044e3b 100%) !important;
+}
+
+.sa-btn-cancel {
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    font-weight: 700 !important;
+    font-size: 0.8125rem !important;
+    padding: 0.7rem 1.6rem !important;
+    border-radius: 12px !important;
+    border: 1px solid #e2e8f0 !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.sa-btn-cancel:hover {
+    background: #e2e8f0 !important;
+    color: #0f172a !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Customized Alert Icons */
+.swal2-icon {
+    border-width: 2.5px !important;
+    margin: 0.75rem auto 1.25rem !important;
+    transform: scale(0.92);
+}
+
+.swal2-icon.swal2-warning { border-color: #f59e0b !important; color: #f59e0b !important; }
+.swal2-icon.swal2-success { border-color: #10b981 !important; color: #10b981 !important; }
+.swal2-icon.swal2-error { border-color: #ef4444 !important; color: #ef4444 !important; }
+
+/* Floating Capsule Toast */
+.sa-toast-capsule {
+    border-radius: 16px !important;
+    background: rgba(15, 23, 42, 0.92) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 12px 32px -5px rgba(0, 0, 0, 0.3) !important;
+    padding: 0.75rem 1.25rem !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 0.8125rem !important;
+}
+
+.swal2-timer-progress-bar {
+    background: #10b981 !important;
+    height: 3px !important;
+}
     </style>
 </head>
 <body>
 
 <?php require_once __DIR__ . '/../includes/admin/navbar.php'; ?>
 
-<div class="content">
-    <div class="d-flex justify-content-between align-items-center mb-5 animate__animated animate__fadeIn">
+<div class="dashboard-container">
+    
+    <!-- Modern Executive Header -->
+    <div class="exec-header animate__animated animate__fadeIn">
         <div>
-            <h2 class="fw-800 mb-1">Dashboard Overview</h2>
-            <p class="text-muted fw-500">Welcome back, <span class="text-primary fw-700"><?= htmlspecialchars($user_name) ?></span></p>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-success bg-opacity-10 text-success px-2.5 py-1 rounded-pill fw-700 d-inline-flex align-items-center gap-1.5" style="font-size: 0.7rem;">
+                    <span class="pulse-dot"></span> Live System Normal
+                </span>
+                <span class="text-secondary fw-500 fs-7">• <?= date('l, F j, Y') ?></span>
+            </div>
+            <h1 class="fw-800 text-dark mb-0" style="font-size: 1.85rem;">Dashboard</h1>
         </div>
-        <div class="d-none d-md-block">
-            <button class="btn btn-white shadow-sm border-0 rounded-4 px-4 py-2 fw-700 text-primary" style="background: white;">
-                <i class="bi bi-calendar3 me-2" style="color: var(--accent-lime);"></i> <?= date('M d, Y') ?>
-            </button>
+        <div class="d-flex align-items-center gap-3">
+            <div class="text-end d-none d-sm-block">
+                <div class="fw-700 text-dark fs-7"><?= htmlspecialchars($user_name) ?></div>
+                <div class="text-secondary fw-500" style="font-size: 0.72rem;">Super Administrator</div>
+            </div>
+            <div class="user-avatar"><?= strtoupper(substr($user_name, 0, 2)) ?></div>
         </div>
     </div>
 
-    <div class="row g-4 mb-4">
-        <div class="col-12 col-md-6 col-xl-3">
-            <div class="stat-card animate__animated animate__fadeInUp">
-                <div class="stat-icon-wrapper" style="background: rgba(42, 98, 121, 0.1); color: var(--brand-color);"><i class="bi bi-people-fill"></i></div>
-                <div><span class="stat-label">Total Users</span><h3 class="stat-value mb-0"><?= $totalUsers ?></h3></div>
+    <!-- Bento Grid Metrics -->
+    <div class="row g-3">
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="kpi-card animate__animated animate__zoomIn" style="animation-delay: 0.05s;">
+                <div class="kpi-icon kpi-blue"><i class="bi bi-people-fill"></i></div>
+                <div class="kpi-label">Total Network Users</div>
+                <div class="kpi-value"><?= $totalUsers ?></div>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-xl-3">
-            <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
-                <div class="stat-icon-wrapper" style="background: rgba(157, 196, 77, 0.15); color: var(--accent-lime);"><i class="bi bi-person-plus-fill"></i></div>
-                <div><span class="stat-label">New Today</span><h3 class="stat-value mb-0"><?= $newUsers ?></h3></div>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="kpi-card animate__animated animate__zoomIn" style="animation-delay: 0.1s;">
+                <div class="kpi-icon kpi-emerald"><i class="bi bi-person-plus-fill"></i></div>
+                <div class="kpi-label">Today's Onboarding</div>
+                <div class="kpi-value"><?= $newUsers ?></div>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-xl-3">
-            <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
-                <div class="stat-icon-wrapper" style="background: #fff8e5; color: #ffb800;"><i class="bi bi-shield-lock-fill"></i></div>
-                <div><span class="stat-label">Active Resets</span><h3 class="stat-value mb-0"><?= $resetCount ?></h3></div>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="kpi-card animate__animated animate__zoomIn" style="animation-delay: 0.15s;">
+                <div class="kpi-icon kpi-amber"><i class="bi bi-key-fill"></i></div>
+                <div class="kpi-label">Active Resets</div>
+                <div class="kpi-value"><?= $resetCount ?></div>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-xl-3">
-            <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
-                <div class="stat-icon-wrapper" style="background: #feebeb; color: #ee5d50;"><i class="bi bi-flag-fill"></i></div>
-                <div><span class="stat-label">Reports</span><h3 class="stat-value mb-0">0</h3></div>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="kpi-card animate__animated animate__zoomIn" style="animation-delay: 0.2s;">
+                <div class="kpi-icon kpi-rose"><i class="bi bi-shield-exclamation"></i></div>
+                <div class="kpi-label">System Flags</div>
+                <div class="kpi-value">0</div>
             </div>
         </div>
     </div>
 
-    <div class="modern-card animate__animated animate__fadeIn">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="fw-800 mb-0" style="color: var(--brand-color);">New User Requests</h5>
-            <span class="badge-soft-pending">Action Required</span>
+    <?php
+    $roleBreakdown = $pdo->query("SELECT role, COUNT(*) as cnt FROM users WHERE status = 'active' GROUP BY role ORDER BY cnt DESC")->fetchAll(PDO::FETCH_ASSOC);
+    $totalActiveForBreakdown = array_sum(array_column($roleBreakdown, 'cnt'));
+    ?>
+    <!-- Team Composition -->
+    <div class="workspace-card animate__animated animate__fadeInUp" style="animation-delay: 0.25s;">
+        <div class="workspace-header">
+            <div>
+                <h3 class="fw-800 text-dark mb-1 fs-5">Team Composition</h3>
+                <p class="text-secondary fw-500 fs-7 mb-0">Active accounts by assigned role.</p>
+            </div>
+            <span class="badge bg-light text-secondary px-3 py-2 rounded-pill fw-700 fs-7 border">
+                <?= (int)$totalActiveForBreakdown ?> Active
+            </span>
         </div>
+        <?php if (!$roleBreakdown): ?>
+            <div class="empty-state">
+                <div class="empty-state-icon"><i class="bi bi-people"></i></div>
+                <div class="fw-700 text-dark fs-7 mb-1">No active accounts yet</div>
+                <div class="text-secondary fw-500 fs-8">Approved staff will show up here by role.</div>
+            </div>
+        <?php else: ?>
+            <div class="d-flex flex-column gap-3">
+                <?php foreach ($roleBreakdown as $rb):
+                    $roleName = ucwords(str_replace('_', ' ', $rb['role']));
+                    $pct = $totalActiveForBreakdown > 0 ? round(($rb['cnt'] / $totalActiveForBreakdown) * 100) : 0;
+                ?>
+                <div class="role-bar-row">
+                    <div class="role-bar-label">
+                        <span class="fw-700 text-dark fs-7"><?= htmlspecialchars($roleName) ?></span>
+                        <span class="text-secondary fw-600 fs-8"><?= (int)$rb['cnt'] ?> &middot; <?= $pct ?>%</span>
+                    </div>
+                    <div class="role-bar-track">
+                        <div class="role-bar-fill" style="width: <?= $pct ?>%;"></div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- Section 1: Access Requests Workspace -->
+    <div class="workspace-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+        <div class="workspace-header">
+            <div>
+                <h3 class="fw-800 text-dark mb-1 fs-5">Access Requests Pipeline</h3>
+                <p class="text-secondary fw-500 fs-7 mb-0">Verify user identity and assign granular security clearances.</p>
+            </div>
+            <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill fw-700 fs-7">
+                Action Required
+            </span>
+        </div>
+        
         <div class="table-responsive">
-            <table class="table modern-table align-middle">
+            <table class="table-custom">
                 <thead>
                     <tr>
-                        <th>User Identity</th>
-                        <th>Email Address</th>
-                        <th style="width: 200px;">Assign Role</th> <th>Status</th>
-                        <th class="text-end">Management</th>
+                        <th>Personnel</th>
+                        <th>Contact Email</th>
+                        <th style="width: 260px;">Role Authorization</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -270,7 +525,7 @@ $user_name = $_SESSION['user_name'];
                     $pendingUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                     if (!$pendingUsers) {
-                        echo '<tr><td colspan="5" class="text-center py-5 text-muted">No pending registrations found.</td></tr>';
+                        echo '<tr><td colspan="5"><div class="empty-state"><div class="empty-state-icon"><i class="bi bi-check2-circle"></i></div><div class="fw-700 text-dark fs-7 mb-1">All clear!</div><div class="text-secondary fw-500 fs-8">No pending access requests right now.</div></div></td></tr>';
                     }
 
                     foreach ($pendingUsers as $u) {
@@ -280,48 +535,46 @@ $user_name = $_SESSION['user_name'];
                     ?>
                         <tr>
                             <td>
-                                <div class='d-flex align-items-center gap-3'>
-                                    <div class='avatar'><?= $initials ?></div>
-                                    <span class='fw-700'><?= $fullName ?></span>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="user-avatar"><?= $initials ?></div>
+                                    <div>
+                                        <div class="fw-700 text-dark fs-7"><?= $fullName ?></div>
+                                        <div class="text-secondary fs-8 fw-500"><i class="bi bi-clock me-1"></i><?= date('M d, Y', strtotime($u['created_at'])) ?></div>
+                                    </div>
                                 </div>
                             </td>
-                            <td class='text-muted small'><?= htmlspecialchars($u['email']) ?></td>
-                            <td class="py-3">
-                                <div class="role-select-wrapper">
-                                    <i class="bi bi-shield-lock"></i>
-                                    
-                                    <select class="form-select form-select-sm modern-role-select" id="role_<?= $userId ?>">
-                                        <option value="" disabled selected>Assign Role</option>
-                                        
-                                        <optgroup label="Core Operations">
+                            <td class="text-secondary fw-500 fs-7"><?= htmlspecialchars($u['email']) ?></td>
+                            <td>
+                                <div class="select-pill-wrapper">
+                                    <i class="bi bi-shield-lock-fill"></i>
+                                    <select class="select-pill" id="role_<?= $userId ?>">
+                                        <option value="" disabled selected>Assign Security Level</option>
+                                        <optgroup label="Operations Core">
                                             <option value="encoder">Encoder</option>
                                             <option value="operation_manager">Operation Manager</option>
                                         </optgroup>
-                                        
-                                        <optgroup label="Financial & Audit">
+                                        <optgroup label="Financial Audit">
                                             <option value="finance">Finance</option>
                                             <option value="cashier">Cashier</option>
                                             <option value="auditor">Auditor</option>
                                             <option value="cfo">CFO</option>
                                         </optgroup>
-                                        
-                                        <optgroup label="System Control">
-                                            <option value="admin">Admin</option>
+                                        <optgroup label="System Admin">
+                                            <option value="admin">Administrator</option>
                                         </optgroup>
                                     </select>
                                 </div>
                             </td>
-                            <td><span class='badge-soft-pending'>Waiting</span></td>
-                            <td class='text-end'>
-                                <div class='d-flex justify-content-end gap-2'>
-                                    <button class='btn-action-icon btn-modern-success' 
-                                            onclick="handleApprove(<?= $userId ?>)">
-                                        <i class='bi bi-check-lg'></i>
+                            <td>
+                                <span class="badge bg-warning bg-opacity-10 text-warning px-2.5 py-1 rounded-pill fw-700 fs-8">Pending</span>
+                            </td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button class="btn-action btn-action-approve" onclick="handleApprove(<?= $userId ?>)" title="Approve">
+                                        <i class="bi bi-check2"></i>
                                     </button>
-                                    
-                                    <button class='btn-action-icon btn-modern-danger' 
-                                            onclick="confirmAction('/cattleya/admin/delete-user?id=<?= $userId ?>', 'Decline this user?')">
-                                        <i class='bi bi-trash'></i>
+                                    <button class="btn-action btn-action-deny" onclick="confirmAction('/cattleya/admin/delete-user?id=<?= $userId ?>', 'Permanently decline and remove this request?')" title="Deny">
+                                        <i class="bi bi-x-lg"></i>
                                     </button>
                                 </div>
                             </td>
@@ -332,154 +585,145 @@ $user_name = $_SESSION['user_name'];
         </div>
     </div>
 
-    <div class="modern-card animate__animated animate__fadeIn">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h5 class="fw-800 mb-0" style="color: var(--brand-color);">Password Reset Activity</h5>
-    </div>
-    <div class="table-responsive">
-        <table class="table modern-table align-middle">
-            <thead>
-                <tr>
-                    <th>User Identity</th>
-                    <th>Email Address</th>
-                    <th class="text-end">Management</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $stmt = $pdo->query("SELECT id, first_name, last_name, email, reset_token FROM users WHERE reset_token IS NOT NULL ORDER BY id DESC");
-                $resets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    <!-- Section 2: Security Resets Workspace -->
+    <div class="workspace-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+        <div class="workspace-header">
+            <div>
+                <h3 class="fw-800 text-dark mb-1 fs-5">Active Security Resets</h3>
+                <p class="text-secondary fw-500 fs-7 mb-0">Manage credential recovery tokens and execute system overrides.</p>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>Personnel</th>
+                        <th>Registered Email</th>
+                        <th class="text-end">Recovery Controls</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $stmt = $pdo->query("SELECT id, first_name, last_name, email, reset_token FROM users WHERE reset_token IS NOT NULL ORDER BY id DESC");
+                    $resets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                if (!$resets) {
-                    echo '<tr><td colspan="3" class="text-center py-5 text-muted">No active reset tokens found.</td></tr>';
-                }
+                    if (!$resets) {
+                        echo '<tr><td colspan="3"><div class="empty-state"><div class="empty-state-icon"><i class="bi bi-shield-check"></i></div><div class="fw-700 text-dark fs-7 mb-1">No active recovery tokens</div><div class="text-secondary fw-500 fs-8">Password reset requests will appear here.</div></div></td></tr>';
+                    }
 
-                foreach ($resets as $user):
-                    $initials = strtoupper($user['first_name'][0] . $user['last_name'][0]);
-                ?>
-                <tr>
-                    <td>
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="avatar"><?= $initials ?></div>
-                            <div class="fw-700"><?= htmlspecialchars($user['first_name'].' '.$user['last_name']) ?></div>
-                        </div>
-                    </td>
-                    <td class="text-muted small">
-                        <?= htmlspecialchars($user['email']) ?>
-                    </td>
-                    <td class="text-end">
-                        <div class="d-flex justify-content-end align-items-center gap-2">
-                            <button class="btn-action-icon border-0 shadow-sm" 
-                                    style="background: #eef5f7; color: var(--brand-color); transition: all 0.2s ease;"
-                                    onmouseover="this.style.background='var(--brand-color)'; this.style.color='white';"
-                                    onmouseout="this.style.background='#eef5f7'; this.style.color='var(--brand-color)';"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#tokenModal<?= $user['id'] ?>"
-                                    title="View Token">
-                                <i class="bi bi-key-fill"></i>
-                            </button>
-                            
-                            <button class="btn px-3 py-1-5 border-0 shadow-sm fw-800 text-white rounded-3 animate__animated animate__pulse animate__infinite animate__slower" 
-                                    style="background: var(--accent-lime); font-size: 0.75rem; letter-spacing: 0.5px; transition: transform 0.2s;"
-                                    onmouseover="this.style.transform='scale(1.05)';"
-                                    onmouseout="this.style.transform='scale(1)';"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#resetModal<?= $user['id'] ?>">
-                                RESET
-                            </button>
-                            
-                            <button class="btn-action-icon border-0 shadow-sm" 
-                                    style="background: #feebeb; color: #ee5d50; transition: all 0.2s ease;"
-                                    onmouseover="this.style.background='#ee5d50'; this.style.color='white';"
-                                    onmouseout="this.style.background='#feebeb'; this.style.color='#ee5d50';"
-                                    onclick="confirmAction('/cattleya/admin/cancel-reset?id=<?= $user['id'] ?>', 'Revoke this reset token?')"
-                                    title="Revoke Token">
-                                <i class="bi bi-x-circle-fill"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                    foreach ($resets as $user):
+                        $initials = strtoupper($user['first_name'][0] . $user['last_name'][0]);
+                    ?>
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="user-avatar" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);"><?= $initials ?></div>
+                                <div class="fw-700 text-dark fs-7"><?= htmlspecialchars($user['first_name'].' '.$user['last_name']) ?></div>
+                            </div>
+                        </td>
+                        <td class="text-secondary fw-500 fs-7">
+                            <?= htmlspecialchars($user['email']) ?>
+                        </td>
+                        <td class="text-end">
+                            <div class="d-flex justify-content-end align-items-center gap-2">
+                                <button type="button" class="btn-action" data-bs-toggle="modal" data-bs-target="#tokenModal<?= $user['id'] ?>" title="Inspect Token">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button type="button" class="btn-primary-glow" data-bs-toggle="modal" data-bs-target="#resetModal<?= $user['id'] ?>">
+                                    Override
+                                </button>
+                                <button type="button" class="btn-action btn-action-deny" onclick="confirmAction('/cattleya/admin/cancel-reset?id=<?= $user['id'] ?>', 'Revoke this reset token immediately?')" title="Revoke">
+                                    <i class="bi bi-shield-x"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-</div>
+
+<!-- Modernized Dynamic Modals Container -->
 <?php foreach ($resets as $user): ?>
-    <div class="modal fade" id="tokenModal<?= $user['id'] ?>" tabindex="-1" aria-hidden="true">
+    <!-- Identity Token Inspection Modal -->
+    <div class="modal fade" id="tokenModal<?= $user['id'] ?>" tabindex="-1" aria-labelledby="tokenModalLabel<?= $user['id'] ?>" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg overflow-hidden animate__animated animate__zoomIn animate__faster" style="border-radius: 24px;">
-                <div class="modal-header border-0 p-4" style="background: var(--brand-gradient);">
-                    <div class="d-flex align-items-center">
-                        <div class="bg-white bg-opacity-25 rounded-circle p-2 me-3">
-                            <i class="bi bi-shield-lock-fill text-white fs-4"></i>
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header align-items-center">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                            <i class="bi bi-shield-lock fs-5"></i>
+                        </div> 
+                        <div>
+                            <h5 class="modal-title fw-800 text-dark fs-6 mb-0" id="tokenModalLabel<?= $user['id'] ?>">Identity Token Verification</h5>
+                            <span class="text-secondary fs-8 fw-500">Cryptographic recovery key</span>
                         </div>
-                        <h5 class="modal-title fw-800 text-white mb-0">Verification Token</h5>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-4 text-center">
-                    <p class="text-muted fw-500 mb-4">Provide this secure token to <span class="text-dark fw-700"><?= htmlspecialchars($user['first_name']) ?></span> for manual identity verification.</p>
-                    
-                    <div class="position-relative mb-4">
-                        <div class="p-4 rounded-4" style="background: #f0f7f9; border: 2px dashed var(--brand-color);">
-                            <code class="fs-2 fw-800 text-primary d-block" id="tokenText<?= $user['id'] ?>" style="letter-spacing: 2px;">
-                                <?= htmlspecialchars($user['reset_token']) ?>
-                            </code>
-                        </div>
+                <div class="modal-body">
+                    <div class="p-3.5 rounded-3 mb-3 border bg-light position-relative">
+                        <span class="text-uppercase text-success fw-800 fs-8 d-block mb-1" style="letter-spacing: 0.05em;">Active Recovery Token</span>
+                        <code class="fs-6 fw-700 text-dark d-block text-break" id="tokenText<?= $user['id'] ?>" style="letter-spacing: 0.5px; font-family: monospace;">
+                            <?= htmlspecialchars($user['reset_token']) ?>
+                        </code>
                     </div>
-
-                    <button class="btn btn-primary w-100 py-3 rounded-4 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2" 
-                            onclick="copyToken('tokenText<?= $user['id'] ?>')">
-                        <i class="bi bi-clipboard2-check-fill"></i> Copy to Clipboard
+                    <p class="text-secondary fw-500 fs-7 mb-4">Verification token generated for <span class="text-dark fw-700"><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></span>.</p>
+                    
+                    <button type="button" class="btn-primary-glow w-100 py-2.5 fs-7 d-flex align-items-center justify-content-center gap-2 rounded-3" 
+                            onclick="copyToClipboard('tokenText<?= $user['id'] ?>', 'Token copied securely')">
+                        <i class="bi bi-clipboard fs-6"></i> Copy Token to Clipboard
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="resetModal<?= $user['id'] ?>" tabindex="-1" aria-hidden="true">
+    <!-- Password Override Modal -->
+    <div class="modal fade" id="resetModal<?= $user['id'] ?>" tabindex="-1" aria-labelledby="resetModalLabel<?= $user['id'] ?>" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg overflow-hidden animate__animated animate__zoomIn animate__faster" style="border-radius: 24px;">
-                <div class="modal-header border-0 p-4" style="background: var(--brand-gradient);">
-                    <div class="d-flex align-items-center">
-                        <div class="bg-white bg-opacity-25 rounded-circle p-2 me-3">
-                            <i class="bi bi-key-fill text-white fs-4"></i>
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header align-items-center">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 bg-danger bg-opacity-10 text-danger d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                            <i class="bi bi-key-fill fs-5"></i>
                         </div>
-                        <h5 class="modal-title fw-800 text-white mb-0">System Override</h5>
+                        <div>
+                            <h5 class="modal-title fw-800 text-dark fs-6 mb-0" id="resetModalLabel<?= $user['id'] ?>">System Credential Override</h5>
+                            <span class="text-secondary fs-8 fw-500">Forced password reset</span>
+                        </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-4">
-                    <div class="mb-4 text-center">
-                        <h6 class="text-uppercase fw-800 text-muted small mb-3" style="letter-spacing: 1px;">Generated Password</h6>
-                        <div class="input-group">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="text-uppercase fw-800 text-secondary fs-8 mb-2 d-block" style="letter-spacing: 0.05em;">Temporary Credential</label>
+                        <div class="input-group rounded-3 border overflow-hidden bg-white p-1">
                             <input type="text" id="passInput<?= $user['id'] ?>" 
-                                   class="form-control form-control-lg border-0 bg-light fw-bold text-center py-3" 
-                                   style="border-radius: 12px 0 0 12px; color: var(--brand-color);" 
+                                   class="form-control border-0 bg-transparent fw-800 text-center py-2 fs-6 text-dark" 
+                                   style="font-family: monospace; letter-spacing: 1px;" 
                                    value="MLINC12345@" readonly>
-                            <button class="btn btn-dark px-4" style="border-radius: 0 12px 12px 0;" 
-                                    onclick="copyPassword('passInput<?= $user['id'] ?>')">
-                                <i class="bi bi-copy"></i>
+                            <button type="button" class="btn btn-dark px-3 rounded-2 d-flex align-items-center justify-content-center fw-700 fs-7" 
+                                    onclick="copyInputToClipboard('passInput<?= $user['id'] ?>', 'Credential copied securely')">
+                                <i class="bi bi-copy me-1"></i> Copy
                             </button>
                         </div>
                     </div>
-
-                    <div class="alert border-0 p-3 mb-4 d-flex align-items-center" 
-                         style="background: rgba(157, 196, 77, 0.12); border-radius: 15px;">
-                        <i class="bi bi-info-circle-fill text-success fs-4 me-3"></i>
-                        <span class="small fw-600 text-dark">This action updates the database instantly. Please ensure the user is notified of their new credentials.</span>
+                    <div class="p-3 mb-4 rounded-3 d-flex align-items-start" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2);">
+                        <i class="bi bi-exclamation-triangle-fill fs-6 me-2.5 text-warning flex-shrink-0 mt-0.5"></i>
+                        <span class="fs-8 fw-600 text-dark lh-sm">This action permanently overwrites current credentials for <span class="fw-800"><?= htmlspecialchars($user['first_name']) ?></span>.</span>
                     </div>
-
                     <div class="row g-2">
                         <div class="col-6">
-                            <button class="btn btn-light w-100 py-3 rounded-4 fw-bold text-secondary" data-bs-dismiss="modal">Keep Current</button>
+                            <button type="button" class="btn btn-light w-100 py-2.5 rounded-3 fw-700 text-secondary border fs-7" data-bs-dismiss="modal">Cancel</button>
                         </div>
                         <div class="col-6">
-                            <button class="btn btn-primary w-100 py-3 rounded-4 fw-bold shadow" 
-                                    style="background-color: var(--brand-color);"
-                                    onclick="resetPassword(<?= $user['id'] ?>)">
-                                Confirm Update
+                            <button type="button" class="btn btn-danger w-100 py-2.5 rounded-3 fw-700 fs-7 border-0 text-white"
+                                    onclick="resetPassword(<?= $user['id'] ?>)" style="background: #dc2626;">
+                                Execute Override
                             </button>
                         </div>
                     </div>
@@ -488,62 +732,40 @@ $user_name = $_SESSION['user_name'];
         </div>
     </div>
 <?php endforeach; ?>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<style>
-    /* Custom CSS to inject hover effects that JS can't handle alone */
-    .swal2-styled.swal2-confirm:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(42, 98, 121, 0.3) !important;
-    }
-    .swal2-styled.swal2-cancel:hover {
-        background-color: #f1f5f9 !important;
-        color: #1e293b !important;
-    }
-    .cattleya-swal-popup {
-        border: 1px solid rgba(42, 98, 121, 0.1) !important;
-        backdrop-filter: blur(8px);
-    }
-</style>
-
 <script>
-const swalModern = {
+const swalConfig = {
     customClass: {
-        popup: 'cattleya-swal-popup shadow-lg rounded-5 p-4',
-        title: 'fw-800 text-dark fs-3 mb-2',
-        htmlContainer: 'text-muted fs-6 fw-500',
-        confirmButton: 'btn btn-primary btn-lg px-5 py-2-5 rounded-4 fw-bold mx-2 shadow-sm transition-all',
-        cancelButton: 'btn btn-light btn-lg px-5 py-2-5 rounded-4 fw-bold mx-2 text-secondary transition-all',
-        loader: 'text-primary'
+        popup: 'sa-modern-popup',
+        title: 'sa-title',
+        htmlContainer: 'sa-html-container',
+        confirmButton: 'sa-btn-confirm mx-1',
+        cancelButton: 'sa-btn-cancel mx-1',
     },
     buttonsStyling: false,
-    showClass: { 
-        popup: 'animate__animated animate__zoomIn animate__faster' 
-    },
-    hideClass: { 
-        popup: 'animate__animated animate__zoomOut animate__faster' 
-    }
+    showClass: { popup: 'animate__animated animate__zoomIn animate__faster' },
+    hideClass: { popup: 'animate__animated animate__zoomOut animate__faster' }
 };
 
 function confirmAction(url, msg) {
     Swal.fire({
-        ...swalModern,
-        title: 'Are you sure?',
+        ...swalConfig,
+        title: 'Authorization Required',
         text: msg,
         icon: 'warning',
-        iconColor: '#2a6279',
+        iconColor: '#f59e0b',
         showCancelButton: true,
-        confirmButtonText: 'Yes, Proceed',
+        confirmButtonText: 'Confirm Execution',
         cancelButtonText: 'Cancel',
-        reverseButtons: true,
-        focusCancel: true
+        reverseButtons: true
     }).then((res) => {
         if (res.isConfirmed) {
             Swal.fire({ 
-                ...swalModern,
-                title: 'Updating...',
-                html: '<div class="py-3">Please wait while we sync with the server.</div>',
+                ...swalConfig,
+                title: 'Processing Request',
+                html: '<div class="d-flex align-items-center justify-content-center gap-2 mt-2 text-secondary fs-7"><span class="spinner-border spinner-border-sm text-success" role="status"></span> Synchronizing securely with server database...</div>',
                 allowOutsideClick: false, 
                 showConfirmButton: false,
                 didOpen: () => { Swal.showLoading(); }
@@ -564,11 +786,11 @@ async function resetPassword(id) {
         
         if (data.success) {
             Swal.fire({ 
-                ...swalModern, 
-                title: 'Reset Successful', 
-                text: 'Credentials have been updated.', 
+                ...swalConfig, 
+                title: 'Override Complete', 
+                text: 'Credentials have been successfully updated in the database.', 
                 icon: 'success',
-                iconColor: '#9dc44d',
+                iconColor: '#10b981',
                 timer: 2000,
                 showConfirmButton: false
             }).then(() => location.reload());
@@ -577,80 +799,64 @@ async function resetPassword(id) {
         }
     } catch (err) {
         Swal.fire({ 
-            ...swalModern, 
-            title: 'System Error', 
+            ...swalConfig, 
+            title: 'Execution Failed', 
             text: err.message, 
             icon: 'error',
-            iconColor: '#ee5d50'
+            iconColor: '#ef4444'
         });
     }
 }
 
-/**
- * Cattleya Toast Notification
- */
 const Toast = Swal.mixin({
     toast: true,
-    position: 'top-end',
+    position: 'bottom-end',
     showConfirmButton: false,
-    timer: 3000,
+    timer: 2500,
     timerProgressBar: true,
-    background: '#2a6279',
-    color: '#fff',
-    iconColor: '#9dc44d',
+    background: '#0f172a',
+    color: '#ffffff',
+    iconColor: '#10b981',
     customClass: {
-        popup: 'rounded-4 shadow-lg animate__animated animate__fadeInRight animate__faster border-0'
-    },
-    didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer)
-        toast.addEventListener('mouseleave', Swal.resumeTimer)
+        popup: 'sa-toast-capsule animate__animated animate__slideInUp animate__faster mb-3 me-3'
     }
 });
 
-function copyToken(id) {
-    const text = document.getElementById(id).textContent;
+function copyToClipboard(id, msg) {
+    const text = document.getElementById(id).textContent.trim();
     navigator.clipboard.writeText(text);
-    Toast.fire({ 
-        icon: 'success', 
-        title: 'Token copied to clipboard',
-        background: '#1e4a5c' // Slightly darker for contrast
-    });
+    Toast.fire({ icon: 'success', title: msg });
 }
 
-function copyPassword(id) {
+function copyInputToClipboard(id, msg) {
     const input = document.getElementById(id);
     input.select();
     navigator.clipboard.writeText(input.value);
-    Toast.fire({ 
-        icon: 'success', 
-        title: 'Password copied!',
-        background: '#9dc44d',
-        color: '#1e4a5c'
-    });
+    Toast.fire({ icon: 'success', title: msg });
 }
 
 function handleApprove(userId) {
-    // Get the specific dropdown for this user
     const roleSelect = document.getElementById('role_' + userId);
     const selectedRole = roleSelect.value;
 
-    // Validation: Check if role is empty
     if (!selectedRole) {
-        // You can replace this with a prettier toast notification if you use them
-        alert("Please select a System Role before approving the user.");
-        roleSelect.classList.add('is-invalid'); // Optional: visual feedback
+        Toast.fire({
+            icon: 'warning',
+            title: 'Clearance required: Please assign a role.',
+            iconColor: '#f59e0b'
+        });
+        roleSelect.style.borderColor = '#f59e0b';
+        roleSelect.style.boxShadow = '0 0 0 3px rgba(245, 158, 11, 0.15)';
         roleSelect.focus();
         return;
     }
 
-    // Role is selected: remove invalid class if it was there
-    roleSelect.classList.remove('is-invalid');
-
-    // Construct the URL with both ID and Role
+    roleSelect.style.borderColor = '';
+    roleSelect.style.boxShadow = '';
+    const formattedRole = selectedRole.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
     const approveUrl = `/cattleya/admin/approve-user?id=${userId}&role=${selectedRole}`;
     
-    // Call your existing confirmAction logic
-    confirmAction(approveUrl, `Approve this user as ${selectedRole.replace('_', ' ')}?`);
+    confirmAction(approveUrl, `Grant this user "${formattedRole}" clearance?`);
 }
 </script>
 </body>

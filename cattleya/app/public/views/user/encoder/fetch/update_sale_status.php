@@ -95,7 +95,7 @@ try {
                 amount_paid,
                 due_date, 
                 status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')";
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Unpaid')";
             
             $stmtPayment = $pdo->prepare($sqlPayment);
 

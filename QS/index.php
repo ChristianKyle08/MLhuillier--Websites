@@ -1,203 +1,179 @@
 <?php include 'config/config.php'; ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Welcome to ML Rental Management System</title>
+<title>ML Rental Management System | Enterprise Console</title>
 <link rel="shortcut icon" href="assets/images/mlw-logo-96x96.png" type="image/x-icon">
 
-<!-- Google Font & Bootstrap -->
+<!-- Core Fonts & Stylesheets -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="assets/css/poppins.css" rel="stylesheet">
 <link href="assets/css/bootstrap.min.css" rel="stylesheet">
 <link href="assets/icons/bootstrap-icons.css" rel="stylesheet">
 <link href="assets/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
 
-<!-- Custom CSS -->
+<!-- Custom Enterprise CSS -->
 <link rel="stylesheet" href="index.css?v=<?= time(); ?>">
 <link rel="stylesheet" href="assets/css/loading.css?v=<?= time(); ?>">
 
-<style>
-/* Navbar */
-.navbar{
-background: rgba(255,255,255,0.95);
-backdrop-filter: blur(10px);
-box-shadow:0 4px 25px rgba(0,0,0,0.05);
-padding:12px 0;
-}
-
-.navbar .logo{
-height:50px;
-transition: transform .3s ease;
-}
-.navbar .logo:hover{
-transform: scale(1.05);
-}
-
-.navbar-nav .nav-link{
-font-weight:500;
-transition: all .2s ease;
-padding:8px 14px;
-border-radius:6px;
-}
-.navbar-nav .nav-link:hover{
-background:#fff3f3;
-color:#d70c0c !important;
-transform: translateY(-2px);
-}
-
-/* Hero Section */
-.hero{
-background: linear-gradient(135deg, #ffe3e3, #fff);
-padding:100px 0;
-min-height:85vh;
-position: relative;
-overflow: hidden;
-}
-.hero h1{
-font-weight:700;
-line-height:1.2;
-}
-.hero .btn-danger{
-border-radius:50px;
-transition: transform .2s ease;
-}
-.hero .btn-danger:hover{
-transform: scale(1.05);
-box-shadow: 0 8px 20px rgba(215,12,12,0.3);
-}
-
-/* Feature Cards */
-.hero .feature-card{
-background:#fff;
-border-radius:20px;
-box-shadow:0 10px 25px rgba(0,0,0,0.08);
-padding:30px 20px;
-transition: all .3s ease;
-cursor:pointer;
-}
-.hero .feature-card:hover{
-transform: translateY(-5px);
-box-shadow:0 15px 35px rgba(0,0,0,0.12);
-}
-.hero .feature-card i{
-transition: transform .3s ease, color .3s ease;
-}
-.hero .feature-card:hover i{
-color:#d70c0c;
-transform: scale(1.2) rotate(10deg);
-}
-
-/* Loading Modal */
-.modal-backdrop-custom{
-position:fixed;
-top:0;left:0;width:100%;height:100%;
-background:rgba(255,255,255,0.95);
-display:flex;
-align-items:center;
-justify-content:center;
-z-index:9999;
-transition: opacity .4s ease;
-}
-.modal-hidden{opacity:0;}
-
-/* Footer */
-footer{
-background:#fff;
-color:#888;
-border-top:1px solid #eee;
-font-size:11px;
-}
-
-/* Responsive adjustments */
-@media (max-width:768px){
-.hero{padding:60px 15px;}
-.hero .feature-card{margin-bottom:20px;}
-}
-</style>
-
+<!-- Immediate Theme Loader (Prevent Flash of Unstyled Theme) -->
+<script>
+  (function() {
+    const savedTheme = localStorage.getItem('ml_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  })();
+</script>
 </head>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-md px-4">
-  <img src="assets/images/ml_logo.png" alt="logo" class="logo me-3">
-  <div class="collapse navbar-collapse">
-    <ul class="navbar-nav ms-auto">
-      <li class="nav-item">
-        <a class="nav-link fw-semibold" href="#" id="branchProfileLink">
-          <i class="bi bi-shield-lock me-1"></i>Branch Profile
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#"><i class="bi bi-list"></i></a>
-      </li>
-    </ul>
-  </div>
-</nav>
-<!-- Hero Section -->
-<section class="hero position-relative">
-  <!-- Canvas for animated background -->
-  <canvas id="heroCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;"></canvas>
+<!-- Header Command Navigation -->
+<header class="header-navigation">
+  <div class="container-fluid max-ww-1200 d-flex align-items-center justify-content-between">
+    <a href="#" class="d-flex align-items-center text-decoration-none">
+      <img src="assets/images/ml_logo.png" alt="ML Logo" class="navbar-brand-logo">
+    </a>
 
-  <div class="container position-relative" style="z-index:1;">
-    <div class="row align-items-center justify-content-center">
+    <div class="d-flex align-items-center gap-3">
+      <div class="status-pill d-none d-sm-inline-flex">
+        <span class="status-dot"></span> System Operational
+      </div>
       
-      <!-- Text Content -->
-      <div class="col-md-6 text-center text-md-start mb-5 mb-md-0 animate__animated animate__fadeInLeft">
-        <h1 class="display-5 fw-bold">ML Rental Management System</h1>
-        <p class="mt-2 mb-3"><span class="badge bg-dark">Version 6.1</span></p>
-        <p class="lead text-muted fs-6">One-stop solution for managing branches, contracts, reports, and more — designed to scale with your business.</p>
-        <div class="d-flex gap-3 mt-4">
-          <a href="user/rental/login_form.php" class="btn btn-danger px-4 py-2">
-            <i class="bi bi-box-arrow-in-right me-1"></i> Login to System
-          </a>
-        </div>
-      </div>
+      <!-- Theme Switch Button -->
+      <button class="btn-theme-toggle" id="themeToggleBtn" aria-label="Toggle theme" title="Switch Day/Night Mode">
+        <i class="bi bi-moon-stars-fill" id="themeToggleIcon"></i>
+      </button>
 
-      <!-- Feature Cards -->
-      <div class="col-md-6 text-center animate__animated animate__fadeInRight">
-        <div class="row g-3">
-          <div class="col-6">
-            <div class="feature-card">
-              <i class="bi bi-buildings fs-1 text-danger"></i>
-              <h6 class="mt-3 fw-semibold">Branch Management</h6>
-              <p class="text-muted small">Manage all rental locations in one dashboard.</p>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="feature-card">
-              <i class="bi bi-file-earmark-text fs-1 text-danger"></i>
-              <h6 class="mt-3 fw-semibold">Contract Tracking</h6>
-              <p class="text-muted small">Monitor lease terms, renewals, and history.</p>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="feature-card">
-              <i class="bi bi-cash-coin fs-1 text-danger"></i>
-              <h6 class="mt-3 fw-semibold">Payment Records</h6>
-              <p class="text-muted small">Auto-calculate VAT, WTax, escalation and net payable.</p>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="feature-card">
-              <i class="bi bi-graph-up-arrow fs-1 text-danger"></i>
-              <h6 class="mt-3 fw-semibold">Reports & Analytics</h6>
-              <p class="text-muted small">Generate detailed and summary reports.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <a href="#" class="btn-header-action" id="branchProfileLink">
+        <i class="bi bi-shield-lock-fill text-danger"></i>
+        <span>Branch Profile</span>
+      </a>
     </div>
   </div>
-</section>
+</header>
 
-<!-- Add this script at the end of the body -->
+<!-- Main Command Hero Section -->
+<main class="hero-wrapper">
+  <div class="hero-glow-backdrop"></div>
+  
+  <!-- Interactive Particle Grid Background -->
+  <canvas id="heroCanvas" style="position:absolute; inset:0; width:100%; height:100%; z-index:0; pointer-events:auto;"></canvas>
+
+  <div class="container position-relative" style="z-index: 1;">
+    
+    <!-- Hero Headline (Centered SaaS Architecture) -->
+    <div class="text-center max-w-800 mx-auto mb-5">
+      <div class="hero-tag mb-3">
+        <i class="bi bi-cpu-fill me-1"></i> Enterprise Edition 6.1
+      </div>
+      
+      <h1 class="hero-heading mb-3">
+        Centralized Platform for <br>
+        <span class="text-gradient">ML Rental Management System</span>
+      </h1>
+      
+      <p class="hero-description mx-auto mb-4">
+        Engineered for real-time lease tracking, branch property management, automated tax engine workflows, and executive analytics.
+      </p>
+
+      <div class="d-flex justify-content-center gap-3">
+        <a href="user/rental/login_form.php" class="btn-launch">
+          <span>Login to System</span>
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Live Preview Console Mockup -->
+    <div class="row justify-content-center mb-5">
+      <div class="col-lg-10">
+        <div class="console-frame">
+          <div class="console-header">
+            <div class="console-dots">
+              <span class="console-dot"></span>
+              <span class="console-dot"></span>
+              <span class="console-dot"></span>
+            </div>
+            <div class="console-title-text">ml_rental_console_v6.1 // system_active</div>
+            <div class="text-muted small"><i class="bi bi-wifi text-success me-1"></i> Connected</div>
+          </div>
+
+          <div class="console-metrics-grid">
+            <div class="metric-card">
+              <div class="metric-val text-danger">100%</div>
+              <div class="metric-lbl">Automated WTax</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">Real-Time</div>
+              <div class="metric-lbl">Audit Logs</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">24/7</div>
+              <div class="metric-lbl">High-Availability</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val text-success">Active</div>
+              <div class="metric-lbl">Multi-Branch Sync</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4-Column Horizontal Feature Row -->
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card-item">
+          <div class="feature-icon-wrapper">
+            <i class="bi bi-buildings-fill"></i>
+          </div>
+          <h6>Branch Management</h6>
+          <p>Centralized database to control, update, and manage lease assets across regions.</p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card-item">
+          <div class="feature-icon-wrapper">
+            <i class="bi bi-file-earmark-code-fill"></i>
+          </div>
+          <h6>Contract Lifecycle</h6>
+          <p>Track lease expiration dates, renewal timelines, and agreement terms effortlessly.</p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card-item">
+          <div class="feature-icon-wrapper">
+            <i class="bi bi-calculator-fill"></i>
+          </div>
+          <h6>Payment Engine</h6>
+          <p>Automatic calculation of VAT, withholding taxes, escalations, and net payables.</p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card-item">
+          <div class="feature-icon-wrapper">
+            <i class="bi bi-bar-chart-line-fill"></i>
+          </div>
+          <h6>Audit & Analytics</h6>
+          <p>Generate high-level summaries and comprehensive audit reports with a single click.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Dark Grid Canvas Animation -->
 <script>
 const canvas = document.getElementById('heroCanvas');
 const ctx = canvas.getContext('2d');
 let width, height;
+
 function resizeCanvas() {
     width = canvas.width = canvas.offsetWidth;
     height = canvas.height = canvas.offsetHeight;
@@ -205,38 +181,36 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-// Particle setup
 const particles = [];
-const particleCount = 80;
+const particleCount = 55;
 
-for(let i=0;i<particleCount;i++){
+for(let i = 0; i < particleCount; i++) {
     particles.push({
-        x: Math.random()*width,
-        y: Math.random()*height,
-        r: Math.random()*2 + 1,
-        dx: (Math.random()-0.5)*0.5,
-        dy: (Math.random()-0.5)*0.5
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 2 + 1,
+        dx: (Math.random() - 0.5) * 0.3,
+        dy: (Math.random() - 0.5) * 0.3
     });
 }
 
-function drawParticles(){
-    ctx.clearRect(0,0,width,height);
-    particles.forEach(p=>{
-        // Draw particle
+function drawParticles() {
+    ctx.clearRect(0, 0, width, height);
+    particles.forEach(p => {
         ctx.beginPath();
-        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fillStyle = 'rgba(215,12,12,0.7)';
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(244, 63, 94, 0.4)';
         ctx.fill();
     });
-    // Draw lines
-    for(let i=0;i<particles.length;i++){
-        for(let j=i+1;j<particles.length;j++){
+
+    for(let i = 0; i < particles.length; i++) {
+        for(let j = i + 1; j < particles.length; j++) {
             let dx = particles[i].x - particles[j].x;
             let dy = particles[i].y - particles[j].y;
-            let dist = Math.sqrt(dx*dx + dy*dy);
-            if(dist<100){
+            let dist = Math.sqrt(dx * dx + dy * dy);
+            if(dist < 120) {
                 ctx.beginPath();
-                ctx.strokeStyle = `rgba(215,12,12,${1-dist/100})`;
+                ctx.strokeStyle = `rgba(244, 63, 94, ${0.25 * (1 - dist / 120)})`;
                 ctx.lineWidth = 0.5;
                 ctx.moveTo(particles[i].x, particles[i].y);
                 ctx.lineTo(particles[j].x, particles[j].y);
@@ -246,71 +220,101 @@ function drawParticles(){
     }
 }
 
-function updateParticles(){
-    particles.forEach(p=>{
+function updateParticles() {
+    particles.forEach(p => {
         p.x += p.dx;
         p.y += p.dy;
-        if(p.x<0 || p.x>width) p.dx*=-1;
-        if(p.y<0 || p.y>height) p.dy*=-1;
+        if(p.x < 0 || p.x > width) p.dx *= -1;
+        if(p.y < 0 || p.y > height) p.dy *= -1;
     });
     drawParticles();
     requestAnimationFrame(updateParticles);
 }
 updateParticles();
 
-// Optional: Mouse interaction
-canvas.addEventListener('mousemove', e=>{
+canvas.addEventListener('mousemove', e => {
     const mouseX = e.offsetX;
     const mouseY = e.offsetY;
-    particles.forEach(p=>{
+    particles.forEach(p => {
         let dx = p.x - mouseX;
         let dy = p.y - mouseY;
-        let dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist<80){
-            p.dx += dx*0.0005;
-            p.dy += dy*0.0005;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+        if(dist < 100) {
+            p.dx += dx * 0.0004;
+            p.dy += dy * 0.0004;
         }
     });
 });
 </script>
-<!-- Loading Modal -->
+
+<!-- Dark Glass Loading Overlay -->
 <div id="loadingModal" class="modal-backdrop-custom">
   <div class="modal-box text-center">
-    <div class="loading-icon mb-3">
-      <i class="bi bi-arrow-repeat fs-1 text-danger spinner-border"></i>
+    <div class="mb-3">
+      <div class="spinner-border text-danger" style="width: 2.75rem; height: 2.75rem;" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
     </div>
-    <div class="loading-text mb-2">Please wait while we load your content...</div>
-    <div class="brand text-muted">ML Rental System &copy; 2025</div>
+    <div class="fw-bold text-light fs-5 mb-1" id="loaderText">Initializing Console</div>
+    <div class="text-muted small">ML Rental System &copy; 2025</div>
   </div>
 </div>
 
 <!-- Footer -->
-<footer class="text-center py-4">
-  &copy; <?= date('Y'); ?> ML Rental Management System. All rights reserved.
+<footer class="text-center">
+  <div class="container">
+    <p class="mb-0">&copy; <?= date('Y'); ?> ML Rental Management System. All rights reserved.</p>
+  </div>
 </footer>
 
-<!-- JS -->
+<!-- Core JS Imports -->
 <script src="assets/sweetalert2/dist/sweetalert2.min.js"></script>
 <script src="assets/js/bootstrap.bundle.min.js"></script>
 
 <script>
-// Branch Profile Access Modal
+// Day & Night Theme Toggle Logic
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+const themeToggleIcon = document.getElementById('themeToggleIcon');
+
+function updateThemeIcon(theme) {
+  if (theme === 'light') {
+    themeToggleIcon.classList.remove('bi-moon-stars-fill');
+    themeToggleIcon.classList.add('bi-sun-fill');
+  } else {
+    themeToggleIcon.classList.remove('bi-sun-fill');
+    themeToggleIcon.classList.add('bi-moon-stars-fill');
+  }
+}
+
+// Set Icon on initial render
+updateThemeIcon(document.documentElement.getAttribute('data-theme') || 'dark');
+
+themeToggleBtn.addEventListener('click', () => {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('ml_theme', newTheme);
+  updateThemeIcon(newTheme);
+});
+
+// Secure Password Modal Logic for Branch Profile Link
 document.getElementById('branchProfileLink').onclick = function (event) {
   event.preventDefault();
   Swal.fire({
-    title: `<div class="fs-4 fw-semibold text-dark"><i class="bi bi-shield-lock text-danger me-2"></i>Secure Access</div>`,
-    html: `<p class="mb-2 text-muted" style="font-size: 13px;">Please enter the password to access <strong>Branch Profile Management</strong>.</p>
-           <input type="password" id="modalPassword" class="swal2-input" placeholder="Enter password" autocomplete="off" style="border-radius: 12px;">`,
+    title: `<div class="fs-4 fw-bold text-dark"><i class="bi bi-shield-lock-fill text-danger me-2"></i>Secure Access</div>`,
+    html: `<p class="mb-3 text-muted" style="font-size: 13px;">Please enter the password to access <strong>Branch Profile Management</strong>.</p>
+           <input type="password" id="modalPassword" class="swal2-input" placeholder="Enter password" autocomplete="off" style="border-radius: 12px; border: 1px solid #cbd5e1; font-size: 14px;">`,
     background: '#fff',
     color: '#333',
     showCancelButton: true,
     confirmButtonText: '<i class="bi bi-check-circle me-2"></i>Submit',
     cancelButtonText: '<i class="bi bi-x-circle me-2"></i>Cancel',
-    confirmButtonColor: '#d70c0c',
-    cancelButtonColor: '#6c757d',
+    confirmButtonColor: '#f43f5e',
+    cancelButtonColor: '#64748b',
     allowOutsideClick: false,
     customClass: {
-      popup: 'rounded-4 shadow-sm p-3 animate__animated animate__fadeInDown',
+      popup: 'rounded-4 shadow-lg p-4 animate__animated animate__fadeInDown',
       confirmButton: 'btn btn-danger rounded-pill px-4 fw-semibold',
       cancelButton: 'btn btn-secondary rounded-pill px-4 fw-semibold',
       htmlContainer: 'mb-2'
@@ -322,7 +326,7 @@ document.getElementById('branchProfileLink').onclick = function (event) {
     }
   }).then((result) => {
     if (result.isConfirmed) {
-      if (btoa(result.value) === 'Q0FETUxodWlsbGllckRCMjAyMw==') {
+      if (btoa(result.value) === 'Q0FEDUxodWlsbGllckRCMjAyMw==') {
           Swal.fire({
             html: `<div class="d-flex flex-column align-items-center animate__animated animate__fadeInDown">
                     <div class="bg-success rounded-circle d-flex justify-content-center align-items-center shadow-sm" style="width: 80px; height: 80px;">
@@ -337,7 +341,7 @@ document.getElementById('branchProfileLink').onclick = function (event) {
             customClass: {popup: 'rounded-4 shadow-sm p-3 animate__animated animate__zoomIn'}
           });
           setTimeout(() => { window.location.href = 'admin/rental/qs_branch_profile.php'; }, 1400);
-      }else {
+      } else {
         Swal.fire({
           html:`<div class="text-center animate__animated animate__shakeX">
                   <div class="bg-danger rounded-circle d-flex justify-content-center align-items-center mx-auto mb-3 shadow-sm" style="width: 70px; height: 70px;">
@@ -347,7 +351,7 @@ document.getElementById('branchProfileLink').onclick = function (event) {
                   <p class="text-muted mb-1">Please try again.</p>
                 </div>`,
           confirmButtonText:'Try Again',
-          confirmButtonColor:'#d70c0c',
+          confirmButtonColor:'#f43f5e',
           buttonsStyling:false,
           customClass:{popup:'rounded-4 shadow-sm p-3', confirmButton:'btn btn-danger rounded-pill px-4 fw-semibold'}
         });
@@ -356,39 +360,26 @@ document.getElementById('branchProfileLink').onclick = function (event) {
   });
 };
 
-// Loader fade-out
+// Loader Fade Out Logic
 window.onload = function () {
   const loader = document.getElementById('loadingModal');
   if (loader) {
     loader.classList.add('modal-hidden');
-    setTimeout(()=>loader.style.display='none',400);
+    setTimeout(() => loader.style.display = 'none', 400);
   }
 };
 
-// 1. Disable Right-Click (Context Menu)
+// System Security Features
 document.addEventListener('contextmenu', (e) => e.preventDefault());
 
-// 2. Disable Keyboard Shortcuts
 document.onkeydown = function(e) {
-    // F12
     if (e.keyCode == 123) return false;
-    
-    // Ctrl+Shift+I (Inspect)
     if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
-    
-    // Ctrl+Shift+J (Console)
     if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
-    
-    // Ctrl+Shift+C (Element Selector)
     if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
-    
-    // Ctrl+U (View Source)
     if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
 };
 
-// 3. The Debugger Trap
-// If the console is opened, this loop will trigger the debugger, 
-// effectively "freezing" the user's ability to browse the code.
 (function() {
     var protect = function() {
         try {
@@ -402,7 +393,6 @@ document.onkeydown = function(e) {
     };
     protect();
 })();
-
 </script>
 
 </body>

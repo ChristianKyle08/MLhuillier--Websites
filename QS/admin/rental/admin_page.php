@@ -155,132 +155,406 @@ if ($result->num_rows > 0) {
     
     <style>
     :root {
-        --c-primary: #4f46e5;
-        --c-secondary: #7c3aed;
+        --c-primary: #6366f1;
+        --c-primary-hover: #4f46e5;
+        --c-primary-light: #e0e7ff;
+        --c-secondary: #8b5cf6;
+        --c-secondary-light: #f3e8ff;
         --c-success: #10b981;
+        --c-success-light: #d1fae5;
         --c-warning: #f59e0b;
+        --c-warning-light: #fef3c7;
         --c-danger: #f43f5e;
+        --c-danger-light: #ffe4e6;
         --c-info: #0ea5e9;
+        --c-info-light: #e0f2fe;
         
-        --bg-body: #f8fafc;
+        --bg-body: #f1f5f9;
         --bg-surface: #ffffff;
+        --bg-glass: rgba(255, 255, 255, 0.85);
         --text-main: #0f172a;
         --text-muted: #64748b;
         --border-color: #e2e8f0;
         
-        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-        --radius: 12px;
+        --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-sm: 0 2px 4px 0 rgb(15 23 42 / 0.03), 0 1px 2px -1px rgb(15 23 42 / 0.03);
+        --shadow-md: 0 4px 12px -2px rgb(15 23 42 / 0.06), 0 2px 6px -2px rgb(15 23 42 / 0.04);
+        --shadow-lg: 0 12px 24px -4px rgb(15 23 42 / 0.08), 0 4px 12px -4px rgb(15 23 42 / 0.04);
+        --radius: 16px;
+        --radius-sm: 10px;
     }
     
-    body { font-family: 'Poppins', sans-serif; font-size: 13.5px; background-color: var(--bg-body); color: var(--text-main); animation: fadePage 0.5s ease-in-out; }
-    @keyframes fadePage{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+    body { 
+        font-family: 'Poppins', system-ui, -apple-system, sans-serif; 
+        font-size: 13.5px; 
+        background-color: var(--bg-body); 
+        color: var(--text-main); 
+        animation: fadePage 0.4s ease-out;
+        -webkit-font-smoothing: antialiased;
+    }
+    @keyframes fadePage { 
+        from { opacity: 0; transform: translateY(6px); } 
+        to { opacity: 1; transform: translateY(0); } 
+    }
     
-    .navbar { background: var(--bg-surface) !important; border-bottom: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
-    .navbar .nav-link { color: var(--text-main) !important; font-weight: 500; }
-    .navbar .nav-link:hover { color: var(--c-primary) !important; }
+    .navbar { 
+        background: var(--bg-surface) !important; 
+        border-bottom: 1px solid var(--border-color); 
+        box-shadow: var(--shadow-sm); 
+        backdrop-filter: blur(10px);
+    }
+    .navbar .nav-link { 
+        color: var(--text-main) !important; 
+        font-weight: 500; 
+        transition: color 0.2s ease;
+    }
+    .navbar .nav-link:hover { 
+        color: var(--c-primary) !important; 
+    }
 
-    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-    .kpi-card { background: var(--bg-surface); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow-md); display: flex; align-items: flex-start; justify-content: space-between; border: 1px solid var(--border-color); transition: all 0.3s ease; }
-    .kpi-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--c-primary); }
-    .kpi-info h2 { font-size: 28px; font-weight: 700; margin: 5px 0 0 0; color: var(--text-main); }
-    .kpi-info p { margin: 0; font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-    .kpi-icon-wrapper { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+    /* Modernized Hero Header */
+    .dashboard-header {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        padding: 1.5rem 1.75rem;
+        box-shadow: var(--shadow-sm);
+    }
 
-    .panel { background: var(--bg-surface); border-radius: var(--radius); box-shadow: var(--shadow-md); border: 1px solid var(--border-color); margin-bottom: 2rem; overflow: hidden; }
-    .panel-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(248, 250, 252, 0.5); }
-    .panel-title { font-size: 15px; font-weight: 600; margin: 0; color: var(--text-main); }
-    .chart-box { position: relative; height: 320px; width: 100%; padding: 1rem; }
+    /* Enhanced KPI Grid */
+    .kpi-grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+        gap: 1.25rem; 
+        margin-bottom: 1.75rem; 
+    }
+    .kpi-card { 
+        background: var(--bg-surface); 
+        border-radius: var(--radius); 
+        padding: 1.25rem 1.5rem; 
+        box-shadow: var(--shadow-sm); 
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between; 
+        border: 1px solid var(--border-color); 
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+        position: relative;
+        overflow: hidden;
+    }
+    .kpi-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: transparent;
+        transition: background 0.25s ease;
+    }
+    .kpi-card:hover { 
+        transform: translateY(-4px); 
+        box-shadow: var(--shadow-lg); 
+        border-color: rgba(99, 102, 241, 0.3); 
+    }
+    .kpi-card:hover::before {
+        background: var(--c-primary);
+    }
+    .kpi-info h2 { 
+        font-size: 26px; 
+        font-weight: 700; 
+        margin: 4px 0 0 0; 
+        color: var(--text-main); 
+        letter-spacing: -0.5px;
+    }
+    .kpi-info p { 
+        margin: 0; 
+        font-size: 11.5px; 
+        font-weight: 600; 
+        color: var(--text-muted); 
+        text-transform: uppercase; 
+        letter-spacing: 0.6px; 
+    }
+    .kpi-icon-wrapper { 
+        width: 52px; 
+        height: 52px; 
+        border-radius: 14px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-size: 1.4rem; 
+        transition: transform 0.25s ease;
+        flex-shrink: 0;
+    }
+    .kpi-card:hover .kpi-icon-wrapper {
+        transform: scale(1.08) rotate(-3deg);
+    }
 
-    .table-container { max-height: 600px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-    .table-modern { width: 100%; border-collapse: separate; border-spacing: 0; }
-    .table-modern th { position: sticky; top: 0; z-index: 10; background: rgba(241, 245, 249, 0.95); backdrop-filter: blur(4px); color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; padding: 14px 16px; border-bottom: 2px solid var(--border-color); box-shadow: 0 2px 2px -1px rgba(0,0,0,0.05); }
-    .table-modern td { padding: 12px 16px; vertical-align: middle; border-bottom: 1px solid var(--border-color); color: var(--text-main); }
-    .table-modern tbody tr { content-visibility: auto; contain-intrinsic-size: 60px; transition: background-color 0.2s ease; }
-    .table-modern tbody tr:hover { background-color: #f8fafc; }
+    /* Refined Panels */
+    .panel { 
+        background: var(--bg-surface); 
+        border-radius: var(--radius); 
+        box-shadow: var(--shadow-sm); 
+        border: 1px solid var(--border-color); 
+        margin-bottom: 1.75rem; 
+        overflow: hidden; 
+        transition: box-shadow 0.25s ease;
+    }
+    .panel:hover {
+        box-shadow: var(--shadow-md);
+    }
+    .panel-header { 
+        padding: 1.15rem 1.5rem; 
+        border-bottom: 1px solid var(--border-color); 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        background: #ffffff; 
+    }
+    .panel-title { 
+        font-size: 14.5px; 
+        font-weight: 700; 
+        margin: 0; 
+        color: var(--text-main); 
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .chart-box { 
+        position: relative; 
+        height: 330px; 
+        width: 100%; 
+        padding: 1.25rem; 
+    }
+
+    /* Modern Table Design */
+    .table-container { 
+        max-height: 600px; 
+        overflow-y: auto; 
+        -webkit-overflow-scrolling: touch; 
+    }
+    .table-modern { 
+        width: 100%; 
+        border-collapse: separate; 
+        border-spacing: 0; 
+    }
+    .table-modern th { 
+        position: sticky; 
+        top: 0; 
+        z-index: 10; 
+        background: #f8fafc; 
+        color: var(--text-muted); 
+        font-weight: 600; 
+        text-transform: uppercase; 
+        font-size: 11px; 
+        letter-spacing: 0.6px; 
+        padding: 14px 18px; 
+        border-bottom: 1px solid var(--border-color); 
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03); 
+    }
+    .table-modern td { 
+        padding: 14px 18px; 
+        vertical-align: middle; 
+        border-bottom: 1px solid #f1f5f9; 
+        color: var(--text-main); 
+        font-size: 13px;
+    }
+    .table-modern tbody tr { 
+        content-visibility: auto; 
+        contain-intrinsic-size: 60px; 
+        transition: background-color 0.15s ease; 
+    }
+    .table-modern tbody tr:hover { 
+        background-color: #f8fafc; 
+    }
     
-    .badge-modern { padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; display: inline-block; }
-    .bg-soft-primary { background: #e0e7ff; color: var(--c-primary); }
-    .bg-soft-warning { background: #fef3c7; color: #d97706; }
-    .bg-soft-info    { background: #e0f2fe; color: var(--c-info); }
-    .bg-soft-violet  { background: #ede9fe; color: var(--c-secondary); }
-    .bg-soft-success { background: #d1fae5; color: var(--c-success); }
-    .bg-soft-danger  { background: #ffe4e6; color: var(--c-danger); }
+    /* Modern Badges */
+    .badge-modern { 
+        padding: 5px 12px; 
+        border-radius: 30px; 
+        font-size: 11px; 
+        font-weight: 600; 
+        letter-spacing: 0.3px; 
+        display: inline-flex; 
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .badge-modern:hover {
+        transform: translateY(-1px);
+    }
+    .bg-soft-primary { background: var(--c-primary-light); color: var(--c-primary-hover); }
+    .bg-soft-warning { background: var(--c-warning-light); color: #b45309; }
+    .bg-soft-info    { background: var(--c-info-light); color: #0284c7; }
+    .bg-soft-violet  { background: var(--c-secondary-light); color: var(--c-secondary); }
+    .bg-soft-success { background: var(--c-success-light); color: #047857; }
+    .bg-soft-danger  { background: var(--c-danger-light); color: #be123c; }
     .bg-soft-slate   { background: #f1f5f9; color: var(--text-muted); }
 
-    .btn-primary-modern { background: var(--c-primary); color: white; border: none; border-radius: 8px; padding: 10px 20px; font-weight: 500; transition: background 0.3s; }
-    .btn-primary-modern:hover { background: #4338ca; color: white; }
-    
-    .table-container::-webkit-scrollbar { width: 8px; height: 8px; }
+    /* Modern Buttons & Form Inputs */
+    .btn-primary-modern { 
+        background: var(--c-primary); 
+        color: white; 
+        border: none; 
+        border-radius: var(--radius-sm); 
+        padding: 10px 20px; 
+        font-weight: 600; 
+        font-size: 13px;
+        transition: all 0.2s ease; 
+        box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+    }
+    .btn-primary-modern:hover { 
+        background: var(--c-primary-hover); 
+        color: white; 
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+    }
+    .btn-outline-custom {
+        border: 1px solid var(--border-color);
+        background: #ffffff;
+        color: var(--text-muted);
+        border-radius: var(--radius-sm);
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    .btn-outline-custom:hover {
+        background: #f8fafc;
+        color: var(--text-main);
+        border-color: #cbd5e1;
+    }
+    .search-input-group .form-control {
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border-color);
+        padding-left: 2.25rem;
+        font-size: 13px;
+        transition: all 0.2s ease;
+    }
+    .search-input-group .form-control:focus {
+        border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+    .search-input-group {
+        position: relative;
+    }
+    .search-input-group .search-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        z-index: 5;
+    }
+
+    /* Scrollbar Polish */
+    .table-container::-webkit-scrollbar { width: 6px; height: 6px; }
     .table-container::-webkit-scrollbar-track { background: transparent; }
     .table-container::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
     .table-container::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
     
-    .zone-separator-row { background-color: #f1f5f9 !important; font-weight: 700; text-transform: uppercase; color: var(--c-primary); font-size: 11px; letter-spacing: 1px; }
+    .zone-separator-row { 
+        background-color: #f8fafc !important; 
+        font-weight: 700; 
+        text-transform: uppercase; 
+        color: var(--c-primary-hover); 
+        font-size: 11px; 
+        letter-spacing: 0.8px; 
+    }
+    .zone-separator-row td {
+        border-top: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+    }
 
-    /* Custom styles for Enhanced Aesthetic Ledger Presentation */
-    .ledger-table-modern th { background: #f8fafc !important; color: #475569 !important; font-size: 11px !important; letter-spacing: 0.5px; border-bottom: 2px solid #cbd5e1 !important; text-transform: uppercase; }
-    .ledger-table-modern td { font-size: 13px !important; border-bottom: 1px dashed #e2e8f0 !important; color: #334155; }
-    .ledger-table-modern tbody tr:nth-child(even) { background-color: #fdfdfd; }
+    /* Modals Modernization */
+    .modal-content {
+        border-radius: var(--radius) !important;
+        overflow: hidden;
+    }
+    .modal-header {
+        background: #ffffff;
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.25rem 1.5rem;
+    }
+    
+    /* Ledger Presentation Enhancements */
+    .ledger-table-modern th { 
+        background: #f8fafc !important; 
+        color: var(--text-muted) !important; 
+        font-size: 11px !important; 
+        letter-spacing: 0.5px; 
+        border-bottom: 2px solid var(--border-color) !important; 
+        text-transform: uppercase; 
+    }
+    .ledger-table-modern td { 
+        font-size: 12.5px !important; 
+        border-bottom: 1px solid #f1f5f9 !important; 
+        color: #334155; 
+    }
+    .ledger-table-modern tbody tr:nth-child(even) { background-color: #fafafa; }
     </style>
 </head>
 <body>
     <?php include('navbar_admin.php'); ?>
 
     <main class="container-fluid px-4 mt-4 mb-5">
-        <header class="d-flex justify-content-between align-items-center mb-4">
+        <!-- Dashboard Header -->
+        <header class="dashboard-header d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
             <div>
-                <h1 class="h4 mb-1 fw-bold" style="color: var(--text-main);">Dashboard Overview</h1>
-                <p class="text-muted mb-0">System performance and contract pipeline analytics.</p>
+                <h1 class="h4 mb-1 fw-bold text-dark d-flex align-items-center gap-2">
+                    <i class="bi bi-grid-1x2-fill text-primary fs-5"></i> Dashboard Overview
+                </h1>
+                <p class="text-muted mb-0 small">System performance, property ledger analytics, and real-time contract status matrix.</p>
             </div>
-            <div class="bg-white px-3 py-2 rounded-pill shadow-sm border text-muted fw-medium">
-                <i class="bi bi-calendar2-event text-primary me-2"></i> <?php echo date('F d, Y'); ?>
+            <div class="bg-white px-3 py-2 rounded-pill shadow-sm border text-muted fw-medium small d-inline-flex align-items-center gap-2 align-self-start align-self-md-auto">
+                <i class="bi bi-calendar-check text-primary fs-6"></i> <?php echo date('F d, Y'); ?>
             </div>
         </header>
 
+        <!-- KPI Grid Section -->
         <section class="kpi-grid" aria-label="Key Performance Indicators">
             <article class="kpi-card">
                 <div class="kpi-info">
                     <p>Total Contracts</p>
                     <h2><?= number_format($kpi['total_contracts']) ?></h2>
                 </div>
-                <div class="kpi-icon-wrapper" style="background: #e0e7ff; color: var(--c-primary);"><i class="bi bi-folder2-open"></i></div>
+                <div class="kpi-icon-wrapper" style="background: var(--c-primary-light); color: var(--c-primary);"><i class="bi bi-folder2-open"></i></div>
             </article>
             <article class="kpi-card">
                 <div class="kpi-info">
                     <p>Approval Rate</p>
                     <h2><?= $approvalRate ?>%</h2>
                 </div>
-                <div class="kpi-icon-wrapper" style="background: #d1fae5; color: var(--c-success);"><i class="bi bi-patch-check"></i></div>
+                <div class="kpi-icon-wrapper" style="background: var(--c-success-light); color: var(--c-success);"><i class="bi bi-patch-check"></i></div>
             </article>
             <article class="kpi-card">
                 <div class="kpi-info">
                     <p>Pending Contracts</p>
                     <h2><?= number_format($pendingContracts) ?></h2>
                 </div>
-                <div class="kpi-icon-wrapper" style="background: #fef3c7; color: var(--c-warning);"><i class="bi bi-hourglass-split"></i></div>
+                <div class="kpi-icon-wrapper" style="background: var(--c-warning-light); color: var(--c-warning);"><i class="bi bi-hourglass-split"></i></div>
             </article>
             <article class="kpi-card">
                 <div class="kpi-info">
                     <p>Active Users</p>
                     <h2><?= number_format($kpi['active_users']) ?></h2>
                 </div>
-                <div class="kpi-icon-wrapper" style="background: #ede9fe; color: var(--c-secondary);"><i class="bi bi-people"></i></div>
+                <div class="kpi-icon-wrapper" style="background: var(--c-secondary-light); color: var(--c-secondary);"><i class="bi bi-people"></i></div>
             </article>
             <article class="kpi-card">
                 <div class="kpi-info">
                     <p>Registered Lessors</p>
                     <h2><?= number_format($kpi['total_lessors']) ?></h2>
                 </div>
-                <div class="kpi-icon-wrapper" style="background: #e0f2fe; color: var(--c-info);"><i class="bi bi-buildings"></i></div>
+                <div class="kpi-icon-wrapper" style="background: var(--c-info-light); color: var(--c-info);"><i class="bi bi-buildings"></i></div>
             </article>
         </section>
 
+        <!-- Analytical Charts Section -->
         <section class="row g-4 mb-4" aria-label="Analytical Charts">
             <div class="col-xl-4">
                 <div class="panel h-100">
-                    <header class="panel-header"><h3 class="panel-title">Contract Pipeline Distribution</h3></header>
+                    <header class="panel-header">
+                        <h3 class="panel-title"><i class="bi bi-pie-chart text-primary"></i> Contract Pipeline Distribution</h3>
+                    </header>
                     <div class="chart-box d-flex align-items-center justify-content-center">
                         <canvas id="doughnutChart" aria-label="Doughnut chart showing contract statuses" role="img"></canvas>
                     </div>
@@ -288,7 +562,9 @@ if ($result->num_rows > 0) {
             </div>
             <div class="col-xl-8">
                 <div class="panel h-100">
-                    <header class="panel-header"><h3 class="panel-title">Top 10 Branches: Pending vs Approved</h3></header>
+                    <header class="panel-header">
+                        <h3 class="panel-title"><i class="bi bi-bar-chart-line text-primary"></i> Top 10 Branches: Pending vs Approved</h3>
+                    </header>
                     <div class="chart-box">
                         <canvas id="barChart" aria-label="Bar chart showing pending and approved contracts per branch" role="img"></canvas>
                     </div>
@@ -296,12 +572,16 @@ if ($result->num_rows > 0) {
             </div>
         </section>
 
+        <!-- Branch Performance Data Table Section -->
         <section class="panel" aria-label="Branch Performance Table">
-            <header class="panel-header">
-                <h3 class="panel-title">Branch Performance & Contract Status Breakdown</h3>
-                <div class="d-flex align-items-center gap-2">
-                    <input type="text" id="tableSearch" class="form-control form-control-sm" placeholder="Search ID, Branch, or Region real-time..." style="width: 280px; border-radius: 8px;">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="window.print()" title="Print or Save as PDF">
+            <header class="panel-header flex-wrap gap-3">
+                <h3 class="panel-title"><i class="bi bi-table text-primary"></i> Branch Performance & Contract Status Breakdown</h3>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <div class="search-input-group">
+                        <i class="bi bi-search search-icon"></i>
+                        <input type="text" id="tableSearch" class="form-control form-control-sm" placeholder="Search ID, Branch, or Region real-time..." style="width: 280px;">
+                    </div>
+                    <button class="btn btn-sm btn-outline-custom px-3 py-1-5" onclick="window.print()" title="Print or Save as PDF">
                         <i class="bi bi-printer me-1"></i> Export PDF
                     </button>
                 </div>
@@ -330,19 +610,21 @@ if ($result->num_rows > 0) {
                                     $currentZone = $zoneValue;
                             ?>
                                 <tr class="zone-separator-row">
-                                    <td colspan="3" class="text-start ps-4 py-2">
+                                    <td colspan="3" class="text-start ps-4 py-2.5">
                                         <i class="bi bi-geo-alt-fill me-2"></i>MAIN ZONE: <?= htmlspecialchars($currentZone, ENT_QUOTES, 'UTF-8') ?>
                                     </td>
                                 </tr>
                             <?php endif; ?>
                         <tr>
                             <td class="text-start ps-4">
-                                <span class="fw-bold d-block"><?= htmlspecialchars($row['branch'], ENT_QUOTES, 'UTF-8') ?></span>
-                                <span class="text-muted" style="font-size: 11px;">ID: <?= htmlspecialchars($row['branch_id'], ENT_QUOTES, 'UTF-8') ?> &bull; <?= htmlspecialchars($row['region'], ENT_QUOTES, 'UTF-8') ?></span>
+                                <span class="fw-bold d-block text-dark"><?= htmlspecialchars($row['branch'], ENT_QUOTES, 'UTF-8') ?></span>
+                                <span class="text-muted small" style="font-size: 11px;">ID: <?= htmlspecialchars($row['branch_id'], ENT_QUOTES, 'UTF-8') ?> &bull; <?= htmlspecialchars($row['region'], ENT_QUOTES, 'UTF-8') ?></span>
                             </td>
                             <td>
                                 <button type="button" class="btn btn-link p-0 text-decoration-none launch-ledger-trigger" data-branch-id="<?= $row['branch_id'] ?>" data-branch-name="<?= htmlspecialchars($row['branch'], ENT_QUOTES, 'UTF-8') ?>" title="Click to view payment ledger details">
-                                    <span class="badge-modern bg-soft-primary fw-bold" style="cursor: pointer;"><?= number_format($row['running_col_count']) ?></span>
+                                    <span class="badge-modern bg-soft-primary fw-bold px-3 py-1.5" style="cursor: pointer; font-size:12px;">
+                                        <i class="bi bi-journal-text me-1"></i><?= number_format($row['running_col_count']) ?>
+                                    </span>
                                 </button>
                             </td>
                             <td class="text-start ps-4 d-hidden">
@@ -351,9 +633,9 @@ if ($result->num_rows > 0) {
                         </tr>
                             <?php endwhile; ?>
                             
-                            <tr id="grand-total-row" style="background: #f1f5f9; font-weight: 700; position: sticky; bottom: 0; z-index: 5; box-shadow: 0 -2px 5px rgba(0,0,0,0.05);">
+                            <tr id="grand-total-row" style="background: #f8fafc; font-weight: 700; position: sticky; bottom: 0; z-index: 5; box-shadow: 0 -2px 6px rgba(0,0,0,0.04); border-top: 2px solid var(--border-color);">
                                 <td class="text-start ps-4 text-primary">GRAND TOTAL</td>
-                                <td><?= number_format($grandTotalRunningCols) ?></td>
+                                <td class="text-primary font-monospace fs-6"><?= number_format($grandTotalRunningCols) ?></td>
                                 <td class="text-start ps-4">-</td>
                             </tr>
                         <?php else: ?>
@@ -367,19 +649,20 @@ if ($result->num_rows > 0) {
         </section>
     </main>
 
+    <!-- Modal 1: Payment Ledger Spreadsheet -->
     <div class="modal fade" id="ledgerViewModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content shadow-lg border-0" style="border-radius: var(--radius); max-height: 92vh;">
-                <div class="modal-header panel-header bg-white border-bottom shadow-sm">
+            <div class="modal-content shadow-lg border-0" style="max-height: 92vh;">
+                <div class="modal-header border-bottom">
                     <h5 class="modal-title fw-bold text-primary d-flex align-items-center" id="ledgerModalTitle">
-                        <i class="bi bi-wallet2 me-2"></i> Payment Ledger Verification
+                        <i class="bi bi-wallet2 me-2 fs-5"></i> Payment Ledger Verification
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4 bg-light-subtle">
-                    <div class="row g-3 mb-4 align-items-center bg-white p-3 rounded-3 shadow-sm border border-light">
+                    <div class="row g-3 mb-4 align-items-center bg-white p-3.5 rounded-3 shadow-sm border border-light">
                         <div class="col-md-7">
-                            <label for="ledgerContractSelect" class="form-label fw-bold text-muted small text-uppercase mb-1">Active Contract Lookup Selector</label>
+                            <label for="ledgerContractSelect" class="form-label fw-bold text-muted small text-uppercase mb-1" style="letter-spacing: 0.5px;">Active Contract Lookup Selector</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-file-earmark-text"></i></span>
                                 <select id="ledgerContractSelect" class="form-select form-select-sm border-start-0" style="border-radius: 0 8px 8px 0; font-weight: 500;">
@@ -409,7 +692,7 @@ if ($result->num_rows > 0) {
                                 </tr>
                             </thead>
                             <tbody id="ledgerTableBody">
-                                </tbody>
+                            </tbody>
                         </table>
                     </div>
                     
@@ -425,21 +708,22 @@ if ($result->num_rows > 0) {
         </div>
     </div>
 
+    <!-- Modal 2: DB Authentication -->
     <div class="modal fade" id="dbModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow-lg border-0" style="border-radius: var(--radius);">
-                <div class="modal-body p-5">
+            <div class="modal-content shadow-lg border-0">
+                <div class="modal-body p-4 p-md-5">
                     <div class="text-center mb-4">
-                        <div class="bg-soft-danger d-inline-block p-3 rounded-circle mb-3">
-                            <i class="bi bi-shield-lock-fill text-danger fs-1"></i>
+                        <div class="bg-soft-danger d-inline-flex p-3 rounded-circle mb-3 align-items-center justify-content-center" style="width:64px; height:64px;">
+                            <i class="bi bi-shield-lock-fill text-danger fs-2"></i>
                         </div>
-                        <h4 class="fw-bold">Database Authentication</h4>
-                        <p class="text-muted">Enter administrative password to proceed.</p>
+                        <h4 class="fw-bold text-dark">Database Authentication</h4>
+                        <p class="text-muted small mb-0">Enter administrative password to proceed.</p>
                     </div>
                     <input type="password" class="form-control form-control-lg mb-3" id="passwordInput" placeholder="Password" aria-label="Password">
                     <div class="form-check mb-4">
                         <input class="form-check-input" type="checkbox" id="showPassword">
-                        <label class="form-check-label text-muted" for="showPassword">Reveal Password</label>
+                        <label class="form-check-label text-muted small" for="showPassword">Reveal Password</label>
                     </div>
                     <button id="submitPassword" class="btn btn-primary-modern w-100 btn-lg d-flex justify-content-center align-items-center">
                         <span id="btnText">Authenticate Access</span>
@@ -450,13 +734,14 @@ if ($result->num_rows > 0) {
         </div>
     </div>
 
+    <!-- Modal 3: Signout Spinner -->
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 text-center p-5 shadow-lg" style="border-radius: var(--radius);">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 text-center p-4 shadow-lg">
                 <div class="modal-body">
-                    <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
-                    <h4 class="fw-bold">Signing Out</h4>
-                    <p class="text-muted">Securely disconnecting your session...</p>
+                    <div class="spinner-border text-primary mb-3" style="width: 2.5rem; height: 2.5rem;" role="status"></div>
+                    <h5 class="fw-bold mb-1 text-dark">Signing Out</h5>
+                    <p class="text-muted small mb-0">Securely disconnecting session...</p>
                 </div>
             </div>
         </div>
@@ -481,11 +766,26 @@ if ($result->num_rows > 0) {
                 labels: ['Created', 'Prepared', 'Reviewed', 'Checked', 'Approved'],
                 datasets: [{
                     data: pipelineData,
-                    backgroundColor: ['#94a3b8', '#f59e0b', '#0ea5e9', '#4f46e5', '#10b981'],
-                    borderWidth: 0, hoverOffset: 6
+                    backgroundColor: ['#94a3b8', '#f59e0b', '#0ea5e9', '#6366f1', '#10b981'],
+                    borderWidth: 0, 
+                    hoverOffset: 6
                 }]
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { usePointStyle: true, padding: 20, font: {size: 12} } } }, cutout: '75%' }
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                plugins: { 
+                    legend: { 
+                        position: 'right', 
+                        labels: { 
+                            usePointStyle: true, 
+                            padding: 16, 
+                            font: { size: 12 } 
+                        } 
+                    } 
+                }, 
+                cutout: '72%' 
+            }
         });
 
         const ctxBar = document.getElementById('barChart').getContext('2d');
@@ -494,11 +794,26 @@ if ($result->num_rows > 0) {
             data: {
                 labels: <?php echo json_encode($chartBranches); ?>,
                 datasets: [
-                    { label: 'Pending Operations', data: <?php echo json_encode($chartPending); ?>, backgroundColor: '#e2e8f0', borderRadius: 4 },
-                    { label: 'Approved Contracts', data: <?php echo json_encode($chartApproved); ?>, backgroundColor: '#4f46e5', borderRadius: 4 }
+                    { label: 'Pending Operations', data: <?php echo json_encode($chartPending); ?>, backgroundColor: '#cbd5e1', borderRadius: 6 },
+                    { label: 'Approved Contracts', data: <?php echo json_encode($chartApproved); ?>, backgroundColor: '#6366f1', borderRadius: 6 }
                 ]
             },
-            options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, border: {display: false}, grid: { color: '#f1f5f9' } } }, plugins: { legend: { position: 'top', align: 'end', labels: { usePointStyle: true, boxWidth: 8 } } } }
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                interaction: { mode: 'index', intersect: false }, 
+                scales: { 
+                    x: { stacked: true, grid: { display: false } }, 
+                    y: { stacked: true, border: { display: false }, grid: { color: '#f1f5f9' } } 
+                }, 
+                plugins: { 
+                    legend: { 
+                        position: 'top', 
+                        align: 'end', 
+                        labels: { usePointStyle: true, boxWidth: 8 } 
+                    } 
+                } 
+            }
         });
 
         const logoutLink = document.getElementById('logoutLink');
@@ -538,11 +853,11 @@ if ($result->num_rows > 0) {
                 if (result.success) {
                     window.location.href = 'db.php';
                 } else {
-                    Swal.fire({ icon: 'error', title: 'Authentication Failed', text: 'Incorrect password entered.', confirmButtonColor: '#4f46e5' });
+                    Swal.fire({ icon: 'error', title: 'Authentication Failed', text: 'Incorrect password entered.', confirmButtonColor: '#6366f1' });
                     passwordInput.value = '';
                 }
             } catch (error) {
-                Swal.fire({ icon: 'error', title: 'Server Error', text: 'Could not communicate with the server.', confirmButtonColor: '#4f46e5' });
+                Swal.fire({ icon: 'error', title: 'Server Error', text: 'Could not communicate with the server.', confirmButtonColor: '#6366f1' });
             } finally {
                 btnText.innerText = "Authenticate Access";
                 btnSpinner.classList.add('d-none');
@@ -672,11 +987,11 @@ if ($result->num_rows > 0) {
                         // Clean data rows mapping dates to fmtDate and amount tracking specifically to edit_amount_lessor
                         trElement.innerHTML = `
                             <td class="text-start text-muted">${fmtDate(ledgerRow.transaction_date)}</td>
-                            <td class="text-end">₱${fmtCurr(ledgerRow.amount)}</td>
-                            <td class="text-end text-secondary">₱${fmtCurr(ledgerRow.net_of_vat)}</td>
-                            <td class="text-end text-secondary">₱${fmtCurr(ledgerRow.vat_amount)}</td>
-                            <td class="text-end text-muted">₱${fmtCurr(ledgerRow.wtax)}</td>
-                            <td class="text-end fw-bold text-success pe-3">₱${fmtCurr(ledgerRow.edit_amount_lessor)}</td>
+                            <td class="text-end font-monospace">₱${fmtCurr(ledgerRow.amount)}</td>
+                            <td class="text-end text-secondary font-monospace">₱${fmtCurr(ledgerRow.net_of_vat)}</td>
+                            <td class="text-end text-secondary font-monospace">₱${fmtCurr(ledgerRow.vat_amount)}</td>
+                            <td class="text-end text-muted font-monospace">₱${fmtCurr(ledgerRow.wtax)}</td>
+                            <td class="text-end fw-bold text-success font-monospace pe-3">₱${fmtCurr(ledgerRow.edit_amount_lessor)}</td>
                             <td><span class="badge-modern bg-soft-info" style="font-size:10px;">${ledgerRow.mode_of_payment || '-'}</span></td>
                             <td class="text-start small">${ledgerRow.kptn}</td>
                             <td><span class="badge-modern ${badgeStyle}" style="font-size:10px;">${ledgerRow.status || '-'}</span></td>

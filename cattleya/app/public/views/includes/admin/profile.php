@@ -56,7 +56,6 @@ if (!empty($user['profile_image'])) {
         }
 
         .main-wrapper {
-            margin-left: var(--sidebar-width);
             width: calc(100% - var(--sidebar-width));
             display: flex;
             justify-content: center;
