@@ -482,7 +482,7 @@ i.bi { vertical-align: middle; margin-right: 4px; }
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body d-flex align-items-center gap-3">
             <i class="bi bi-funnel-fill fs-4 text-danger"></i>
-            <form method="POST" class="d-flex align-items-center gap-2 w-100">
+           <form method="POST" class="d-flex align-items-center gap-2 w-100">
 
 <!-- MAIN FILTER -->
 <select name="filter_region" class="form-select w-25" id="mainFilter">
@@ -558,12 +558,14 @@ i.bi { vertical-align: middle; margin-right: 4px; }
     <i class="bi bi-search me-1"></i> Filter
 </button>
 
-<a href="export_summary_report.php?filter_region=<?= urlencode($_POST['filter_region'] ?? '') ?>
-&region=<?= urlencode($selectedRegion) ?>
-&mainzone=<?= urlencode($selectedMainzone) ?>
-&area=<?= urlencode($selectedArea) ?>"
+<a href="export_summary_report.php?filter_region=<?= urlencode($_POST['filter_region'] ?? '') ?>&region=<?= urlencode($selectedRegion) ?>&mainzone=<?= urlencode($selectedMainzone) ?>&area=<?= urlencode($selectedArea) ?>"
    class="btn btn-success">
     <i class="bi bi-file-earmark-excel"></i> Export Excel
+</a>
+
+<a href="export_summary_report_pdf.php?filter_region=<?= urlencode($_POST['filter_region'] ?? '') ?>&region=<?= urlencode($selectedRegion) ?>&mainzone=<?= urlencode($selectedMainzone) ?>&area=<?= urlencode($selectedArea) ?>"
+   class="btn btn-secondary">
+    <i class="bi bi-file-earmark-pdf"></i> Export PDF
 </a>
 
 </form>

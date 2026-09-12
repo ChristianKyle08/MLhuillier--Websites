@@ -15,6 +15,30 @@ if (strpos($uri, $base) === 0) {
 // Remove leading/trailing slashes
 $uri = trim($uri, '/');
 
+// Extract the requested URI
+$request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+// Check if the request is for an RFP form
+if (preg_match('#^/uploads/rfp_forms/(.+\.pdf)$#', $request_uri, $matches)) {
+    
+    // (Optional) Add your session check here to secure the file
+    // require_once __DIR__ . '/../views/includes/session_check.php';
+
+    $fileName = basename($matches[1]);
+    $filePath = __DIR__ . '/../uploads/rfp_forms/' . $fileName;
+
+    if (file_exists($filePath)) {
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: inline; filename="' . $fileName . '"');
+        header('Content-Length: ' . filesize($filePath));
+        readfile($filePath);
+        exit;
+    } else {
+        header("HTTP/1.0 404 Not Found");
+        echo "404 - File not found";
+        exit;
+    }
+}
 // Define routes
 $routes = [
     ''                         => 'public/index.php',

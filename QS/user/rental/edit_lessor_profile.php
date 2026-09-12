@@ -72,7 +72,7 @@ if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $displayName = htmlspecialchars($row['display_name'] ?? '');
         $lessorOptions .= '<option value="' . $displayName . '" data-id="' . $row['id'] . '"></option>';
-        $allLessorList .= '<li class="list-group-item">' . $displayName . '</li>';
+        $allLessorList .= '<li class="list-group-item list-group-item-action">' . $displayName . '</li>';
     }
 }
 
@@ -202,15 +202,28 @@ document.addEventListener("DOMContentLoaded", function () {
             <!-- ✅ Your custom CSS should come AFTER font import -->
             <link rel="stylesheet" href="../../assets/css/sidebar.css">
             <style>
-                .btn-outline-gray {
-                color: #333;
-                border: 1px solid #333;
-                background-color: transparent;
+                body {
+                    background-color: #f8f9fa; /* Light background for the whole page */
                 }
-
+                .btn-outline-gray {
+                    color: #495057;
+                    border: 1px solid #ced4da;
+                    background-color: #fff;
+                }
                 .btn-outline-gray:hover {
-                background-color: #333;
-                color: #fff;
+                    background-color: #e9ecef;
+                    color: #212529;
+                }
+                /* Visual distinction for readonly inputs */
+                input[readonly] {
+                    background-color: #e9ecef !important;
+                    color: #6c757d;
+                    cursor: not-allowed;
+                }
+                /* Soft shadows for form inputs */
+                .form-control:focus {
+                    box-shadow: 0 0 0 0.25rem rgba(215, 12, 12, 0.25);
+                    border-color: #d70c0c;
                 }
             </style>
         </head>
@@ -218,181 +231,194 @@ document.addEventListener("DOMContentLoaded", function () {
     <?php include ('navbar.php'); ?>
 
     <div id="mainContent">
-    <button id="toggleSidebar" class="btn btn-light border text-dark d-flex align-items-center mx-3 my-3">
-            <i class="bi bi-list me-2" style="color: #d70c0c;"></i>
-            <span class="fw-normal">Menu</span>
+        <button id="toggleSidebar" class="btn btn-light border shadow-sm text-dark d-flex align-items-center mx-4 my-3 rounded-pill px-3 py-2">
+            <i class="bi bi-list me-2 fs-5" style="color: #d70c0c;"></i>
+            <span class="fw-semibold">Menu</span>
         </button>
-        <div class="container py-1">
-            <div class="card shadow border-0">
-                <div class="card-body">
-                    <h5 class="card-title text-center text-dark mb-4"><i class="bi bi-pencil-square text-danger"></i> Edit Lessor Profile</h5>
-                    <form method="POST">
-                        <div class="input-group mb-3">
-                            <span class="input-group-text"><i class="bi bi-search"></i></span>
-                            <input list="lessor_list" name="search_lessor" id="search_lessor" class="form-control" placeholder="Search a lessor..." autocomplete="off">
-                            <datalist id="lessor_list">
-                                <?= $lessorOptions; ?>
-                            </datalist>
-                            <button type="submit" name="search_btn" class="btn btn-danger"><i class="bi bi-search"></i></button>
-                            <button type="button" class="btn btn-outline-gray" data-bs-toggle="modal" data-bs-target="#lessorListModal">
-                                <i class="bi bi-eye-fill"></i> View All
-                            </button>
-                        </div>
-                    </form>
-                    <?php if (!empty($editData['id'])): ?>
-                <form method="POST">
-                    <input type="hidden" name="id" value="<?= $editData['id']; ?>">
-                    <?php $readonly = ($userRole == 'HO') ? 'readonly' : ''; ?>
-
-                    <div class="row g-3">
-                        <?php
-                        $fieldIcons = [
-                            'first_name'     => 'bi-person',
-                            'middle_name'    => 'bi-person',
-                            'last_name'      => 'bi-person',
-                            'corporate_name' => 'bi-building',
-                            'gender'         => 'bi-gender-ambiguous',
-                            'address'        => 'bi-geo-alt',
-                            'main_zone'      => 'bi-diagram-3',
-                            'region'         => 'bi-globe',
-                            'area'           => 'bi-map',
-                            'mobile_number'  => 'bi-telephone',
-                            'lessor_type'    => 'bi-person-vcard'
-                        ];
-
-                        $lessorType = $editData['lessor_type'] ?? '';
-                        $fields = [
-                            'lessor_type'    => 'Lessor Type',
-                            'first_name'     => 'First Name',
-                            'middle_name'    => 'Middle Name',
-                            'last_name'      => 'Last Name',
-                            'gender'         => 'Gender',
-                            'corporate_name' => 'Corporate Name',
-                            'address'        => 'Address',
-                            'main_zone'      => 'Main Zone',
-                            'region'         => 'Region',
-                            'area'           => 'Area',
-                            'mobile_number'  => 'Mobile Number'
-                        ];
-
-                        foreach ($fields as $field => $label):
-                            $value = $editData[$field] ?? '';
-                        ?>
-                            <?php if ($field === 'lessor_type'): ?>
-                                <div class="col-md-6">
-                                    <label class="form-label">
-                                        <i class="bi <?= $fieldIcons[$field] ?> me-1"></i> <?= $label ?>:
-                                    </label>
-                                    <input 
-                                        type="text" 
-                                        id="lessorTypeInput"
-                                        name="lessor_type"
-                                        class="form-control" 
-                                        value="<?= $lessorType === 'Individual' ? 'Sole Proprietorship' : htmlspecialchars($lessorType) ?>" 
-                                        data-value="<?= htmlspecialchars($lessorType) ?>" 
-                                        readonly>
-
-                                </div>
-                                <?php elseif ($field === 'corporate_name'): ?>
-                                <div class="col-md-6" id="corporateNameField">
-                                    <?php
-                                    $customLabel = ($lessorType === 'LGU') ? 'Local Government Unit' : 'Corporate Name';
-                                    ?>
-                                    <label class="form-label">
-                                        <i class="bi <?= $fieldIcons[$field] ?> me-1"></i> <?= $customLabel ?>:
-                                    </label>
-                                    <input 
-                                        type="text" 
-                                        name="<?= $field ?>" 
-                                        class="form-control" 
-                                        value="<?= htmlspecialchars($value) ?>" 
-                                        <?= $readonly ?>>
-                                </div>
-
-                            <?php elseif (in_array($field, ['first_name', 'middle_name', 'last_name', 'gender'])): ?>
-                                <div class="col-md-6 personalField" id="<?= $field ?>Field">
-                                    <label class="form-label">
-                                        <i class="bi <?= $fieldIcons[$field] ?> me-1"></i> <?= $label ?>:
-                                    </label>
-                                    <input 
-                                        type="text" 
-                                        name="<?= $field ?>" 
-                                        class="form-control" 
-                                        value="<?= htmlspecialchars($value) ?>" 
-                                        <?= $readonly ?>>
-                                </div>
-                                <?php else: ?>
-                                    <div class="col-md-6">
-                                        <label class="form-label">
-                                            <i class="bi <?= $fieldIcons[$field] ?> me-1"></i> <?= $label ?>:
-                                        </label>
-
-                                        <?php if ($field === 'mobile_number'): ?>
-                                            <input 
-                                                type="text" 
-                                                name="<?= $field ?>" 
-                                                class="form-control" 
-                                                value="<?= htmlspecialchars($value) ?>" 
-                                                <?= in_array($field, ['main_zone', 'region', 'area']) ? 'readonly' : $readonly; ?> 
-                                                autocomplete="off"
-                                                maxlength="11"
-                                                pattern="\d{11}"
-                                                title="Mobile number must be 11 digits"
-                                                placeholder="09XXXXXXXXX"
-                                                oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                                        <?php else: ?>
-                                            <input 
-                                                type="text" 
-                                                name="<?= $field ?>" 
-                                                class="form-control" 
-                                                value="<?= htmlspecialchars($value) ?>" 
-                                                <?= in_array($field, ['main_zone', 'region', 'area']) ? 'readonly' : $readonly; ?> 
-                                                autocomplete="off">
-                                        <?php endif; ?>
-                                    </div>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                        </div>
-
-                        <?php if ($userRole != 'HO'): ?>
-                            <div class="text-end mt-3">
-                                <button type="submit" name="update_btn" class="btn btn-danger">
-                                    <i class="bi bi-arrow-repeat me-1"></i> Update
+        
+        <div class="container pb-5">
+            <div class="card shadow rounded-4 border-0 overflow-hidden">
+                <div class="card-header bg-white border-bottom py-3 px-4">
+                    <h4 class="card-title text-dark mb-0 fw-bold"><i class="bi bi-pencil-square text-danger me-2"></i> Edit Lessor Profile</h4>
+                </div>
+                
+                <div class="card-body p-4 p-md-5">
+                    
+                    <!-- Search Box Section -->
+                    <div class="bg-light p-4 rounded-3 border mb-5 shadow-sm">
+                        <form method="POST" class="m-0">
+                            <label class="form-label fw-bold text-secondary mb-2"><i class="bi bi-search me-1"></i> Search Lessor to Edit</label>
+                            <div class="input-group input-group-lg shadow-sm rounded">
+                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                                <input list="lessor_list" name="search_lessor" id="search_lessor" class="form-control border-start-0 ps-0" placeholder="Type or select a lessor..." autocomplete="off">
+                                <datalist id="lessor_list">
+                                    <?= $lessorOptions; ?>
+                                </datalist>
+                                <button type="submit" name="search_btn" class="btn btn-danger px-4 fw-semibold"><i class="bi bi-search me-1 d-none d-md-inline"></i> Search</button>
+                                <button type="button" class="btn btn-outline-gray px-4 fw-semibold" data-bs-toggle="modal" data-bs-target="#lessorListModal">
+                                    <i class="bi bi-list-ul me-1"></i> View All
                                 </button>
                             </div>
-                        <?php endif; ?>
-                    </form>
+                        </form>
+                    </div>
 
-                <!-- JavaScript to dynamically show/hide fields based on lessor type (readonly input) -->
-                <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                        const lessorTypeInput = document.getElementById('lessorTypeInput');
-                        const corporateNameField = document.getElementById('corporateNameField');
-                        const personalFields = document.querySelectorAll('.personalField');
+                    <!-- Edit Form Section -->
+                    <?php if (!empty($editData['id'])): ?>
+                    <div class="px-2">
+                        <h5 class="fw-bold text-secondary border-bottom pb-2 mb-4"><i class="bi bi-person-lines-fill me-2"></i> Profile Details</h5>
+                        <form method="POST">
+                            <input type="hidden" name="id" value="<?= $editData['id']; ?>">
+                            <?php $readonly = ($userRole == 'HO') ? 'readonly' : ''; ?>
 
-                        function toggleFields() {
-                            const type = lessorTypeInput.value.trim();
+                            <div class="row g-4">
+                                <?php
+                                $fieldIcons = [
+                                    'first_name'     => 'bi-person',
+                                    'middle_name'    => 'bi-person',
+                                    'last_name'      => 'bi-person',
+                                    'corporate_name' => 'bi-building',
+                                    'gender'         => 'bi-gender-ambiguous',
+                                    'address'        => 'bi-geo-alt',
+                                    'main_zone'      => 'bi-diagram-3',
+                                    'region'         => 'bi-globe',
+                                    'area'           => 'bi-map',
+                                    'mobile_number'  => 'bi-telephone',
+                                    'lessor_type'    => 'bi-person-vcard'
+                                ];
 
-                            // Corporate Name: only visible if not Individual
-                            if (type === 'Individual' || type === 'Sole Proprietorship') {
-                                corporateNameField.style.display = 'none';
-                            } else {
-                                corporateNameField.style.display = 'block';
+                                $lessorType = $editData['lessor_type'] ?? '';
+                                $fields = [
+                                    'lessor_type'    => 'Lessor Type',
+                                    'first_name'     => 'First Name',
+                                    'middle_name'    => 'Middle Name',
+                                    'last_name'      => 'Last Name',
+                                    'gender'         => 'Gender',
+                                    'corporate_name' => 'Corporate Name',
+                                    'address'        => 'Address',
+                                    'main_zone'      => 'Main Zone',
+                                    'region'         => 'Region',
+                                    'area'           => 'Area',
+                                    'mobile_number'  => 'Mobile Number'
+                                ];
+
+                                foreach ($fields as $field => $label):
+                                    $value = $editData[$field] ?? '';
+                                ?>
+                                    <?php if ($field === 'lessor_type'): ?>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold text-muted">
+                                                <i class="bi <?= $fieldIcons[$field] ?> me-1"></i> <?= $label ?>
+                                            </label>
+                                            <input 
+                                                type="text" 
+                                                id="lessorTypeInput"
+                                                name="lessor_type"
+                                                class="form-control form-control-lg shadow-sm" 
+                                                value="<?= $lessorType === 'Individual' ? 'Sole Proprietorship' : htmlspecialchars($lessorType) ?>" 
+                                                data-value="<?= htmlspecialchars($lessorType) ?>" 
+                                                readonly>
+                                        </div>
+                                        <?php elseif ($field === 'corporate_name'): ?>
+                                        <div class="col-md-6" id="corporateNameField">
+                                            <?php
+                                            $customLabel = ($lessorType === 'LGU') ? 'Local Government Unit' : 'Corporate Name';
+                                            ?>
+                                            <label class="form-label fw-semibold text-muted">
+                                                <i class="bi <?= $fieldIcons[$field] ?> me-1"></i> <?= $customLabel ?>
+                                            </label>
+                                            <input 
+                                                type="text" 
+                                                name="<?= $field ?>" 
+                                                class="form-control form-control-lg shadow-sm" 
+                                                value="<?= htmlspecialchars($value) ?>" 
+                                                <?= $readonly ?>>
+                                        </div>
+
+                                    <?php elseif (in_array($field, ['first_name', 'middle_name', 'last_name', 'gender'])): ?>
+                                        <div class="col-md-6 personalField" id="<?= $field ?>Field">
+                                            <label class="form-label fw-semibold text-muted">
+                                                <i class="bi <?= $fieldIcons[$field] ?> me-1"></i> <?= $label ?>
+                                            </label>
+                                            <input 
+                                                type="text" 
+                                                name="<?= $field ?>" 
+                                                class="form-control form-control-lg shadow-sm" 
+                                                value="<?= htmlspecialchars($value) ?>" 
+                                                <?= $readonly ?>>
+                                        </div>
+                                        <?php else: ?>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold text-muted">
+                                                    <i class="bi <?= $fieldIcons[$field] ?> me-1"></i> <?= $label ?>
+                                                </label>
+
+                                                <?php if ($field === 'mobile_number'): ?>
+                                                    <input 
+                                                        type="text" 
+                                                        name="<?= $field ?>" 
+                                                        class="form-control form-control-lg shadow-sm" 
+                                                        value="<?= htmlspecialchars($value) ?>" 
+                                                        <?= in_array($field, ['main_zone', 'region', 'area']) ? 'readonly' : $readonly; ?> 
+                                                        autocomplete="off"
+                                                        maxlength="11"
+                                                        pattern="\d{11}"
+                                                        title="Mobile number must be 11 digits"
+                                                        placeholder="09XXXXXXXXX"
+                                                        oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                                <?php else: ?>
+                                                    <input 
+                                                        type="text" 
+                                                        name="<?= $field ?>" 
+                                                        class="form-control form-control-lg shadow-sm" 
+                                                        value="<?= htmlspecialchars($value) ?>" 
+                                                        <?= in_array($field, ['main_zone', 'region', 'area']) ? 'readonly' : $readonly; ?> 
+                                                        autocomplete="off">
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </div>
+
+                                <?php if ($userRole != 'HO'): ?>
+                                    <div class="d-flex justify-content-end mt-5 pt-3 border-top">
+                                        <button type="submit" name="update_btn" class="btn btn-danger btn-lg px-5 shadow-sm fw-bold">
+                                            <i class="bi bi-arrow-repeat me-2"></i> Save Changes
+                                        </button>
+                                    </div>
+                                <?php endif; ?>
+                            </form>
+                        </div>
+
+                    <!-- JavaScript to dynamically show/hide fields based on lessor type (readonly input) -->
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const lessorTypeInput = document.getElementById('lessorTypeInput');
+                            const corporateNameField = document.getElementById('corporateNameField');
+                            const personalFields = document.querySelectorAll('.personalField');
+
+                            function toggleFields() {
+                                const type = lessorTypeInput.value.trim();
+
+                                // Corporate Name: only visible if not Individual
+                                if (type === 'Individual' || type === 'Sole Proprietorship') {
+                                    corporateNameField.style.display = 'none';
+                                } else {
+                                    corporateNameField.style.display = 'block';
+                                }
+
+                                // Personal Fields: only visible if not Corporation or LGU
+                                if (type === 'Corporate' || type === 'LGU') {
+                                    personalFields.forEach(field => field.style.display = 'none');
+                                } else {
+                                    personalFields.forEach(field => field.style.display = 'block');
+                                }
                             }
 
-                            // Personal Fields: only visible if not Corporation or LGU
-                            if (type === 'Corporate' || type === 'LGU') {
-                                personalFields.forEach(field => field.style.display = 'none');
-                            } else {
-                                personalFields.forEach(field => field.style.display = 'block');
-                            }
-                        }
-
-                        // Initial check
-                        toggleFields();
-                    });
-                </script>
-                <?php endif; ?>
+                            // Initial check
+                            toggleFields();
+                        });
+                    </script>
+                    <?php endif; ?>
 
                 </div>
             </div>
@@ -403,15 +429,15 @@ document.addEventListener("DOMContentLoaded", function () {
 <div class="modal fade" id="lessorListModal" tabindex="-1" aria-labelledby="lessorListModalLabel" aria-hidden="true"
      data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-dialog-scrollable" style="max-width: 50%;">
-    <div class="modal-content">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="lessorListModalLabel" style="color:#fff;">
-          <i class="bi bi-card-list"></i> All Lessors
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-danger text-white border-bottom-0">
+        <h5 class="modal-title fw-bold" id="lessorListModalLabel">
+          <i class="bi bi-card-list me-2"></i> All Lessors
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <ul class="list-group">
+      <div class="modal-body p-0">
+        <ul class="list-group list-group-flush rounded-bottom">
           <?= $allLessorList; ?>
         </ul>
       </div>
@@ -420,7 +446,6 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 
 
-</div>
 <!-- Logout Modal -->
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -429,9 +454,9 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="text-center mb-3">
           <i class="bi bi-box-arrow-right text-danger" style="font-size: 3rem;"></i>
         </div>
-        <h5 class="mb-2">Logging Out</h5>
-        <p class="text-muted mb-3">Please wait while we securely log you out...</p>
-        <div class="progress" style="height: 8px;">
+        <h5 class="mb-2 fw-bold">Logging Out</h5>
+        <p class="text-muted mb-4">Please wait while we securely log you out...</p>
+        <div class="progress rounded-pill shadow-sm" style="height: 10px;">
           <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" style="width: 100%;"></div>
         </div>
       </div>
@@ -552,6 +577,25 @@ document.addEventListener('DOMContentLoaded', function () {
             input.value = input.value.slice(0, 11);
         }
     };
+
+    // --- NEW: AUTO-SEARCH TRIGGER ---
+    const searchInput = document.getElementById('search_lessor');
+    if(searchInput) {
+        searchInput.addEventListener('input', function() {
+            const val = this.value;
+            const datalistOptions = document.getElementById('lessor_list').options;
+            
+            // Loop through options and check if the current input matches any datalist option
+            for (let i = 0; i < datalistOptions.length; i++) {
+                if (datalistOptions[i].value === val) {
+                    // Automatically click the search button
+                    document.querySelector('button[name="search_btn"]').click();
+                    break;
+                }
+            }
+        });
+    }
+    // ---------------------------------
 });
 </script>
 

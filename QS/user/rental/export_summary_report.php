@@ -432,10 +432,10 @@ foreach ($displayData as $mainzone => $regions) {
                     $colLetter++; 
                 }
 
-                $status = (!$isVoid && !empty($contractNum) && !empty($row['match'])) ? 'ACTIVE' : 'INACTIVE';
+                $status = (!$isVoid && !empty($contractNum) && !empty($row['match'])) ? 'REGISTERED' : 'UNREGISTERED';
                 $sheet->setCellValue("N$rowNum", $status);
 
-                if ($status === 'ACTIVE') {
+                if ($status === 'REGISTERED') {
                     $sheet->getStyle("A$rowNum:N$rowNum")->applyFromArray([
                         'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'C6EFCE']],
                         'font' => ['bold' => true, 'color' => ['rgb' => '006100']]

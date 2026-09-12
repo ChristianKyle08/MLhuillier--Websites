@@ -7,6 +7,43 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+$msg = '';
+$msg_type = '';
+
+// Handle Signature Upload POST Request
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['signature'])) {
+    if ($_FILES['signature']['error'] === UPLOAD_ERR_OK) {
+        $file_tmp  = $_FILES['signature']['tmp_name'];
+        $file_name = $_FILES['signature']['name'];
+        
+        // Check MIME type
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime_type = finfo_file($finfo, $file_tmp);
+        finfo_close($finfo);
+
+        $allowed_types = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
+        if (in_array($mime_type, $allowed_types)) {
+            $signature_data = file_get_contents($file_tmp);
+
+            $update_stmt = $pdo->prepare("UPDATE users SET signature = ?, signature_name = ?, signature_type = ? WHERE id = ?");
+            if ($update_stmt->execute([$signature_data, $file_name, $mime_type, $_SESSION['user_id']])) {
+                $msg = "Signature uploaded successfully!";
+                $msg_type = "success";
+            } else {
+                $msg = "Failed to update signature in database.";
+                $msg_type = "danger";
+            }
+        } else {
+            $msg = "Invalid file type. Please upload a valid image (PNG, JPG, WEBP).";
+            $msg_type = "danger";
+        }
+    } else {
+        $msg = "Error uploading file. Please try again.";
+        $msg_type = "danger";
+    }
+}
+
 // Fetch user data
 $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$_SESSION['user_id']]);
@@ -229,14 +266,42 @@ if (!empty($user['profile_image'])) {
             </div>
 
             <div id="tab-docs" class="tab-pane documents-grid">
-    <div id="signature-container"></div>
-</div>
+                <?php if (!empty($msg)): ?>
+                    <div class="col-12" style="grid-column: 1 / -1;">
+                        <div class="alert alert-<?php echo $msg_type; ?> alert-dismissible fade show mb-3" role="alert">
+                            <?php echo htmlspecialchars($msg); ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <div id="signature-container"></div>
+
+                <!-- Signature Upload Form Card -->
+                <div class="doc-card" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="doc-info bg-light border-bottom">
+                        <div class="fw-bold small text-dark"><i class="bi bi-cloud-arrow-up me-1"></i> Upload Signature</div>
+                        <div class="text-muted" style="font-size: 11px;">Select an image file to set or replace signature</div>
+                    </div>
+                    <form method="POST" enctype="multipart/form-data" class="p-3">
+                        <div class="mb-3">
+                            <label for="signature" class="form-label small text-muted">Image File (PNG, JPG, WEBP)</label>
+                            <input type="file" class="form-control form-control-sm" id="signature" name="signature" accept="image/*" required>
+                        </div>
+                        <button type="submit" class="btn btn-sm text-white w-100" style="background-color: var(--cattleya-blue);">
+                            <i class="bi bi-upload me-1"></i> Save Signature
+                        </button>
+                    </form>
+                </div>
+            </div>
 
             <footer class="text-center mt-5 pt-5 border-top opacity-50">
                 <p class="small mb-0">© 2026 CATTLEYA GARDENS • AN M LHUILLIER COMPANY</p>
             </footer>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -258,7 +323,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 $display_format = strtoupper(str_replace('image/', '', $mime_type));
                 
                 // SCENARIO 2: Check if the data is ALREADY Base64 encoded in the database
-                // We test this by decoding and re-encoding to see if it matches.
                 $decoded = base64_decode($raw_sig, true);
                 if ($decoded !== false && base64_encode($decoded) === trim($raw_sig)) {
                     $base64_sig = trim($raw_sig); // Use as-is, it's already encoded
@@ -297,9 +361,9 @@ document.addEventListener("DOMContentLoaded", function() {
         `;
     } else {
         container.innerHTML = `
-            <div class="col-12 text-center py-5 text-muted">
+            <div class="doc-card text-center py-5 text-muted" data-aos="zoom-in">
                 <i class="bi bi-file-earmark-lock fs-1"></i>
-                <p class="mt-2">No digital signature found for this account.</p>
+                <p class="mt-2 mb-0">No digital signature found for this account.</p>
             </div>
         `;
     }
