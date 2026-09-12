@@ -253,7 +253,7 @@ try {
             </div>
 
             <!-- ADDED: Division by Signature Status Condition -->
-            <form id="multiRfpForm" method="POST" action="/user/operation_manager/rfp-approval-flow">
+            <form id="multiRfpForm" method="POST" action="/user/operatoin_manager/rfp-approval-flow">
                 <?php 
                 $stage_groups = [
                     'encoder'  => [],
@@ -337,14 +337,6 @@ try {
                                                     <i data-lucide="<?= strtolower(trim($grfp['rfp_status'])) === 'released' ? 'check' : 'clock' ?>" size="14"></i> 
                                                     <?= htmlspecialchars(strtoupper(str_replace('_', ' ', $grfp['rfp_status']))) ?>
                                                 </button>
-                                                <!-- UPDATED: Form includes all consolidated rfp_ids and triggers load_multiple_rfps to display complete details -->
-                                                <form id="rfp_load_group_<?= (int)$grfp['rfp_id'] ?>" method="POST" action="/user/operation_manager/rfp-approval-flow" style="display:none;">
-                                                    <input type="hidden" name="action" value="load_multiple_rfps">
-                                                    <input type="hidden" name="rfp_id" value="<?= (int)$grfp['rfp_id'] ?>">
-                                                    <?php foreach (($grfp['rfp_ids_array'] ?? [$grfp['rfp_id']]) as $sub_rfp_id): ?>
-                                                        <input type="hidden" name="rfp_ids[]" value="<?= (int)$sub_rfp_id ?>">
-                                                    <?php endforeach; ?>
-                                                </form>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -354,6 +346,17 @@ try {
                     <?php endif; ?>
                 <?php endforeach; ?>
             </form>
+
+            <!-- HIDDEN FORMS FOR GROUPED RFP DETAILS -->
+            <?php foreach ($grouped_rfps as $grfp): ?>
+                <form id="rfp_load_group_<?= (int)$grfp['rfp_id'] ?>" method="POST" action="/user/operation_manager/rfp-approval-flow" style="display:none;">
+                    <input type="hidden" name="action" value="load_multiple_rfps">
+                    <input type="hidden" name="rfp_id" value="<?= (int)$grfp['rfp_id'] ?>">
+                    <?php foreach (($grfp['rfp_ids_array'] ?? [$grfp['rfp_id']]) as $sub_rfp_id): ?>
+                        <input type="hidden" name="rfp_ids[]" value="<?= (int)$sub_rfp_id ?>">
+                    <?php endforeach; ?>
+                </form>
+            <?php endforeach; ?>
         <?php endif; ?>
 
         <!-- ========================================================= -->
