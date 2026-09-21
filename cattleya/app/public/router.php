@@ -1,29 +1,18 @@
 <?php
-session_start(); // Start session if not already started
+session_start();
 
-// Base folder of the project
 $base = '/cattleya';
-
-// Get the request URI
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// Remove the base folder from URI
 if (strpos($uri, $base) === 0) {
     $uri = substr($uri, strlen($base));
 }
 
-// Remove leading/trailing slashes
 $uri = trim($uri, '/');
-
-// Extract the requested URI
 $request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// Check if the request is for an RFP form
+// Handle RFP file uploads stream
 if (preg_match('#^/uploads/rfp_forms/(.+\.pdf)$#', $request_uri, $matches)) {
-    
-    // (Optional) Add your session check here to secure the file
-    // require_once __DIR__ . '/../views/includes/session_check.php';
-
     $fileName = basename($matches[1]);
     $filePath = __DIR__ . '/../uploads/rfp_forms/' . $fileName;
 
@@ -39,7 +28,8 @@ if (preg_match('#^/uploads/rfp_forms/(.+\.pdf)$#', $request_uri, $matches)) {
         exit;
     }
 }
-// Define routes
+
+// Define system routes mapping to common files
 $routes = [
     ''                         => 'public/index.php',
     'login'                    => 'views/auth/login.php',
@@ -53,125 +43,162 @@ $routes = [
     'check-default-password'   => 'views/auth/check_default_password.php',
     'auth/update-users'        => 'views/auth/update_user.php',
     
-    // Dashboard
+    // Admin Dashboard
     'admin/dashboard'          => 'views/admin/dashboard.php',
-    'user/finance/dashboard'        => 'views/user/finance/dashboard.php',
-    'user/auditor/dashboard'        => 'views/user/auditor/dashboard.php',
-    'user/vpo/dashboard'            => 'views/user/vpo/dashboard.php',
-    'user/cashier/dashboard'        => 'views/user/cashier/dashboard.php',
-    'user/operation_manager/dashboard'        => 'views/user/operation_manager/dashboard.php',
-    'user/cfo/dashboard'        => 'views/user/cfo/dashboard.php',
 
+    // Role-specific URIs routed directly to common files
+    // 1. Dashboards
+    'user/encoder/dashboard'                  => 'views/user/common/dashboard.php',
+    'user/cashier/dashboard'                  => 'views/user/common/dashboard.php',
+    'user/auditor/dashboard'                  => 'views/user/common/dashboard.php',
+    'user/finance/dashboard'                  => 'views/user/common/dashboard.php',
+    'user/cfo/dashboard'                      => 'views/user/common/dashboard.php',
+    'user/vpo/dashboard'                      => 'views/user/common/dashboard.php',
+    'user/operation_manager/dashboard'        => 'views/user/common/dashboard.php',
+
+    // 2. Encoder Routes
+    'user/encoder/inventory'                  => 'views/user/common/inventory.php',
+    'user/encoder/payment'                    => 'views/user/common/payment.php',
+    'user/encoder/waive-penalty-request'      => 'views/user/common/waive_penalty_request.php',
+    'user/encoder/product'                    => 'views/user/common/product.php',
+    'user/encoder/commission-config'          => 'views/user/common/commission_config.php',
+    'user/encoder/commission-release'         => 'views/user/common/commission_release.php',
+    'user/encoder/registration'               => 'views/user/common/registration.php',
+    'user/encoder/gl-settings'                 => 'views/user/common/gl_settings.php',
+    'user/encoder/services-control'           => 'views/user/common/services_control.php',
+    'user/encoder/avail-services'              => 'views/user/common/avail_services.php',
+    'user/encoder/availed-services'            => 'views/user/common/availed_services.php',
+    'user/encoder/rfp-approval-flow'          => 'views/user/common/rfp_approval_flow.php',
+    'user/encoder/all-pending-rfps'           => 'views/user/common/all_pending_rfps.php',
+
+    // 3. Cashier Routes
+    'user/cashier/inventory'                  => 'views/user/common/inventory.php',
+    'user/cashier/payment'                    => 'views/user/common/payment.php',
+    'user/cashier/waive-penalty-request'      => 'views/user/common/waive_penalty_request.php',
+    'user/cashier/product'                    => 'views/user/common/product.php',
+    'user/cashier/commission-config'          => 'views/user/common/commission_config.php',
+    'user/cashier/commission-release'         => 'views/user/common/commission_release.php',
+    'user/cashier/registration'               => 'views/user/common/registration.php',
+    'user/cashier/gl-settings'                 => 'views/user/common/gl_settings.php',
+    'user/cashier/services-control'           => 'views/user/common/services_control.php',
+    'user/cashier/avail-services'              => 'views/user/common/avail_services.php',
+    'user/cashier/availed-services'            => 'views/user/common/availed_services.php',
+    'user/cashier/rfp-approval-flow'          => 'views/user/common/rfp_approval_flow.php',
+    'user/cashier/all-pending-rfps'           => 'views/user/common/all_pending_rfps.php',
+
+    // 4. Auditor Routes
+    'user/auditor/inventory'                  => 'views/user/common/inventory.php',
+    'user/auditor/payment'                    => 'views/user/common/payment.php',
+    'user/auditor/waive-penalty-request'      => 'views/user/common/waive_penalty_request.php',
+    'user/auditor/product'                    => 'views/user/common/product.php',
+    'user/auditor/commission-config'          => 'views/user/common/commission_config.php',
+    'user/auditor/commission-release'         => 'views/user/common/commission_release.php',
+    'user/auditor/registration'               => 'views/user/common/registration.php',
+    'user/auditor/gl-settings'                 => 'views/user/common/gl_settings.php',
+    'user/auditor/services-control'           => 'views/user/common/services_control.php',
+    'user/auditor/avail-services'              => 'views/user/common/avail_services.php',
+    'user/auditor/availed-services'            => 'views/user/common/availed_services.php',
+    'user/auditor/rfp-approval-flow'          => 'views/user/common/rfp_approval_flow.php',
+    'user/auditor/all-pending-rfps'           => 'views/user/common/all_pending_rfps.php',
+
+    // 5. Finance Routes
+    'user/finance/inventory'                  => 'views/user/common/inventory.php',
+    'user/finance/payment'                    => 'views/user/common/payment.php',
+    'user/finance/waive-penalty-request'      => 'views/user/common/waive_penalty_request.php',
+    'user/finance/product'                    => 'views/user/common/product.php',
+    'user/finance/commission-config'          => 'views/user/common/commission_config.php',
+    'user/finance/commission-release'         => 'views/user/common/commission_release.php',
+    'user/finance/registration'               => 'views/user/common/registration.php',
+    'user/finance/gl-settings'                 => 'views/user/common/gl_settings.php',
+    'user/finance/services-control'           => 'views/user/common/services_control.php',
+    'user/finance/avail-services'              => 'views/user/common/avail_services.php',
+    'user/finance/availed-services'            => 'views/user/common/availed_services.php',
+    'user/finance/rfp-approval-flow'          => 'views/user/common/rfp_approval_flow.php',
+    'user/finance/all-pending-rfps'           => 'views/user/common/all_pending_rfps.php',
+
+    // 6. CFO Routes
+    'user/cfo/inventory'                      => 'views/user/common/inventory.php',
+    'user/cfo/payment'                        => 'views/user/common/payment.php',
+    'user/cfo/waive-penalty-request'          => 'views/user/common/waive_penalty_request.php',
+    'user/cfo/product'                        => 'views/user/common/product.php',
+    'user/cfo/commission-config'              => 'views/user/common/commission_config.php',
+    'user/cfo/commission-release'             => 'views/user/common/commission_release.php',
+    'user/cfo/registration'                   => 'views/user/common/registration.php',
+    'user/cfo/gl-settings'                     => 'views/user/common/gl_settings.php',
+    'user/cfo/services-control'               => 'views/user/common/services_control.php',
+    'user/cfo/avail-services'                 => 'views/user/common/avail_services.php',
+    'user/cfo/availed-services'               => 'views/user/common/availed_services.php',
+    'user/cfo/rfp-approval-flow'              => 'views/user/common/rfp_approval_flow.php',
+    'user/cfo/all-pending-rfps'               => 'views/user/common/all_pending_rfps.php',
+
+    // 7. VPO Routes
+    'user/vpo/inventory'                      => 'views/user/common/inventory.php',
+    'user/vpo/payment'                        => 'views/user/common/payment.php',
+    'user/vpo/waive-penalty-request'          => 'views/user/common/waive_penalty_request.php',
+    'user/vpo/product'                        => 'views/user/common/product.php',
+    'user/vpo/commission-config'              => 'views/user/common/commission_config.php',
+    'user/vpo/commission-release'             => 'views/user/common/commission_release.php',
+    'user/vpo/registration'                   => 'views/user/common/registration.php',
+    'user/vpo/gl-settings'                     => 'views/user/common/gl_settings.php',
+    'user/vpo/services-control'               => 'views/user/common/services_control.php',
+    'user/vpo/avail-services'                 => 'views/user/common/avail_services.php',
+    'user/vpo/availed-services'               => 'views/user/common/availed_services.php',
+    'user/vpo/rfp-approval-flow'              => 'views/user/common/rfp_approval_flow.php',
+    'user/vpo/all-pending-rfps'               => 'views/user/common/all_pending_rfps.php',
+
+    // 8. Operation Manager Routes
+    'user/operation_manager/inventory'             => 'views/user/common/inventory.php',
+    'user/operation_manager/payment'               => 'views/user/common/payment.php',
+    'user/operation_manager/waive-penalty-request' => 'views/user/common/waive_penalty_request.php',
+    'user/operation_manager/product'               => 'views/user/common/product.php',
+    'user/operation_manager/commission-config'     => 'views/user/common/commission_config.php',
+    'user/operation_manager/commission-release'    => 'views/user/common/commission_release.php',
+    'user/operation_manager/registration'          => 'views/user/common/registration.php',
+    'user/operation_manager/gl-settings'            => 'views/user/common/gl_settings.php',
+    'user/operation_manager/services-control'      => 'views/user/common/services_control.php',
+    'user/operation_manager/avail-services'         => 'views/user/common/avail_services.php',
+    'user/operation_manager/availed-services'       => 'views/user/common/availed_services.php',
+    'user/operation_manager/rfp-approval-flow'       => 'views/user/common/rfp_approval_flow.php',
+    'user/operation_manager/all-pending-rfps'       => 'views/user/common/all_pending_rfps.php',
+
+    // Profile & Signatures
     'views/includes/user/profile'   => 'views/includes/user/profile.php',
     'views/includes/admin/profile'  => 'views/includes/admin/profile.php',
+    'user/signature'                => 'views/user/common/signature.php',
+    'user/save-signature'           => 'views/user/common/save_signature.php',
 
-    'user/encoder/inventory'             => 'views/user/encoder/inventory.php',
-    'user/encoder/dashboard'             => 'views/user/encoder/dashboard.php',
-    'user/encoder/payment'               => 'views/user/encoder/payment.php',
-    'user/encoder/waive-penalty-request' => 'views/user/encoder/waive_penalty_request.php',
-    'user/encoder/product'               => 'views/user/encoder/product.php',
-    'user/encoder/commission-release'    => 'views/user/encoder/commission_release.php',
+    // API & Data Endpoint Routes
+    'user/fetch/add-sales'             => 'views/user/fetch/add_sales.php',
+    'user/fetch/cancel-reservation'    => 'views/user/fetch/cancel_reservation.php',
+    'user/fetch/get-blocks'            => 'views/user/fetch/get_blocks.php',
+    'user/fetch/get-lots'              => 'views/user/fetch/get_lot.php',
+    'user/fetch/get-product-details'   => 'views/user/fetch/get_product_details.php',
+    'user/fetch/get-sale-details'      => 'views/user/fetch/get_sale_details.php',
+    'user/fetch/save-lot'              => 'views/user/fetch/save_lot.php',
+    'user/fetch/save-product'          => 'views/user/fetch/save_product.php',
+    'user/fetch/update-product'        => 'views/user/fetch/update_product.php',
+    'user/fetch/update-sale-status'    => 'views/user/fetch/update_sale_status.php',
+    'user/fetch/get-suggestions'       => 'views/user/fetch/get_suggestions.php',
+    'user/fetch/upload-photo'          => 'views/user/fetch/upload_photo.php',
+    'user/fetch/process-registration'  => 'views/user/fetch/process_registration.php',
+    'user/fetch/get-next-customer-id'  => 'views/user/fetch/get_next_customer_id.php',
+    'user/fetch/get-customers'         => 'views/user/fetch/get_customers.php',
+    'user/fetch/process-payment'       => 'views/user/fetch/process_payment.php',
+    'user/fetch/request-waiver'        => 'views/user/fetch/request_waiver.php',
+    'user/fetch/process-waive'         => 'views/user/fetch/process_waive.php',
+    'user/fetch/view-receipt'          => 'views/user/fetch/view_receipt.php',
+    'user/fetch/process-bounce-check'  => 'views/user/fetch/process_bounce_check.php',
+    'user/fetch/process-clear-check'   => 'views/user/fetch/process_clear_check.php',
 
-    'user/encoder/commission-config'     => 'views/user/encoder/commission_config.php',
-    'user/encoder/registration'          => 'views/user/encoder/registration.php',
-    'user/encoder/gl-settings'            => 'views/user/encoder/gl_settings.php',
-    'user/encoder/services-control'      => 'views/user/encoder/services_control.php',
-    'user/encoder/avail-services'         => 'views/user/encoder/avail_services.php',
-    'user/encoder/availed-services'       => 'views/user/encoder/availed_services.php',
-    'user/encoder/rfp-approval-flow'       => 'views/user/encoder/rfp_approval_flow.php',
-    'user/encoder/all-pending-rfps'       => 'views/user/encoder/all_pending_rfps.php',
-
-    // Fetch / API Routes
-    'user/encoder/fetch/add-sales'             => 'views/user/encoder/fetch/add_sales.php',
-    'user/encoder/fetch/cancel-reservation'    => 'views/user/encoder/fetch/cancel_reservation.php',
-    'user/encoder/fetch/get-blocks'            => 'views/user/encoder/fetch/get_blocks.php',
-    'user/encoder/fetch/get-lots'              => 'views/user/encoder/fetch/get_lot.php',
-    'user/encoder/fetch/get-product-details'   => 'views/user/encoder/fetch/get_product_details.php',
-    'user/encoder/fetch/get-sale-details'      => 'views/user/encoder/fetch/get_sale_details.php',
-    'user/encoder/fetch/save-lot'              => 'views/user/encoder/fetch/save_lot.php',
-    'user/encoder/fetch/save-product'          => 'views/user/encoder/fetch/save_product.php',
-    'user/encoder/fetch/update-product'        => 'views/user/encoder/fetch/update_product.php',
-    'user/encoder/fetch/update-sale-status'    => 'views/user/encoder/fetch/update_sale_status.php',
-    'user/encoder/fetch/get-suggestions'       => 'views/user/encoder/fetch/get_suggestions.php',
-    'user/encoder/fetch/upload-photo'          => 'views/user/encoder/fetch/upload_photo.php',
-    'user/encoder/fetch/process-registration'  => 'views/user/encoder/fetch/process_registration.php',
-    'user/encoder/fetch/get-next-customer-id'  => 'views/user/encoder/fetch/get_next_customer_id.php',
-    'user/encoder/fetch/get-customers'         => 'views/user/encoder/fetch/get_customers.php',
-    'user/encoder/fetch/process-payment'       => 'views/user/encoder/fetch/process_payment.php',
-    'user/encoder/fetch/request-waiver'        => 'views/user/encoder/fetch/request_waiver.php',
-    'user/encoder/fetch/process-waive'         => 'views/user/encoder/fetch/process_waive.php',
-    'user/encoder/fetch/view-receipt'          => 'views/user/encoder/fetch/view_receipt.php',
-    'user/encoder/fetch/process-bounce-check'  => 'views/user/encoder/fetch/process_bounce_check.php',
-    'user/encoder/fetch/process-clear-check'   => 'views/user/encoder/fetch/process_clear_check.php',
-
-    'user/cashier/payment'               => 'views/user/cashier/payment.php',
-    'user/cashier/inventory'             => 'views/user/cashier/inventory.php',
-    'user/cashier/waive-penalty-request' => 'views/user/cashier/waive_penalty_request.php',
-    'user/cashier/product'               => 'views/user/cashier/product.php',
-    'user/cashier/commission-release'    => 'views/user/cashier/commission_release.php',
-    'user/cashier/commission-config'     => 'views/user/cashier/commission_config.php',
-    'user/cashier/registration'          => 'views/user/cashier/registration.php',
-    'user/cashier/gl-settings'            => 'views/user/cashier/gl_settings.php',
-    'user/cashier/services-control'      => 'views/user/cashier/services_control.php',
-    'user/cashier/avail-services'         => 'views/user/cashier/avail_services.php',
-    'user/cashier/availed-services'       => 'views/user/cashier/availed_services.php',
-    'user/cashier/rfp-approval-flow'       => 'views/user/cashier/rfp_approval_flow.php',
-    'user/cashier/all-pending-rfps'       => 'views/user/cashier/all_pending_rfps.php',
-
-    'user/auditor/payment'               => 'views/user/auditor/payment.php',
-    'user/auditor/inventory'             => 'views/user/auditor/inventory.php',
-    'user/auditor/waive-penalty-request' => 'views/user/auditor/waive_penalty_request.php',
-    'user/auditor/product'               => 'views/user/auditor/product.php',
-    'user/auditor/commission-release'    => 'views/user/auditor/commission_release.php',
-    'user/auditor/commission-config'     => 'views/user/auditor/commission_config.php',
-    'user/auditor/registration'          => 'views/user/auditor/registration.php',
-    'user/auditor/gl-settings'            => 'views/user/auditor/gl_settings.php',
-    'user/auditor/services-control'      => 'views/user/auditor/services_control.php',
-    'user/auditor/avail-services'         => 'views/user/auditor/avail_services.php',
-    'user/auditor/availed-services'       => 'views/user/auditor/availed_services.php',
-    'user/auditor/rfp-approval-flow'       => 'views/user/auditor/rfp_approval_flow.php',
-    'user/auditor/all-pending-rfps'       => 'views/user/auditor/all_pending_rfps.php',
-
-    'user/operation_manager/payment'               => 'views/user/operation_manager/payment.php',
-    'user/operation_manager/inventory'             => 'views/user/operation_manager/inventory.php',
-    'user/operation_manager/waive-penalty-request' => 'views/user/operation_manager/waive_penalty_request.php',
-    'user/operation_manager/product'               => 'views/user/operation_manager/product.php',
-    'user/operation_manager/commission-release'    => 'views/user/operation_manager/commission_release.php',
-    'user/operation_manager/commission-config'     => 'views/user/operation_manager/commission_config.php',
-    'user/operation_manager/registration'          => 'views/user/operation_manager/registration.php',
-    'user/operation_manager/gl-settings'            => 'views/user/operation_manager/gl_settings.php',
-    'user/operation_manager/services-control'      => 'views/user/operation_manager/services_control.php',
-    'user/operation_manager/avail-services'         => 'views/user/operation_manager/avail_services.php',
-    'user/operation_manager/availed-services'       => 'views/user/operation_manager/availed_services.php',
-    'user/operation_manager/rfp-approval-flow'       => 'views/user/operation_manager/rfp_approval_flow.php',
-    'user/operation_manager/all-pending-rfps'       => 'views/user/operation_manager/all_pending_rfps.php',
-
-    'user/cfo/payment'               => 'views/user/cfo/payment.php',
-    'user/cfo/inventory'             => 'views/user/cfo/inventory.php',
-    'user/cfo/waive-penalty-request' => 'views/user/cfo/waive_penalty_request.php',
-    'user/cfo/product'               => 'views/user/cfo/product.php',
-    'user/cfo/commission-release'    => 'views/user/cfo/commission_release.php',
-    'user/cfo/commission-config'     => 'views/user/cfo/commission_config.php',
-    'user/cfo/registration'          => 'views/user/cfo/registration.php',
-    'user/cfo/gl-settings'            => 'views/user/cfo/gl_settings.php',
-    'user/cfo/services-control'      => 'views/user/cfo/services_control.php',
-    'user/cfo/avail-services'         => 'views/user/cfo/avail_services.php',
-    'user/cfo/availed-services'       => 'views/user/cfo/availed_services.php',
-    'user/cfo/rfp-approval-flow'       => 'views/user/cfo/rfp_approval_flow.php',
-    'user/cfo/all-pending-rfps'       => 'views/user/cfo/all_pending_rfps.php',
-
-    // Admin actions
+    // Admin Actions
     'admin/approve-user'   => 'views/admin/approve_user.php',
     'admin/delete-user'    => 'views/admin/delete_user.php',
     'admin/cancel-reset'   => 'views/admin/cancel_reset.php',
     'admin/reset-password' => 'views/admin/reset_password.php',
     'admin/users'          => 'views/admin/users.php',
-
-    'user/signature'       => 'views/user/signature.php',
-    'user/save-signature'  => 'views/user/save_signature.php'
 ];
 
-// Check if route exists
+// Check route existence
 if (array_key_exists($uri, $routes)) {
     
     // =========================================================================
@@ -179,13 +206,9 @@ if (array_key_exists($uri, $routes)) {
     // =========================================================================
     if (isset($_SESSION['user_id'])) {
         
-        // ADMIN ROLE BYPASS: Administrators have full access to all system features
+        // ADMIN BYPASS
         if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
-            // Routes that manage other users/accounts are always admin-only.
-            // These are intentionally NOT part of $featureMap below, because
-            // they aren't a grantable feature — no staff role should ever
-            // reach them, no matter what features they've been assigned.
             $adminOnlyRoutes = [
                 'admin/dashboard',
                 'admin/users',
@@ -208,7 +231,6 @@ if (array_key_exists($uri, $routes)) {
             
             require_once __DIR__ . '/../config/database.php';
             
-            // Fetch user's assigned features from database
             $stmt = $pdo->prepare("SELECT features FROM users WHERE id = ?");
             $stmt->execute([$_SESSION['user_id']]);
             $featureJson = $stmt->fetchColumn();
@@ -218,112 +240,134 @@ if (array_key_exists($uri, $routes)) {
                 $userFeatures = [];
             }
 
-            // Map system URLs to non-admin feature permission keys
+            // Map System URIs directly to dynamic Feature Keys
             $featureMap = [
-                // 1. Dashboard
-                'user/finance/dashboard'                          => 'finance_dashboard',
-                'user/auditor/dashboard'                          => 'auditor_dashboard',
-                'user/vpo/dashboard'                              => 'vpo_dashboard',
-                'user/cashier/dashboard'                          => 'cashier_dashboard',
+                // Dashboards
                 'user/encoder/dashboard'                          => 'encoder_dashboard',
-                'user/operation_manager/dashboard'                => 'operation_manager_dashboard',
+                'user/cashier/dashboard'                          => 'cashier_dashboard',
+                'user/auditor/dashboard'                          => 'auditor_dashboard',
+                'user/finance/dashboard'                          => 'finance_dashboard',
                 'user/cfo/dashboard'                              => 'cfo_dashboard',
+                'user/vpo/dashboard'                              => 'vpo_dashboard',
+                'user/operation_manager/dashboard'                => 'operation_manager_dashboard',
 
-                // 2. Inventory Management
+                // Inventory
                 'user/encoder/inventory'                          => 'encoder_inventory',
                 'user/cashier/inventory'                          => 'cashier_inventory',
                 'user/auditor/inventory'                          => 'auditor_inventory',
+                'user/finance/inventory'                          => 'finance_inventory',
                 'user/cfo/inventory'                              => 'cfo_inventory',
                 'user/vpo/inventory'                              => 'vpo_inventory',
                 'user/operation_manager/inventory'                => 'operation_manager_inventory',
-                'user/finance/inventory'                          => 'finance_inventory',
 
-                // 3. Payment Processing
+                // Payment
                 'user/encoder/payment'                            => 'encoder_payment',
                 'user/cashier/payment'                            => 'cashier_payment',
-                'user/vpo/payment'                                => 'vpo_payment',
-                'user/cfo/payment'                                => 'cfo_payment',
-                'user/operation_manager/payment'                  => 'operation_manager_payment',
-                'user/finance/payment'                            => 'finance_payment',
                 'user/auditor/payment'                            => 'auditor_payment',
+                'user/finance/payment'                            => 'finance_payment',
+                'user/cfo/payment'                                => 'cfo_payment',
+                'user/vpo/payment'                                => 'vpo_payment',
+                'user/operation_manager/payment'                  => 'operation_manager_payment',
 
-                // 4. Waive Penalty Configuration
+                // Waive Penalty
                 'user/encoder/waive-penalty-request'              => 'encoder_waive_penalty_request',
                 'user/cashier/waive-penalty-request'              => 'cashier_waive_penalty_request',
                 'user/auditor/waive-penalty-request'              => 'auditor_waive_penalty_request',
-                'user/vpo/waive-penalty-request'                  => 'vpo_waive_penalty_request',
-                'user/cfo/waive-penalty-request'                  => 'cfo_waive_penalty_request',
                 'user/finance/waive-penalty-request'              => 'finance_waive_penalty_request',
+                'user/cfo/waive-penalty-request'                  => 'cfo_waive_penalty_request',
+                'user/vpo/waive-penalty-request'                  => 'vpo_waive_penalty_request',
                 'user/operation_manager/waive-penalty-request'    => 'operation_manager_waive_penalty_request',
 
-                // 5. Product Assignment
+                // Products
                 'user/encoder/product'                            => 'encoder_product',
                 'user/cashier/product'                            => 'cashier_product',
                 'user/auditor/product'                            => 'auditor_product',
-                'user/vpo/product'                                => 'vpo_product',
-                'user/cfo/product'                                => 'cfo_product',
                 'user/finance/product'                            => 'finance_product',
+                'user/cfo/product'                                => 'cfo_product',
+                'user/vpo/product'                                => 'vpo_product',
                 'user/operation_manager/product'                  => 'operation_manager_product',
 
-                // 6. Commission Configuration & Release
+                // Commissions
                 'user/encoder/commission-config'                  => 'encoder_commission_config',
                 'user/encoder/commission-release'                 => 'encoder_commission_release',
-                 'user/vpo/commission-config'                     => 'vpo_commission_config',
-                 'user/vpo/commission-release'                    => 'vpo_commission_release',
-                 'user/cfo/commission-config'                     => 'cfo_commission_config',
-                 'user/cfo/commission-release'                    => 'cfo_commission_release',
-                 'user/finance/commission-config'                 => 'finance_commission_config',
-                 'user/finance/commission-release'                => 'finance_commission_release',
-                 'user/operation_manager/commission-config'       => 'operation_manager_commission_config',
-                 'user/operation_manager/commission-release'      => 'operation_manager_commission_release',
-                 'user/cashier/commission-config'                 => 'cashier_commission_config',
+                'user/cashier/commission-config'                  => 'cashier_commission_config',
                 'user/cashier/commission-release'                 => 'cashier_commission_release',
                 'user/auditor/commission-config'                  => 'auditor_commission_config',
                 'user/auditor/commission-release'                 => 'auditor_commission_release',
-                
-                // 7. User & Customer Registration
+                'user/finance/commission-config'                  => 'finance_commission_config',
+                'user/finance/commission-release'                 => 'finance_commission_release',
+                'user/cfo/commission-config'                      => 'cfo_commission_config',
+                'user/cfo/commission-release'                     => 'cfo_commission_release',
+                'user/vpo/commission-config'                      => 'vpo_commission_config',
+                'user/vpo/commission-release'                     => 'vpo_commission_release',
+                'user/operation_manager/commission-config'        => 'operation_manager_commission_config',
+                'user/operation_manager/commission-release'       => 'operation_manager_commission_release',
+
+                // Registration
                 'user/encoder/registration'                       => 'encoder_registration',
                 'user/cashier/registration'                       => 'cashier_registration',
+                'user/auditor/registration'                       => 'auditor_registration',
+                'user/finance/registration'                       => 'finance_registration',
+                'user/cfo/registration'                           => 'cfo_registration',
+                'user/vpo/registration'                           => 'vpo_registration',
+                'user/operation_manager/registration'             => 'operation_manager_registration',
+
+                // Signatures
                 'user/auditor/signature'                          => 'auditor_signature',
                 'user/finance/save-signature'                     => 'finance_save_signature',
-                'user/vpo/save-signature'                         => 'vpo_save_signature',
                 'user/cfo/save-signature'                         => 'cfo_save_signature',
+                'user/vpo/save-signature'                         => 'vpo_save_signature',
                 'user/operation_manager/save-signature'           => 'operation_manager_save_signature',
 
-                // 8. GL Settings
+                // GL Settings
                 'user/encoder/gl-settings'                        => 'encoder_gl_settings',
                 'user/cashier/gl-settings'                        => 'cashier_gl_settings',
                 'user/auditor/gl-settings'                        => 'auditor_gl_settings',
-                'user/vpo/gl-settings'                            => 'vpo_gl_settings',
-                'user/cfo/gl-settings'                            => 'cfo_gl_settings',
                 'user/finance/gl-settings'                        => 'finance_gl_settings',
+                'user/cfo/gl-settings'                            => 'cfo_gl_settings',
+                'user/vpo/gl-settings'                            => 'vpo_gl_settings',
                 'user/operation_manager/gl-settings'              => 'operation_manager_gl_settings',
 
-                // 9. Services Control
+                // Services Controls
                 'user/encoder/services-control'                   => 'encoder_services_control',
                 'user/encoder/avail-services'                     => 'encoder_avail_services',
                 'user/encoder/availed-services'                   => 'encoder_availed_services',
+                'user/cashier/services-control'                   => 'cashier_services_control',
+                'user/cashier/avail-services'                     => 'cashier_avail_services',
+                'user/cashier/availed-services'                   => 'cashier_availed_services',
                 'user/auditor/services-control'                   => 'auditor_services_control',
                 'user/auditor/avail-services'                     => 'auditor_avail_services',
                 'user/auditor/availed-services'                   => 'auditor_availed_services',
-                'user/vpo/services-control'                       => 'vpo_services_control',
-                'user/vpo/avail-services'                         => 'vpo_avail_services',
-                'user/vpo/availed-services'                       => 'vpo_availed_services',
-                'user/cfo/services-control'                       => 'cfo_services_control',
-                'user/cfo/avail-services'                         => 'cfo_avail_services',
-                'user/cfo/availed-services'                       => 'cfo_availed_services',
                 'user/finance/services-control'                   => 'finance_services_control',
                 'user/finance/avail-services'                     => 'finance_avail_services',
                 'user/finance/availed-services'                   => 'finance_availed_services',
+                'user/cfo/services-control'                       => 'cfo_services_control',
+                'user/cfo/avail-services'                         => 'cfo_avail_services',
+                'user/cfo/availed-services'                       => 'cfo_availed_services',
+                'user/vpo/services-control'                       => 'vpo_services_control',
+                'user/vpo/avail-services'                         => 'vpo_avail_services',
+                'user/vpo/availed-services'                       => 'vpo_availed_services',
                 'user/operation_manager/services-control'         => 'operation_manager_services_control',
                 'user/operation_manager/avail-services'           => 'operation_manager_avail_services',
                 'user/operation_manager/availed-services'         => 'operation_manager_availed_services',
-                 'user/cashier/services-control'                  => 'cashier_services_control',
-                'user/cashier/avail-services'                     => 'cashier_avail_services',
-                'user/cashier/availed-services'                   => 'cashier_availed_services'
+
+                // RFP Workflows
+                'user/encoder/rfp-approval-flow'                  => 'encoder_rfp_approval_flow',
+                'user/encoder/all-pending-rfps'                   => 'encoder_all_pending_rfps',
+                'user/cashier/rfp-approval-flow'                  => 'cashier_rfp_approval_flow',
+                'user/cashier/all-pending-rfps'                   => 'cashier_all_pending_rfps',
+                'user/auditor/rfp-approval-flow'                  => 'auditor_rfp_approval_flow',
+                'user/auditor/all-pending-rfps'                   => 'auditor_all_pending_rfps',
+                'user/finance/rfp-approval-flow'                  => 'finance_rfp_approval_flow',
+                'user/finance/all-pending-rfps'                   => 'finance_all_pending_rfps',
+                'user/cfo/rfp-approval-flow'                      => 'cfo_rfp_approval_flow',
+                'user/cfo/all-pending-rfps'                       => 'cfo_all_pending_rfps',
+                'user/vpo/rfp-approval-flow'                      => 'vpo_rfp_approval_flow',
+                'user/vpo/all-pending-rfps'                       => 'vpo_all_pending_rfps',
+                'user/operation_manager/rfp-approval-flow'       => 'operation_manager_rfp_approval_flow',
+                'user/operation_manager/all-pending-rfps'       => 'operation_manager_all_pending_rfps',
             ];
 
-            // If the requested route requires feature permissions and the staff user lacks it, block access
             if (isset($featureMap[$uri])) {
                 $requiredFeature = $featureMap[$uri];
                 
@@ -339,7 +383,6 @@ if (array_key_exists($uri, $routes)) {
             }
         }
     }
-    // =========================================================================
 
     $file = __DIR__ . '/' . $routes[$uri];
 
@@ -348,14 +391,12 @@ if (array_key_exists($uri, $routes)) {
         exit;
     }
 
-    // File not found for a valid route
     http_response_code(500);
     echo "<h1>500 - File not found</h1>";
     echo "<p>Route exists but file is missing: <strong>$file</strong></p>";
     exit;
 }
 
-// Route not defined
 http_response_code(404);
 echo "<h1>404 - Page not found</h1>";
 echo "<p>No route defined for <strong>/$uri</strong></p>";

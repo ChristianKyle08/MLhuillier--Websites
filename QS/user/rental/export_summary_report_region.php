@@ -266,266 +266,233 @@ $paymentMethods = [
 ];
 
 /* =====================================================
-   COUNTERS & PRE-CALCULATION (ACCURATE COUNTING LOGIC)
-=====================================================*/
-$countBranches = 0;
-$countRegisteredBranches = 0;
-$countUnmatchedBranches = 0;
-$countDataArchiving = 0;
-$countPayments = array_fill_keys($paymentMethods, 0);
-
-$seenBranches = [];
-$seenContracts = [];
-
-foreach ($displayData as $mainzone => $regions) {
-    foreach ($regions as $region => $rows) {
-        if (empty($rows)) continue;
-
-        $groupedByBranch = [];
-        foreach ($rows as $row) {
-            $bid = trim($row['branch_id'] ?? '');
-            if ($bid !== '') {
-                $groupedByBranch[$bid][] = $row;
-            }
-        }
-
-        foreach ($groupedByBranch as $branchId => $branchRows) {
-            if (!isset($seenBranches[$branchId])) {
-                $seenBranches[$branchId] = true;
-                $countBranches++;
-
-                $hasMatch = false;
-                foreach ($branchRows as $r) {
-                    $contract = $r['contract'] ?? [];
-                    $cNum = strtoupper(trim($contract['contract_number'] ?? ''));
-                    if (!empty($r['match']) && !empty($contract) && $cNum !== '' && $cNum !== 'VOID') {
-                        $hasMatch = true;
-                        break;
-                    }
-                }
-
-                if ($hasMatch) {
-                    $countRegisteredBranches++;
-                } else {
-                    $countUnmatchedBranches++;
-                }
-            }
-
-            foreach ($branchRows as $r) {
-                $contract = $r['contract'] ?? [];
-                $contractNum = trim($contract['contract_number'] ?? '');
-                $cNumUpper = strtoupper($contractNum);
-
-                if ($cNumUpper === 'VOID' || $contractNum === '') {
-                    continue;
-                }
-
-                $contractKey = $branchId . '_' . $cNumUpper;
-                if (!isset($seenContracts[$contractKey])) {
-                    $seenContracts[$contractKey] = true;
-
-                    $rfpStatus     = $contract['rfp_status'] ?? '';
-                    $requestStatus = $contract['request_status'] ?? '';
-
-                    $isDataArchiving = (empty($rfpStatus) && in_array($requestStatus, ['Prepared', 'Created'])) ||
-                                       ($rfpStatus === 'Reviewed' && in_array($requestStatus, ['Ready', 'Approved', 'Reviewed']));
-
-                    if ($isDataArchiving) {
-                        $countDataArchiving++;
-                    }
-
-                    $modeOfPayment = strtoupper(trim($contract['payment'] ?? ''));
-                    $mappedMode    = $paymentMapping[$modeOfPayment] ?? $modeOfPayment;
-
-                    if (isset($countPayments[$mappedMode])) {
-                        $countPayments[$mappedMode]++;
-                    }
-                }
-            }
-        }
-    }
-}
-
-/* =====================================================
-   CREATE EXCEL
+   CREATE EXCEL SPREADSHEET
 =====================================================*/
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
+$sheet->setTitle('Rental Summary');
+
 $rowNum = 1;
 
-/* =====================================================
-   SUMMARY (PLACED ON TOP WITH MODERN CLEAN STYLING)
-=====================================================*/
-$sheet->setCellValue("A$rowNum", 'SUMMARY REPORT');
-$sheet->mergeCells("A$rowNum:B$rowNum");
-$sheet->getStyle("A$rowNum:B$rowNum")->applyFromArray([
-    'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '2C3E50']],
-    'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF'], 'size' => 12],
-    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER]
+// Title Block
+$sheet->setCellValue("A$rowNum", 'RENTAL SUMMARY REPORT');
+$sheet->mergeCells("A$rowNum:K$rowNum");
+$sheet->getStyle("A$rowNum")->applyFromArray([
+    'font' => ['bold' => true, 'size' => 14],
+    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
 ]);
 $rowNum++;
 
-$sheet->setCellValue("A$rowNum", 'Metric');
-$sheet->setCellValue("B$rowNum", 'Count');
-$sheet->getStyle("A$rowNum:B$rowNum")->applyFromArray([
-    'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '34495E']],
-    'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF'], 'size' => 10],
-    'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT]
+$sheet->setCellValue("A$rowNum", 'REGION SUMMARY');
+$sheet->mergeCells("A$rowNum:K$rowNum");
+$sheet->getStyle("A$rowNum")->applyFromArray([
+    'font' => ['bold' => true, 'size' => 12],
+    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
 ]);
 $rowNum++;
 
-$summary = [
-    'Total Branches'                        => $countBranches,
-    'Branch with registered active contract' => $countRegisteredBranches,
-    'Branch without registered contracts'   => $countUnmatchedBranches,
-    'Rental Archiving'                      => $countDataArchiving,
-    'CASH (Branch Cash-out)'                => $countPayments['CASH (Branch Cash-out)'],
-    'RFP (PAYMENT SOLUTION)'                => $countPayments['RFP (PAYMENT SOLUTION)'],
-    'RFP (PDC)'                             => $countPayments['RFP (PDC)'],
-    'RFP (Remit To Account)'                => $countPayments['RFP (Remit To Account)'],
-    'RFP (MCash)'                           => $countPayments['RFP (MCash)']
-];
-
-$alt = false;
-foreach ($summary as $label => $value) {
-    $sheet->setCellValue("A$rowNum", $label);
-    $sheet->setCellValue("B$rowNum", $value);
-    
-    $fillColor = $alt ? 'F8F9FA' : 'FFFFFF';
-    $sheet->getStyle("A$rowNum:B$rowNum")->applyFromArray([
-        'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => $fillColor]],
-        'borders' => [
-            'allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => 'D2D6DC']]
-        ],
-        'font' => ['size' => 10]
-    ]);
-    $sheet->getStyle("B$rowNum")->getFont()->setBold(true);
-    $sheet->getStyle("B$rowNum")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-    
-    $alt = !$alt;
-    $rowNum++;
-}
-
-// Spacing between summary and detailed report
-$rowNum += 3;
+$sheet->setCellValue("A$rowNum", 'As of ' . date('F d, Y'));
+$sheet->mergeCells("A$rowNum:K$rowNum");
+$sheet->getStyle("A$rowNum")->applyFromArray([
+    'font' => ['italic' => true, 'size' => 10],
+    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
+]);
+$rowNum += 2;
 
 /* =====================================================
-   FILL EXCEL ROWS (DETAILED REPORT)
+   REGIONAL SUMMARY REPORT TABLE (MATCHING WEB DESIGN)
 =====================================================*/
-$headers = array_merge([
-    'Branch ID', 'Branch Profile', 'Contract Number',
-    'Contract Start', 'Contract End', 'Data Archiving',
-    'RFP Start', 'RFP End'
-], $paymentMethods, ['Match Status']);
+// Table Header Line 1
+$sheet->setCellValue("A$rowNum", '#');
+$sheet->setCellValue("B$rowNum", 'REGIONS');
+$sheet->setCellValue("C$rowNum", 'COUNT');
+$sheet->mergeCells("C$rowNum:F$rowNum");
+$sheet->setCellValue("G$rowNum", 'PAYMENT METHOD');
+$sheet->mergeCells("G$rowNum:K$rowNum");
 
-$addedRows = [];
+$sheet->getStyle("A$rowNum:K$rowNum")->applyFromArray([
+    'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'ED7D31']],
+    'font' => ['bold' => true, 'color' => ['rgb' => '000000']],
+    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+    'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+]);
+$rowNum++;
+
+// Table Header Line 2
+$sheet->setCellValue("C$rowNum", 'BRANCHES');
+$sheet->setCellValue("D$rowNum", 'REGISTERED / ACTIVE');
+$sheet->setCellValue("E$rowNum", 'UNREGISTERED');
+$sheet->setCellValue("F$rowNum", 'ARCHIVED');
+$sheet->setCellValue("G$rowNum", 'BRANCH CASH OUT');
+$sheet->setCellValue("H$rowNum", 'PAYMENT SOLUTION');
+$sheet->setCellValue("I$rowNum", 'PDC');
+$sheet->setCellValue("J$rowNum", 'BANK TRANSFER');
+$sheet->setCellValue("K$rowNum", 'MCASH');
+
+$sheet->getStyle("A$rowNum:K$rowNum")->applyFromArray([
+    'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'ED7D31']],
+    'font' => ['bold' => true, 'color' => ['rgb' => '000000']],
+    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+    'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+]);
+$rowNum++;
+
+// Accumulators for Grand Total
+$gtBranches = 0; $gtRegistered = 0; $gtUnregistered = 0; $gtArchived = 0;
+$gtCashOut = 0; $gtPaymentSol = 0; $gtPdc = 0; $gtBankTrans = 0; $gtMcash = 0;
+
+ksort($displayData, SORT_NATURAL | SORT_FLAG_CASE);
 
 foreach ($displayData as $mainzone => $regions) {
-    foreach ($regions as $region => $rows) {
-        if (empty($rows)) continue;
+    ksort($regions, SORT_NATURAL | SORT_FLAG_CASE);
 
-        // REGION HEADER
-        $sheet->setCellValue("A$rowNum", "REGION: " . strtoupper($region));
-        $sheet->mergeCells("A$rowNum:N$rowNum");
-        $sheet->getStyle("A$rowNum")->getFont()->setBold(true)->setSize(14);
-        $rowNum++;
+    $mzBranches = 0; $mzRegistered = 0; $mzUnregistered = 0; $mzArchived = 0;
+    $mzCashOut = 0; $mzPaymentSol = 0; $mzPdc = 0; $mzBankTrans = 0; $mzMcash = 0;
 
-        // COLUMN HEADERS
-        $col = 'A';
-        foreach ($headers as $header) {
-            $sheet->setCellValue($col . $rowNum, $header);
-            $sheet->getStyle($col . $rowNum)->getFont()->setBold(true);
-            $col++;
-        }
-        $rowNum++;
+    $seqIndex = 1;
 
-        // Group by branch
-        $groupedByBranch = [];
-        foreach ($rows as $row) {
-            $bid = $row['branch_id'] ?? '';
-            if (!isset($groupedByBranch[$bid])) $groupedByBranch[$bid] = [];
-            $groupedByBranch[$bid][] = $row;
+    foreach ($regions as $regionName => $rows) {
+        $grouped = [];
+        foreach ($rows as $r) {
+            $bid = trim($r['branch_id'] ?? '');
+            if ($bid !== '') $grouped[$bid][] = $r;
         }
 
-        // Fill grouped rows
-        foreach ($groupedByBranch as $branchId => $branchRows) {
-            if (empty($branchId)) continue;
+        $regBranches     = count($grouped);
+        $regRegistered   = 0;
+        $regUnregistered = 0;
+        $regArchived     = 0;
+        $regCashOut      = 0;
+        $regPaymentSol   = 0;
+        $regPdc          = 0;
+        $regBankTrans    = 0;
+        $regMcash        = 0;
 
-            $validBranchRows = [];
-            foreach ($branchRows as $r) {
-                $contract = $r['contract'] ?? [];
-                $cNum = strtoupper(trim($contract['contract_number'] ?? ''));
-                if ($cNum === 'VOID') {
-                    continue;
+        foreach ($grouped as $bid => $bRows) {
+            $hasMatch = false;
+            foreach ($bRows as $br) {
+                $contract = $br['contract'] ?? [];
+                $cnum = strtoupper(trim($contract['contract_number'] ?? ''));
+                if (!empty($br['match']) && !empty($contract) && $cnum !== '' && $cnum !== 'VOID') {
+                    $hasMatch = true;
+                    break;
                 }
-                $validBranchRows[] = $r;
             }
 
-            if (empty($validBranchRows)) {
-                $firstRow = $branchRows[0];
-                $firstRow['contract'] = null;
-                $firstRow['match'] = false;
-                $validBranchRows = [$firstRow];
-            }
+            if ($hasMatch) $regRegistered++;
+            else $regUnregistered++;
 
-            foreach ($validBranchRows as $i => $row) {
-                $contract = $row['contract'] ?? [];
-                $contractNum = $contract['contract_number'] ?? '';
-                $isVoid = (strtoupper(trim($contractNum)) === 'VOID');
-                
-                $uniqueKey = $branchId . '_' . ($contractNum ?: 'NO_CONTRACT');
-                if (isset($addedRows[$uniqueKey])) continue;
-                $addedRows[$uniqueKey] = true;
+            $seenContractsInBranch = [];
+            foreach ($bRows as $br) {
+                $contract = $br['contract'] ?? [];
+                $cnum = strtoupper(trim($contract['contract_number'] ?? ''));
+                if ($cnum === 'VOID' || empty($cnum)) continue;
 
-                $rfpStatus = $contract['rfp_status'] ?? '';
+                if (isset($seenContractsInBranch[$cnum])) continue;
+                $seenContractsInBranch[$cnum] = true;
+
+                $rfpStatus     = $contract['rfp_status'] ?? '';
                 $requestStatus = $contract['request_status'] ?? '';
-                $isDataArchiving = !$isVoid && !empty($contractNum) && (
-                    (empty($rfpStatus) && in_array($requestStatus,['Prepared','Created'])) ||
-                    ($rfpStatus === 'Reviewed' && in_array($requestStatus,['Ready','Approved', 'Reviewed']))
-                );
+                $isArchived    = (empty($rfpStatus) && in_array($requestStatus, ['Prepared', 'Created'])) ||
+                                 ($rfpStatus === 'Reviewed' && in_array($requestStatus, ['Ready', 'Approved', 'Reviewed']));
 
-                $mode = strtoupper($contract['payment'] ?? '');
-                $mappedMode = $paymentMapping[$mode] ?? $mode;
+                if ($isArchived) $regArchived++;
 
-                // Fill row data
-                $sheet->setCellValue("A$rowNum", $i === 0 ? $branchId : '');
-                $sheet->setCellValue("B$rowNum", $i === 0 ? $row['branch_name'] : '');
-                $sheet->setCellValue("C$rowNum", !$isVoid ? $contractNum : '');
-                $sheet->setCellValue("D$rowNum", (!$isVoid && !empty($contract['contract_start'])) ? date('M d, Y', strtotime($contract['contract_start'])) : '');
-                $sheet->setCellValue("E$rowNum", (!$isVoid && !empty($contract['contract_end'])) ? date('M d, Y', strtotime($contract['contract_end'])) : '');
-                $sheet->setCellValue("F$rowNum", $isDataArchiving ? '✓' : '');
-                $sheet->setCellValue("G$rowNum", (!$isVoid && !empty($contract['start_date'])) ? date('M Y', strtotime($contract['start_date'])) : '');
-                $sheet->setCellValue("H$rowNum", (!$isVoid && !empty($contract['end_date'])) ? date('M Y', strtotime($contract['end_date'])) : '');
-
-                $colLetter = 'I'; 
-                foreach ($paymentMethods as $method) {
-                    $sheet->setCellValue($colLetter . $rowNum, (!$isVoid && !empty($contractNum) && $mappedMode === $method) ? '✓' : '');
-                    $colLetter++; 
-                }
-
-                $status = (!$isVoid && !empty($contractNum) && !empty($row['match'])) ? 'REGISTERED' : 'UNREGISTERED';
-                $sheet->setCellValue("N$rowNum", $status);
-
-                if ($status === 'REGISTERED') {
-                    $sheet->getStyle("A$rowNum:N$rowNum")->applyFromArray([
-                        'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'C6EFCE']],
-                        'font' => ['bold' => true, 'color' => ['rgb' => '006100']]
-                    ]);
-                }
-
-                $rowNum++;
+                $pay = strtoupper(trim($contract['payment'] ?? ''));
+                if (in_array($pay, ['CASH', 'BRANCH CASH OUT', 'CASH (BRANCH CASH-OUT)'])) $regCashOut++;
+                elseif (in_array($pay, ['PAYMENT SOLUTION', 'RFP (PAYMENT SOLUTION)'])) $regPaymentSol++;
+                elseif (in_array($pay, ['PDC', 'RFP (PDC)'])) $regPdc++;
+                elseif (in_array($pay, ['BANK TRANSFER', 'RTA', 'RFP (REMIT TO ACCOUNT)'])) $regBankTrans++;
+                elseif (in_array($pay, ['MCASH', 'WALLET', 'RFP (MCASH)'])) $regMcash++;
             }
         }
 
-        $rowNum += 2;
+        // Subtotals
+        $mzBranches += $regBranches; $mzRegistered += $regRegistered; $mzUnregistered += $regUnregistered;
+        $mzArchived += $regArchived; $mzCashOut += $regCashOut; $mzPaymentSol += $regPaymentSol;
+        $mzPdc += $regPdc; $mzBankTrans += $regBankTrans; $mzMcash += $regMcash;
+
+        // Populate Row
+        $sheet->setCellValue("A$rowNum", $seqIndex++);
+        $sheet->setCellValue("B$rowNum", $regionName);
+        $sheet->setCellValue("C$rowNum", $regBranches ?: '');
+        $sheet->setCellValue("D$rowNum", $regRegistered ?: '');
+        $sheet->setCellValue("E$rowNum", $regUnregistered ?: '');
+        $sheet->setCellValue("F$rowNum", $regArchived ?: '');
+        $sheet->setCellValue("G$rowNum", $regCashOut ?: '');
+        $sheet->setCellValue("H$rowNum", $regPaymentSol ?: '');
+        $sheet->setCellValue("I$rowNum", $regPdc ?: '');
+        $sheet->setCellValue("J$rowNum", $regBankTrans ?: '');
+        $sheet->setCellValue("K$rowNum", $regMcash ?: '');
+
+        $sheet->getStyle("A$rowNum:K$rowNum")->applyFromArray([
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]],
+            'alignment' => ['vertical' => Alignment::VERTICAL_CENTER]
+        ]);
+        $sheet->getStyle("A$rowNum")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("C$rowNum:K$rowNum")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        $rowNum++;
     }
+
+    // MAINZONE SUBTOTAL ROW
+    $sheet->setCellValue("A$rowNum", "TOTAL " . strtoupper($mainzone));
+    $sheet->mergeCells("A$rowNum:B$rowNum");
+    $sheet->setCellValue("C$rowNum", $mzBranches);
+    $sheet->setCellValue("D$rowNum", $mzRegistered);
+    $sheet->setCellValue("E$rowNum", $mzUnregistered);
+    $sheet->setCellValue("F$rowNum", $mzArchived);
+    $sheet->setCellValue("G$rowNum", $mzCashOut);
+    $sheet->setCellValue("H$rowNum", $mzPaymentSol);
+    $sheet->setCellValue("I$rowNum", $mzPdc);
+    $sheet->setCellValue("J$rowNum", $mzBankTrans);
+    $sheet->setCellValue("K$rowNum", $mzMcash);
+
+    $sheet->getStyle("A$rowNum:K$rowNum")->applyFromArray([
+        'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'FCE4D6']],
+        'font' => ['bold' => true, 'color' => ['rgb' => '000000']],
+        'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+        'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+    ]);
+    $sheet->getStyle("A$rowNum")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+    $rowNum++;
+
+    // Grand Totals Accumulation
+    $gtBranches += $mzBranches; $gtRegistered += $mzRegistered; $gtUnregistered += $mzUnregistered;
+    $gtArchived += $mzArchived; $gtCashOut += $mzCashOut; $gtPaymentSol += $mzPaymentSol;
+    $gtPdc += $mzPdc; $gtBankTrans += $mzBankTrans; $gtMcash += $mzMcash;
+}
+
+// GRAND TOTAL ROW
+$sheet->setCellValue("A$rowNum", "GRAND TOTAL");
+$sheet->mergeCells("A$rowNum:B$rowNum");
+$sheet->setCellValue("C$rowNum", $gtBranches);
+$sheet->setCellValue("D$rowNum", $gtRegistered);
+$sheet->setCellValue("E$rowNum", $gtUnregistered);
+$sheet->setCellValue("F$rowNum", $gtArchived);
+$sheet->setCellValue("G$rowNum", $gtCashOut);
+$sheet->setCellValue("H$rowNum", $gtPaymentSol);
+$sheet->setCellValue("I$rowNum", $gtBankTrans);
+$sheet->setCellValue("K$rowNum", $gtMcash);
+
+$sheet->getStyle("A$rowNum:K$rowNum")->applyFromArray([
+    'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'ED7D31']],
+    'font' => ['bold' => true, 'color' => ['rgb' => '000000']],
+    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+    'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_MEDIUM]]
+]);
+$sheet->getStyle("A$rowNum")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+// Auto-fit column widths
+foreach (range('A', 'K') as $col) {
+    $sheet->getColumnDimension($col)->setAutoSize(true);
 }
 
 /* =====================================================
    EXPORT FILE
 =====================================================*/
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment;filename="ho_full_report.xlsx"');
+header('Content-Disposition: attachment;filename="ho_summary_report.xlsx"');
 header('Cache-Control: max-age=0');
 
 $writer = new Xlsx($spreadsheet);

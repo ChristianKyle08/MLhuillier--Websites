@@ -645,7 +645,8 @@ if (($row['roles'] ?? '') === 'Am-Creator') {
                 <?php if (in_array($row['roles'], ['Finance', 'Auditor', 'HO', 'Vpo-Checker', 'Vpo-Reviewer', 'Vpo-Approver', 'Am-Creator', 'Rm-Reviewer'])): ?>
                   <li><a href="view_contracts.php" class="nav-link">View Contract</a></li>
                   <li><a href="view_escalation.php" class="nav-link">View Escalation Table</a></li>
-                  <li><a href="ho_report.php" class="nav-link">Summary Report</a></li>
+                  <li><a href="ho_report_summary.php" class="nav-link">Summary Report</a></li>
+                  <li><a href="ho_report.php" class="nav-link">Detailed Report</a></li>
                   <li><a href="reviewed_col.php" class="nav-link">Reviewed Contract By RM</a></li>
                 <?php endif; ?>
 

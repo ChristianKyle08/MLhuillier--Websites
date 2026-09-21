@@ -78,51 +78,45 @@ try {
         setcookie('remember_token', $token, time() + (86400*30), '/', '', true, true);
     }
 
-    // Role-based redirection
-    switch ($user['role']) {
-        case 'admin':
-            header("Location: /cattleya/admin/dashboard");
-            break;
-    
-        case 'finance':
-            header("Location: /cattleya/user/finance/dashboard");
-            break;
+    // =========================================================================
+    // ROLE-BASED ROUTING
+    // =========================================================================
+    $role = $user['role'];
 
-        case 'cfo':
-            // No dedicated CFO view exists yet, so this shares the finance
-            // dashboard for now. Point this at its own route (and add a
-            // matching entry to router.php's $featureMap) once one exists.
-            header("Location: /cattleya/user/cfo/dashboard");
-            break;
-    
-        case 'auditor':
-            header("Location: /cattleya/user/auditor/dashboard");
-            break;
+    // 1. Admin Override
+    if ($role === 'admin') {
+        header("Location: /cattleya/admin/dashboard");
+        exit;
+    }
 
-        case 'operation_manager':
-            // Maps to the existing "vpo" route already defined in router.php.
-            header("Location: /cattleya/user/operation_manager/dashboard");
-            break;
+    // 2. Specific check for encoder signature
+    if ($role === 'encoder') {
+        $stmt = $pdo->prepare("SELECT signature FROM users WHERE id = ?");
+        $stmt->execute([$user['id']]);
+        $sig = $stmt->fetchColumn();
 
-        case 'cashier':
-            header("Location: /cattleya/user/cashier/dashboard");
-            break;
-    
-        case 'encoder':
-            // Specific check for encoder signature
-            $stmt = $pdo->prepare("SELECT signature FROM users WHERE id = ?");
-            $stmt->execute([$user['id']]);
-            $sig = $stmt->fetchColumn();
-    
-            if (!$sig) {
-                header("Location: /cattleya/user/signature");
-            } else {
-                header("Location: /cattleya/user/encoder/dashboard");
-            }
-            break;
-    
-        default:
-            header("Location: /cattleya/login");
+        if (!$sig) {
+            header("Location: /cattleya/user/signature");
+            exit;
+        }
+    }
+
+    // 3. Dynamic standard role routing based on router.php mapping
+    $validRoles = [
+        'encoder', 
+        'cashier', 
+        'auditor', 
+        'finance', 
+        'cfo', 
+        'vpo', 
+        'operation_manager'
+    ];
+
+    if (in_array($role, $validRoles, true)) {
+        header("Location: /cattleya/user/{$role}/dashboard");
+    } else {
+        // Fallback for unrecognized roles
+        header("Location: /cattleya/login");
     }
     exit;
 

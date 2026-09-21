@@ -41,6 +41,74 @@ function getCanonicalMainzone($mz, $region) {
     return $mzUpper ?: 'UNASSIGNED';
 }
 
+/**
+ * Classifies one branch's already-grouped rows against criteria 2, 4-9.
+ * Used by the per-region summary table.
+ *
+ *   - 'registered' (bool)   Criterion 2: has >=1 non-void contract with
+ *                           contract_start AND contract_end both present.
+ *   - 'archived'   (bool)   Criterion 4: same branch-level rule as
+ *                           'registered' above. Per the client's note,
+ *                           Archived is counted by branch_id, not by
+ *                           contract_number, so this is a per-branch flag
+ *                           rather than a per-contract tally.
+ *   - 'payments'   (array)  Criteria 5-9: count of distinct contract_number
+ *                           values per mode_of_payment, matched case-
+ *                           insensitively and independent of any date field.
+ *
+ * A row with no contract_number at all (blank) represents "no contract" and
+ * is skipped for the payment tally — there is nothing to count. Note there
+ * is no need to separately check for a contract_number of "VOID": the
+ * alignment step above already strips VOID contracts out (or blanks the
+ * row when every contract on file is VOID), so a real, non-blank
+ * contract_number reaching this function is always a valid one.
+ */
+function classifyBranchRows(array $branchRows, callable $isValidDate): array {
+    $hasValidPeriod = false;
+    foreach ($branchRows as $r) {
+        if ($isValidDate($r['contract_start'] ?? '') && $isValidDate($r['contract_end'] ?? '')) {
+            $hasValidPeriod = true;
+            break;
+        }
+    }
+
+    $payments = [
+        'CASH (Branch Cash-out)' => 0,
+        'RFP (PAYMENT SOLUTION)' => 0,
+        'RFP (PDC)'              => 0,
+        'RFP (Remit To Account)' => 0,
+        'RFP (MCash)'            => 0,
+    ];
+
+    $seenContractNumbers = [];
+    foreach ($branchRows as $r) {
+        $cNum = strtoupper(trim($r['contract_number'] ?? ''));
+        if ($cNum === '') continue;
+        if (isset($seenContractNumbers[$cNum])) continue;
+        $seenContractNumbers[$cNum] = true;
+
+        // Criteria 5-9: mode_of_payment, compared case-insensitively, no date filter
+        $mode = strtoupper(trim($r['payment'] ?? ''));
+        if ($mode === 'CASH') {
+            $payments['CASH (Branch Cash-out)']++;
+        } elseif ($mode === 'PAYMENT SOLUTION') {
+            $payments['RFP (PAYMENT SOLUTION)']++;
+        } elseif ($mode === 'PDC') {
+            $payments['RFP (PDC)']++;
+        } elseif ($mode === 'RTA') {
+            $payments['RFP (Remit To Account)']++;
+        } elseif ($mode === 'WALLET' || $mode === 'MCASH') {
+            $payments['RFP (MCash)']++;
+        }
+    }
+
+    return [
+        'registered' => $hasValidPeriod,
+        'archived'   => $hasValidPeriod, // Criterion 4: branch-level, same rule as 'registered'
+        'payments'   => $payments,
+    ];
+}
+
 /* -----------------------------
    Load Branch Profile
 -----------------------------*/
@@ -231,6 +299,7 @@ $allRegions = [];
 $res = mysqli_query($conn, "SELECT DISTINCT region FROM branch_insurance WHERE region IS NOT NULL AND region != '' AND UPPER(TRIM(ml_matic_status)) = 'ACTIVE' ORDER BY region ASC");
 while ($r = mysqli_fetch_assoc($res)) $allRegions[] = $r['region'];
 
+// Pre-populate mainzone dropdown with composite and standalone options
 $allMainzones = ['LNCR', 'VISMIN', 'LUZON', 'NCR', 'VISAYAS', 'MINDANAO'];
 $res = mysqli_query($conn, "SELECT DISTINCT mainzone FROM branch_insurance WHERE mainzone IS NOT NULL AND mainzone != '' AND UPPER(TRIM(ml_matic_status)) = 'ACTIVE' ORDER BY mainzone ASC");
 while ($r = mysqli_fetch_assoc($res)) {
@@ -301,6 +370,7 @@ if ($selectedNationwide) {
         }
     }
 } else {
+    // Default to Nationwide baseline view
     $displayData = $alignedData;
 }
 
@@ -369,36 +439,28 @@ if ($userRole === 'Am-Creator') {
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>ML Rental - HO Manager Report</title>
+<title>ML Rental - HO Summary Report</title>
 <link rel="shortcut icon" href="../../../assets/images/mlw-logo-96x96.png" type="image/x-icon">
+  <!-- Local Google Font -->
   <link href="../../assets/css/poppins.css" rel="stylesheet">
+
+  <!-- Local Bootstrap CSS -->
   <link href="../../assets/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Local Bootstrap Icons -->
   <link href="../../assets/icons/bootstrap-icons.css" rel="stylesheet">
+
   <link href="../../assets/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/css/sidebar.css">
   <link rel="stylesheet" href="../../assets/css/scrollbar.css">
   <style>
-.table-responsive {
-    max-height: 72vh;
-    overflow-y: auto;
-    position: relative;
+/* Dashboard and Summary Cards Styling */
+.dashboard-card {
+    backdrop-filter: blur(6px);
+    background: rgba(255,255,255,0.75);
+    transition: all 0.25s ease;
+    border-radius: 12px;
 }
-.table thead th {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: #f8f9fa;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.06);
-}
-.table tbody td {
-    vertical-align: middle;
-    border-top: 1px solid #e9ecef;
-    font-size: 0.95rem;
-}
-.table-hover tbody tr:hover {
-    background-color: #f1f3f5 !important;
-}
-i.bi { vertical-align: middle; margin-right: 4px; }
 .summary-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -437,11 +499,109 @@ i.bi { vertical-align: middle; margin-right: 4px; }
     color: #0f172a;
     line-height: 1.1;
 }
+
+/* Excel Style Summary Report Table */
+.excel-report-container {
+    background-color: #ffffff;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.excel-report-title-block {
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif;
+}
+.excel-report-title-block .title-main {
+    font-size: 16px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #000;
+    letter-spacing: 0.5px;
+}
+.excel-report-title-block .title-sub {
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #000;
+    margin-top: 2px;
+}
+.excel-report-title-block .title-date {
+    font-size: 13px;
+    font-weight: 700;
+    color: #000;
+    margin-top: 2px;
+}
+
+.table-excel {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Calibri, Arial, sans-serif;
+    font-size: 13px;
+    color: #000;
+    border: 2px solid #000000;
+}
+
+.table-excel th, 
+.table-excel td {
+    border: 1px solid #000000;
+    padding: 5px 8px;
+    vertical-align: middle;
+}
+
+/* Header Cells */
+.table-excel thead th {
+    background-color: #ED7D31 !important;
+    color: #000000 !important;
+    font-weight: 700;
+    text-align: center;
+    text-transform: UPPERCASE;
+    font-size: 12px;
+}
+
+/* Thick Vertical Division Border between Archiving & Payment Methods */
+.table-excel .thick-left {
+    border-left: 4px solid #000000 !important;
+}
+
+/* Alternate row styling */
+.table-excel tbody tr:nth-child(even) {
+    background-color: #ffffff;
+}
+.table-excel tbody tr:hover {
+    background-color: #f7fafc;
+}
+
+/* Numbers alignment */
+.table-excel td.text-num {
+    text-align: center;
+}
+.table-excel td.text-seq {
+    text-align: center;
+    width: 35px;
+}
+
+/* Mainzone Subtotal Row */
+.table-excel tr.row-subtotal td {
+    background-color: #FCE4D6 !important;
+    font-weight: 700;
+    color: #000000;
+}
+
+/* Grand Total Row */
+.table-excel tr.row-grandtotal td {
+    background-color: #ED7D31 !important;
+    font-weight: 800;
+    color: #000000;
+    font-size: 13px;
+}
 </style>
 </head>
 <body>
 <?php include('navbar.php'); ?>
 <div id="mainContent" class="bg-body-tertiary min-vh-100 p-3">
+    <!-- Sidebar toggle -->
     <button id="toggleSidebar" class="btn btn-light border text-dark mb-1">
         <i class="bi bi-list me-2 text-danger"></i> Menu
     </button>
@@ -450,53 +610,90 @@ i.bi { vertical-align: middle; margin-right: 4px; }
             <i class="bi bi-funnel-fill fs-4 text-danger"></i>
             <form method="POST" class="d-flex align-items-center gap-2 w-100">
 
+                <!-- MAIN FILTER -->
                 <select name="filter_region" class="form-select w-25" id="mainFilter">
                     <option value="">-- Select Filter --</option>
+
                     <?php if ($canSeeNationwide): ?>
-                        <option value="Nationwide" <?= $selectedNationwide ? 'selected' : '' ?>>🌍 Nationwide</option>
+                        <option value="Nationwide" <?= $selectedNationwide ? 'selected' : '' ?>>
+                            🌍 Nationwide
+                        </option>
                     <?php endif; ?>
-                    <option value="ByRegion" <?= ($selectedRegion && !$selectedNationwide) ? 'selected' : '' ?>>By Region</option>
+
+                    <option value="ByRegion" <?= ($selectedRegion && !$selectedNationwide) ? 'selected' : '' ?>>
+                        By Region
+                    </option>
+
                     <?php if ($canSeeMainzone): ?>
-                        <option value="ByMainzone" <?= ($selectedMainzone && !$selectedNationwide) ? 'selected' : '' ?>>By Mainzone</option>
+                        <option value="ByMainzone" <?= ($selectedMainzone && !$selectedNationwide) ? 'selected' : '' ?>>
+                            By Mainzone
+                        </option>
                     <?php endif; ?>
                 </select>
 
-                <select name="region" class="form-select w-25 <?= ($selectedRegion) ? '' : 'd-none' ?>" id="regionDropdown">
+                <!-- REGION -->
+                <select name="region"
+                        class="form-select w-25 <?= ($selectedRegion) ? '' : 'd-none' ?>"
+                        id="regionDropdown">
+
                     <option value="">-- Select Region --</option>
+
                     <?php foreach ($filteredRegions as $region): ?>
-                        <option value="<?= htmlspecialchars($region) ?>" <?= ($region === $selectedRegion) ? 'selected' : '' ?>>
+                        <option value="<?= htmlspecialchars($region) ?>"
+                            <?= ($region === $selectedRegion) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($region) ?>
                         </option>
                     <?php endforeach; ?>
+
                 </select>
 
-                <select name="area" class="form-select w-25 <?= ($selectedArea || $userRole === 'Am-Creator') ? '' : 'd-none' ?>" id="areaDropdown" <?= ($userRole === 'Am-Creator') ? 'readonly disabled' : '' ?>>
+                <!-- AREA -->
+                <select name="area"
+                        class="form-select w-25 <?= ($selectedArea || $userRole === 'Am-Creator') ? '' : 'd-none' ?>"
+                        id="areaDropdown"
+                        <?= ($userRole === 'Am-Creator') ? 'readonly disabled' : '' ?>>
+
                     <option value="">-- Select Area (Optional) --</option>
+
                     <?php if ($userRole === 'Am-Creator'): ?>
-                        <option value="<?= htmlspecialchars($userArea) ?>" selected><?= htmlspecialchars($userArea) ?></option>
+                        <option value="<?= htmlspecialchars($userArea) ?>" selected>
+                            <?= htmlspecialchars($userArea) ?>
+                        </option>
                     <?php endif; ?>
+
                 </select>
 
-                <select name="mainzone" class="form-select w-25 <?= ($selectedMainzone) ? '' : 'd-none' ?>" id="mainzoneDropdown">
+                <!-- MAINZONE -->
+                <select name="mainzone"
+                        class="form-select w-25 <?= ($selectedMainzone) ? '' : 'd-none' ?>"
+                        id="mainzoneDropdown">
+
                     <option value="">-- Select Mainzone --</option>
+
                     <?php foreach ($filteredMainzones as $mainzone): ?>
-                        <option value="<?= htmlspecialchars($mainzone) ?>" <?= ($mainzone === $selectedMainzone) ? 'selected' : '' ?>>
+                        <option value="<?= htmlspecialchars($mainzone) ?>"
+                            <?= ($mainzone === $selectedMainzone) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($mainzone) ?>
                         </option>
                     <?php endforeach; ?>
+
                 </select>
 
+                <!-- BUTTONS -->
                 <button type="submit" name="filter" class="btn btn-danger">
                     <i class="bi bi-search me-1"></i> Filter
                 </button>
 
-                <a href="export_summary_report.php?filter_region=<?= urlencode($_POST['filter_region'] ?? '') ?>&region=<?= urlencode($selectedRegion) ?>&mainzone=<?= urlencode($selectedMainzone) ?>&area=<?= urlencode($selectedArea) ?>" class="btn btn-success">
+                <a href="export_summary_report_region.php?filter_region=<?= urlencode($_POST['filter_region'] ?? '') ?>&region=<?= urlencode($selectedRegion) ?>&mainzone=<?= urlencode($selectedMainzone) ?>&area=<?= urlencode($selectedArea) ?>"
+                   class="btn btn-success">
                     <i class="bi bi-file-earmark-excel"></i> Export Excel
                 </a>
 
-                <a href="export_summary_report_pdf.php?filter_region=<?= urlencode($_POST['filter_region'] ?? '') ?>&region=<?= urlencode($selectedRegion) ?>&mainzone=<?= urlencode($selectedMainzone) ?>&area=<?= urlencode($selectedArea) ?>" class="btn btn-secondary">
+                <a href="export_summary_report_pdf_region.php?filter_region=<?= urlencode($_POST['filter_region'] ?? '') ?>&region=<?= urlencode($selectedRegion) ?>&mainzone=<?= urlencode($selectedMainzone) ?>&area=<?= urlencode($selectedArea) ?>"
+                   class="btn btn-secondary">
                     <i class="bi bi-file-earmark-pdf"></i> Export PDF
                 </a>
+
             </form>
         </div>
     </div>
@@ -511,6 +708,8 @@ $securedDisplayData = [];
 
 if (!empty($displayData)) {
     foreach ($displayData as $mainzone => $regions) {
+
+        // VPO mainzone authorization check (including LNCR / VISMIN sub-groups)
         if (in_array($userRole, ['Vpo-Checker','Vpo-Reviewer','Vpo-Approver'])) {
             $uMz = strtoupper(trim($userMainzone));
             $currMz = strtoupper(trim($mainzone));
@@ -520,6 +719,7 @@ if (!empty($displayData)) {
         }
 
         foreach ($regions as $region => $rows) {
+
             if (($userRole === 'Am-Creator' || $userRole === 'Rm-Reviewer') && $region !== $userRegion) continue;
 
             if ($userRole === 'Am-Creator') {
@@ -539,302 +739,188 @@ $isValidDate = function($d) {
     return !empty($d) && $d !== '0000-00-00' && $d !== '0000-00-00 00:00:00';
 };
 
-// =========================================================
-// ACCURATE COUNTING LOGIC
-// Every metric is tallied once per distinct branch_id (branch_id + contract_number
-// for the payment metrics), guarded by a single "seen" map per key so nothing can
-// ever be double-counted even if a branch_id were grouped under more than one
-// region/mainzone.
-//   1. Total Branches    -> distinct branch_id, branch_insurance.ml_matic_status = Active
-//   2. Registered/Active -> distinct branch_id with >=1 non-void contract where
-//                           contract_start AND contract_end are both present
-//   3. Unregistered      -> distinct branch_id where the branch_id is NOT present in
-//                           create_contract at all (branch_insurance.ml_matic_status = Active)
-//   4. Archived          -> distinct branch_id with >=1 non-void contract where
-//                           contract_start AND contract_end are both present
-//                           (counted by branch_id, same rule as #2 - see client note)
-//   5-9. Payment methods -> distinct (branch_id + contract_number), matched against
-//                           mode_of_payment case-insensitively, independent of any date
-// =========================================================
-$countBranches             = 0;
-$countRegisteredActive     = 0;
-$countUnregisteredBranches = 0;
-$countDataArchiving        = 0;
-
-$paymentMapping = [
-    'CASH'             => 'CASH (Branch Cash-out)',
-    'BRANCH CASH OUT'  => 'CASH (Branch Cash-out)',
-    'PAYMENT SOLUTION' => 'RFP (PAYMENT SOLUTION)',
-    'PDC'              => 'RFP (PDC)',
-    'WALLET'           => 'RFP (MCash)',
-    'MCASH'            => 'RFP (MCash)',
-    'RTA'              => 'RFP (Remit To Account)',
-    'BANK TRANSFER'    => 'RFP (Remit To Account)'
-];
-
-$paymentMethods = [
-    'CASH (Branch Cash-out)',
-    'RFP (PAYMENT SOLUTION)',
-    'RFP (PDC)',
-    'RFP (MCash)',
-    'RFP (Remit To Account)'
-];
-$countPayments = array_fill_keys($paymentMethods, 0);
-
-$seenBranches  = [];
-$seenContracts = [];
-
-foreach ($displayData as $mainzone => $regions) {
-    foreach ($regions as $region => $rows) {
-        if (empty($rows)) continue;
-
-        $groupedByBranch = [];
-        foreach ($rows as $row) {
-            $bid = trim($row['branch_id'] ?? '');
-            if ($bid !== '') {
-                $groupedByBranch[$bid][] = $row;
-            }
-        }
-
-        foreach ($groupedByBranch as $branchId => $branchRows) {
-            // A branch_id is tallied once, no matter how many rows/regions it appears in.
-            if (isset($seenBranches[$branchId])) {
-                continue;
-            }
-            $seenBranches[$branchId] = true;
-
-            // ---- Criterion 1: Total Branches ----
-            $countBranches++;
-
-            // ---- Criterion 3: Unregistered (no row at all in create_contract) ----
-            if (!isset($branchHasContractRecord[$branchId])) {
-                $countUnregisteredBranches++;
-            }
-
-            // ---- Criteria 2 & 4: Registered/Active and Archived (branch-level) ----
-            // Both share the same rule: does this branch have at least one non-void
-            // contract where contract_start AND contract_end are both present? A row
-            // with no real contract always has contract_start/contract_end blank too
-            // (see the alignment step above), so checking the dates alone is enough.
-            $hasValidPeriod = false;
-            foreach ($branchRows as $r) {
-                if ($isValidDate($r['contract_start'] ?? '') && $isValidDate($r['contract_end'] ?? '')) {
-                    $hasValidPeriod = true;
-                    break;
-                }
-            }
-            if ($hasValidPeriod) {
-                $countRegisteredActive++;
-                $countDataArchiving++;
-            }
-
-            // ---- Criteria 5-9: mode_of_payment counts, by contract_number, no dates involved ----
-            foreach ($branchRows as $r) {
-                $cNumUpper = strtoupper(trim($r['contract_number'] ?? ''));
-                // A blank contract_number means "no real contract on this row" (the
-                // alignment step above already reduces VOID contracts to blank, so
-                // there's nothing further to check for here besides emptiness).
-                if ($cNumUpper === '') {
-                    continue;
-                }
-
-                // Dedupe by branch + contract number so the same contract is never double-counted
-                $contractKey = $branchId . '_' . $cNumUpper;
-                if (isset($seenContracts[$contractKey])) {
-                    continue;
-                }
-                $seenContracts[$contractKey] = true;
-
-                // Criteria 5-9: mode_of_payment, compared case-insensitively, no date filter
-                $modeOfPayment = strtoupper(trim($r['payment'] ?? ''));
-                if ($modeOfPayment === 'CASH') {
-                    $countPayments['CASH (Branch Cash-out)']++;
-                } elseif ($modeOfPayment === 'PAYMENT SOLUTION') {
-                    $countPayments['RFP (PAYMENT SOLUTION)']++;
-                } elseif ($modeOfPayment === 'PDC') {
-                    $countPayments['RFP (PDC)']++;
-                } elseif ($modeOfPayment === 'RTA') {
-                    $countPayments['RFP (Remit To Account)']++;
-                } elseif ($modeOfPayment === 'WALLET' || $modeOfPayment === 'MCASH') {
-                    $countPayments['RFP (MCash)']++;
-                }
-            }
-        }
-    }
-}
 ?>
 
-<!-- SUMMARY CARDS -->
-<div class="row g-2 mb-3">
-    <div class="col-md-3 col-6">
-        <div class="summary-card shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="summary-title">Total Branches</div>
-                    <div class="summary-value"><?= $countBranches ?></div>
-                </div>
-                <div class="summary-icon"><i class="bi bi-diagram-3"></i></div>
-            </div>
-        </div>
+<!-- =========================================================
+     DYNAMIC EXCEL SUMMARY REPORT TABLE
+========================================================= -->
+<div class="excel-report-container mb-4">
+    <div class="excel-report-title-block">
+        <div class="title-main">RENTAL SUMMARY REPORT</div>
+        <div class="title-sub">REGION SUMMARY</div>
+        <div class="title-date">As of <?= date('F d, Y') ?></div>
     </div>
-    <div class="col-md-3 col-6">
-        <div class="summary-card shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="summary-title">Branch with registered active contract</div>
-                    <div class="summary-value"><?= $countRegisteredActive ?></div>
-                </div>
-                <div class="summary-icon"><i class="bi bi-archive"></i></div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-6">
-        <div class="summary-card shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="summary-title">Branch without registered contracts</div>
-                    <div class="summary-value"><?= $countUnregisteredBranches ?></div>
-                </div>
-                <div class="summary-icon"><i class="bi bi-x-circle"></i></div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-6">
-        <div class="summary-card shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="summary-title">Rental Archiving</div>
-                    <div class="summary-value"><?= $countDataArchiving ?></div>
-                </div>
-                <div class="summary-icon"><i class="bi bi-archive"></i></div>
-            </div>
-        </div>
-    </div>
-    <?php foreach ($paymentMethods as $method): ?>
-    <div class="col-md-3 col-6">
-        <div class="summary-card shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="summary-title"><?= htmlspecialchars($method) ?></div>
-                    <div class="summary-value"><?= $countPayments[$method] ?></div>
-                </div>
-                <div class="summary-icon"><i class="bi bi-credit-card"></i></div>
-            </div>
-        </div>
-    </div>
-    <?php endforeach; ?>
-</div>
 
-<!-- DETAILED TABLE SECTION -->
-<div class="card shadow-sm border-0 rounded-4">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle text-center mb-0">
-                <thead class="table-light sticky-top">
-                    <tr class="fw-bold">
-                        <th rowspan="2">Branch ID</th>
-                        <th rowspan="2">Branch Profile</th>
-                        <th rowspan="2">Contract Number</th>
-                        <th rowspan="2">Contract Period</th>
-                        <th rowspan="2">Data Archiving</th>
-                        <th rowspan="2">RFP Period</th>
-                        <th colspan="5">RFP</th>
-                    </tr>
-                    <tr>
-                        <?php foreach ($paymentMethods as $method): ?>
-                            <th><?= htmlspecialchars($method) ?></th>
-                        <?php endforeach; ?>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($displayData as $mainzone => $regions): ?>
-                    <?php ksort($regions, SORT_NATURAL | SORT_FLAG_CASE); ?>
-                    <tr class="table-secondary fw-bold">
-                        <td colspan="11"><?= htmlspecialchars($mainzone) ?></td>
-                    </tr>
-                    <?php foreach ($regions as $region => $rows):
-                        usort($rows, fn($a, $b) => ($a['match'] === $b['match']) ? 0 : ($a['match'] ? -1 : 1));
-                        $groupedByBranch = [];
-                        foreach ($rows as $r) {
-                            $bid = trim($r['branch_id'] ?? '');
-                            if (!isset($groupedByBranch[$bid])) {
-                                $groupedByBranch[$bid] = [];
-                            }
-                            $groupedByBranch[$bid][] = $r;
+    <div class="table-responsive">
+        <table class="table-excel">
+            <thead>
+                <tr>
+                    <th rowspan="2" colspan="2" style="min-width: 200px;">REGIONS</th>
+                    <th colspan="4">COUNT</th>
+                    <th colspan="5" class="thick-left">PAYMENT METHOD</th>
+                </tr>
+                <tr>
+                    <th>BRANCHES</th>
+                    <th>REGISTERED /ACTIVE</th>
+                    <th>UNREGISTERED</th>
+                    <th>ARCHIVED</th>
+                    <th class="thick-left">BRANCH CASH OUT</th>
+                    <th>PAYMENT SOLUTION</th>
+                    <th>PDC</th>
+                    <th>BANK TRANSFER</th>
+                    <th>MCASH</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            // Grand Total Accumulators
+            $gtBranches     = 0;
+            $gtRegistered   = 0;
+            $gtUnregistered = 0;
+            $gtArchived     = 0;
+            $gtCashOut      = 0;
+            $gtPaymentSol   = 0;
+            $gtPdc          = 0;
+            $gtBankTrans    = 0;
+            $gtMcash        = 0;
+
+            ksort($displayData, SORT_NATURAL | SORT_FLAG_CASE);
+
+            foreach ($displayData as $mainzone => $regions):
+                ksort($regions, SORT_NATURAL | SORT_FLAG_CASE);
+
+                // Mainzone Subtotal Accumulators
+                $mzBranches     = 0;
+                $mzRegistered   = 0;
+                $mzUnregistered = 0;
+                $mzArchived     = 0;
+                $mzCashOut      = 0;
+                $mzPaymentSol   = 0;
+                $mzPdc          = 0;
+                $mzBankTrans    = 0;
+                $mzMcash        = 0;
+
+                $seqIndex = 1;
+
+                foreach ($regions as $regionName => $rows):
+                    $grouped = [];
+                    foreach ($rows as $r) {
+                        $bid = trim($r['branch_id'] ?? '');
+                        if ($bid !== '') {
+                            $grouped[$bid][] = $r;
                         }
-                    ?>
-                    <tr class="table-danger text-white fw-bold">
-                        <td colspan="11"><?= htmlspecialchars($region) ?></td>
-                    </tr>
-                    <?php foreach ($groupedByBranch as $branchId => $branchRows):
-                        $branchName = $branchRows[0]['left'] ?? $branchRows[0]['right'] ?? '';
-                    ?>
-                        <?php foreach ($branchRows as $i => $row):
-                            $contractKey = trim($row['contract_number'] ?? '');
-                            $isVoid      = (strtoupper($contractKey) === 'VOID');
-                            $hasContract = (!$isVoid && !empty($contractKey));
-                            
-                            $modeOfPayment = strtoupper(trim($row['payment'] ?? ''));
-                            $mappedMode    = $paymentMapping[$modeOfPayment] ?? $modeOfPayment;
+                    }
 
-                            $isDataArchiving = !$isVoid && !empty($contractKey)
-                                && $isValidDate($row['contract_start'] ?? '')
-                                && $isValidDate($row['contract_end'] ?? '');
-                            
-                            $hasRfpDates = $isValidDate($row['start_date'] ?? '') && $isValidDate($row['end_date'] ?? '');
-                        ?>
-                        <tr class="<?= (!empty($row['match']) && !$isVoid) ? 'table-success' : '' ?>">
-                            <td><?= ($i === 0) ? htmlspecialchars($branchId) : '' ?></td>
-                            <td class="text-start"><?= ($i === 0) ? htmlspecialchars($branchName) : '' ?></td>
-                            <td>
-                                <?php if (!empty($contractKey) && !$isVoid): ?>
-                                    <span class="badge bg-danger"><?= htmlspecialchars($contractKey) ?></span>
-                                <?php endif; ?>
-                            </td>
-                            <td class="text-start small">
-                                <?php if (!$isVoid && ($isValidDate($row['contract_start'] ?? '') || $isValidDate($row['contract_end'] ?? ''))): ?>
-                                    <div><?= $isValidDate($row['contract_start'] ?? '') ? date('M d, Y', strtotime($row['contract_start'])) : '' ?></div>
-                                    <div><?= $isValidDate($row['contract_end'] ?? '') ? date('M d, Y', strtotime($row['contract_end'])) : '' ?></div>
-                                <?php endif; ?>
-                            </td>
-                            <td><?= ($isDataArchiving) ? '<i class="bi bi-check-circle-fill text-success fs-5"></i>' : '<span class="text-muted">—</span>' ?></td>
-                            <td class="text-start small">
-                                <?php if (!$isVoid && $hasRfpDates): ?>
-                                    <div><?= date('M Y', strtotime($row['start_date'])) ?></div>
-                                    <div><?= date('M Y', strtotime($row['end_date'])) ?></div>
-                                <?php endif; ?>
-                            </td>
-                            <?php foreach ($paymentMethods as $method): 
-                                $isMethodMatched = false;
-                                if ($hasContract) {
-                                    if ($method === 'CASH (Branch Cash-out)' && $modeOfPayment === 'CASH') {
-                                        $isMethodMatched = true;
-                                    } elseif ($method === 'RFP (PAYMENT SOLUTION)' && $modeOfPayment === 'PAYMENT SOLUTION') {
-                                        $isMethodMatched = true;
-                                    } elseif ($method === 'RFP (PDC)' && $modeOfPayment === 'PDC') {
-                                        $isMethodMatched = true;
-                                    } elseif ($method === 'RFP (Remit To Account)' && $modeOfPayment === 'RTA') {
-                                        $isMethodMatched = true;
-                                    } elseif ($method === 'RFP (MCash)' && ($modeOfPayment === 'WALLET' || $modeOfPayment === 'MCASH')) {
-                                        $isMethodMatched = true;
-                                    }
-                                }
-                            ?>
-                                <td><?= ($isMethodMatched) ? '<i class="bi bi-check-circle-fill text-success fs-5"></i>' : '<span class="text-muted">—</span>' ?></td>
-                            <?php endforeach; ?>
-                        </tr>
-                        <?php endforeach; ?>
-                    <?php endforeach; ?>
-                <?php endforeach; ?>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+                    $regBranches     = count($grouped);
+                    $regRegistered   = 0;
+                    $regUnregistered = 0;
+                    $regArchived     = 0;
+                    $regCashOut      = 0;
+                    $regPaymentSol   = 0;
+                    $regPdc          = 0;
+                    $regBankTrans    = 0;
+                    $regMcash        = 0;
+
+                    foreach ($grouped as $bid => $bRows) {
+                        // Criterion 3: Unregistered (no row at all in create_contract)
+                        if (!isset($branchHasContractRecord[$bid])) {
+                            $regUnregistered++;
+                        }
+
+                        // Criteria 2, 4-9
+                        $result = classifyBranchRows($bRows, $isValidDate);
+
+                        if ($result['registered']) {
+                            $regRegistered++;
+                        }
+
+                        // Criterion 4: Archived is counted per branch_id (boolean), not per contract_number
+                        if ($result['archived']) {
+                            $regArchived++;
+                        }
+                        $regCashOut    += $result['payments']['CASH (Branch Cash-out)'];
+                        $regPaymentSol += $result['payments']['RFP (PAYMENT SOLUTION)'];
+                        $regPdc        += $result['payments']['RFP (PDC)'];
+                        $regBankTrans  += $result['payments']['RFP (Remit To Account)'];
+                        $regMcash      += $result['payments']['RFP (MCash)'];
+                    }
+
+                    // Accumulate into Mainzone Subtotals
+                    $mzBranches     += $regBranches;
+                    $mzRegistered   += $regRegistered;
+                    $mzUnregistered += $regUnregistered;
+                    $mzArchived     += $regArchived;
+                    $mzCashOut      += $regCashOut;
+                    $mzPaymentSol   += $regPaymentSol;
+                    $mzPdc          += $regPdc;
+                    $mzBankTrans    += $regBankTrans;
+                    $mzMcash        += $regMcash;
+            ?>
+                    <tr>
+                        <td class="text-seq"><?= $seqIndex++ ?></td>
+                        <td class="text-start"><?= htmlspecialchars($regionName) ?></td>
+                        <td class="text-num"><?= $regBranches ?: '' ?></td>
+                        <td class="text-num"><?= $regRegistered ?: '' ?></td>
+                        <td class="text-num"><?= $regUnregistered ?: '' ?></td>
+                        <td class="text-num"><?= $regArchived ?: '' ?></td>
+                        <td class="text-num thick-left"><?= $regCashOut ?: '' ?></td>
+                        <td class="text-num"><?= $regPaymentSol ?: '' ?></td>
+                        <td class="text-num"><?= $regPdc ?: '' ?></td>
+                        <td class="text-num"><?= $regBankTrans ?: '' ?></td>
+                        <td class="text-num"><?= $regMcash ?: '' ?></td>
+                    </tr>
+            <?php endforeach; ?>
+
+            <!-- MAINZONE SUBTOTAL ROW -->
+            <tr class="row-subtotal">
+                <td colspan="2" class="text-start">TOTAL <?= htmlspecialchars(strtoupper($mainzone)) ?></td>
+                <td class="text-num"><?= $mzBranches ?></td>
+                <td class="text-num"><?= $mzRegistered ?></td>
+                <td class="text-num"><?= $mzUnregistered ?></td>
+                <td class="text-num"><?= $mzArchived ?></td>
+                <td class="text-num thick-left"><?= $mzCashOut ?></td>
+                <td class="text-num"><?= $mzPaymentSol ?></td>
+                <td class="text-num"><?= $mzPdc ?></td>
+                <td class="text-num"><?= $mzBankTrans ?></td>
+                <td class="text-num"><?= $mzMcash ?></td>
+            </tr>
+
+            <?php
+                // Accumulate Grand Totals
+                $gtBranches     += $mzBranches;
+                $gtRegistered   += $mzRegistered;
+                $gtUnregistered += $mzUnregistered;
+                $gtArchived     += $mzArchived;
+                $gtCashOut      += $mzCashOut;
+                $gtPaymentSol   += $mzPaymentSol;
+                $gtPdc          += $mzPdc;
+                $gtBankTrans    += $mzBankTrans;
+                $gtMcash        += $mzMcash;
+            endforeach;
+            ?>
+
+            <!-- GRAND TOTAL ROW -->
+            <tr class="row-grandtotal">
+                <td colspan="2" class="text-start">GRAND TOTAL</td>
+                <td class="text-num"><?= $gtBranches ?></td>
+                <td class="text-num"><?= $gtRegistered ?></td>
+                <td class="text-num"><?= $gtUnregistered ?></td>
+                <td class="text-num"><?= $gtArchived ?></td>
+                <td class="text-num thick-left"><?= $gtCashOut ?></td>
+                <td class="text-num"><?= $gtPaymentSol ?></td>
+                <td class="text-num"><?= $gtPdc ?></td>
+                <td class="text-num"><?= $gtBankTrans ?></td>
+                <td class="text-num"><?= $gtMcash ?></td>
+            </tr>
+
+            </tbody>
+        </table>
     </div>
 </div>
 
 <?php endif; ?>
 
+<!-- Logout Modal -->
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg rounded-4 text-center p-4">
@@ -851,7 +937,6 @@ foreach ($displayData as $mainzone => $regions) {
         </div>
     </div>
 </div>
-
 <script src="../../assets/js/bootstrap.bundle.min.js"></script>
 <script>
 const mainFilter       = document.getElementById('mainFilter');
@@ -872,6 +957,7 @@ function toggleDropdowns() {
     if (mainFilter.value === 'ByMainzone') mainzoneDropdown.classList.remove('d-none');
 }
 
+// Populate Areas on Region change
 function populateAreas(region) {
     areaDropdown.innerHTML = '<option value="">-- Select Area (Optional) --</option>';
     if (areasByRegion[region]) {
@@ -889,6 +975,7 @@ toggleDropdowns();
 mainFilter.addEventListener('change', toggleDropdowns);
 regionDropdown.addEventListener('change', e => populateAreas(e.target.value));
 
+// Initial populate if region selected
 <?php if ($selectedRegion): ?>
 populateAreas("<?= $selectedRegion ?>");
 <?php endif; ?>

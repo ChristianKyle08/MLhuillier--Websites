@@ -143,7 +143,7 @@ if (isset($_POST['submit'])) {
                     title: '" . ($error_title ?? "Access Denied") . "',
                     text: '$error_msg',
                     confirmButtonColor: '#f43f5e',
-                    confirmButtonText: 'Understood',
+                    confirmButtonText: 'OKAY',
                     backdrop: `rgba(6, 9, 19, 0.85)`,
                     background: '#0e1626',
                     color: '#f8fafc',

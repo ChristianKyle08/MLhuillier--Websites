@@ -14,6 +14,32 @@ $userMainzone = $_SESSION['mainzone'] ?? '';
 $userRegion   = $_SESSION['region'] ?? '';
 $userArea     = $_SESSION['area'] ?? '';
 
+/**
+ * Categorize regions into distinct LUZON, NCR, VISAYAS, or MINDANAO sub-groups 
+ * when mainzone is defined as LNCR or VISMIN.
+ */
+function getCanonicalMainzone($mz, $region) {
+    $mzUpper  = strtoupper(trim($mz ?? ''));
+    $regUpper = strtoupper(trim($region ?? ''));
+
+    if ($mzUpper === 'LNCR') {
+        return (strpos($regUpper, 'NCR') !== false) ? 'NCR' : 'LUZON';
+    }
+    if ($mzUpper === 'VISMIN') {
+        if (
+            strpos($regUpper, 'MIN') !== false || 
+            strpos($regUpper, 'MINDANAO') !== false || 
+            strpos($regUpper, 'DAVAO') !== false || 
+            strpos($regUpper, 'ZAMBOANGA') !== false || 
+            strpos($regUpper, 'CARAGA') !== false
+        ) {
+            return 'MINDANAO';
+        }
+        return 'VISAYAS';
+    }
+    return $mzUpper ?: 'UNASSIGNED';
+}
+
 /* =====================================================
    GET FILTER PARAMETERS
 =====================================================*/
@@ -26,15 +52,16 @@ $selectedArea     = $_GET['area'] ?? '';
    LOAD BRANCH PROFILE
 =====================================================*/
 $branchProfile = [];
-$sqlAll = "SELECT branch_id, branch_name, region, mainzone, area
+$sqlAll = "SELECT branch_id, branch_name, region, mainzone, area, ml_matic_status
            FROM branch_insurance
            WHERE region IS NOT NULL AND region != ''
-           AND ml_matic_status = 'Active'
-           ORDER BY branch_name ASC";
+           AND UPPER(TRIM(ml_matic_status)) = 'ACTIVE'
+           ORDER BY mainzone ASC, region ASC, branch_name ASC";
 $resAll = mysqli_query($conn, $sqlAll);
 
 while ($r = mysqli_fetch_assoc($resAll)) {
-    $mz = !empty($r['mainzone']) ? $r['mainzone'] : 'UNASSIGNED';
+    if (strtoupper(trim($r['ml_matic_status'] ?? '')) !== 'ACTIVE') continue;
+    $mz = getCanonicalMainzone($r['mainzone'], $r['region']);
     $rg = $r['region'];
     $id = $r['branch_id'];
 
@@ -48,14 +75,15 @@ while ($r = mysqli_fetch_assoc($resAll)) {
    LOAD CONTRACT DATA
 =====================================================*/
 $mlRental = [];
-$sqlML = "SELECT c.*, b.branch_name, b.region, b.mainzone, b.area
+$sqlML = "SELECT c.*, b.branch_name, b.region, b.mainzone, b.area, b.ml_matic_status
           FROM create_contract c
           INNER JOIN branch_insurance b ON b.branch_id = c.branch_id
-          WHERE b.ml_matic_status = 'Active'";
+          WHERE UPPER(TRIM(b.ml_matic_status)) = 'ACTIVE'";
 $resML = mysqli_query($conn, $sqlML);
 
 while ($r = mysqli_fetch_assoc($resML)) {
-    $mz = !empty($r['mainzone']) ? $r['mainzone'] : 'UNASSIGNED';
+    if (strtoupper(trim($r['ml_matic_status'] ?? '')) !== 'ACTIVE') continue;
+    $mz = getCanonicalMainzone($r['mainzone'], $r['region']);
     $rg = $r['region'];
     $id = $r['branch_id'];
 
@@ -79,9 +107,11 @@ while ($r = mysqli_fetch_assoc($resML)) {
 =====================================================*/
 $alignedData = [];
 $mainzones = array_unique(array_merge(array_keys($branchProfile), array_keys($mlRental)));
+sort($mainzones);
 
 foreach ($mainzones as $mz) {
     $regions = array_unique(array_merge(array_keys($branchProfile[$mz] ?? []), array_keys($mlRental[$mz] ?? [])));
+    sort($regions);
 
     foreach ($regions as $region) {
         $left  = $branchProfile[$mz][$region] ?? [];
@@ -150,25 +180,64 @@ foreach ($mainzones as $mz) {
    APPLY FILTERS + USER ROLE RESTRICTIONS
 =====================================================*/
 $displayData = [];
-foreach ($alignedData as $mz => $regions) {
-    if (in_array($userRole, ['Vpo-Checker','Vpo-Reviewer','Vpo-Approver']) && $mz !== $userMainzone) continue;
-    if ($filterType === 'ByMainzone' && $mz !== $selectedMainzone) continue;
+$selectedNationwide = ($filterType === 'Nationwide');
 
-    foreach ($regions as $region => $rows) {
-        if ($userRole === 'Am-Creator' && $region !== $userRegion) continue;
-        if ($userRole === 'Rm-Reviewer' && $region !== $userRegion) continue;
-        if ($filterType === 'ByRegion' && $region !== $selectedRegion) continue;
-
-        $rows = array_filter($rows, function($row) use ($selectedArea, $userRole, $userArea) {
-            if (!empty($selectedArea) && ($row['area'] ?? '') !== $selectedArea) return false;
-            if ($userRole === 'Am-Creator' && ($row['area'] ?? '') !== $userArea) return false;
-            return true;
-        });
-
-        if (!empty($rows)) {
-            $displayData[$mz][$region] = array_values($rows);
+if ($selectedNationwide || empty($filterType)) {
+    $displayData = $alignedData;
+} elseif ($filterType === 'ByMainzone' && $selectedMainzone) {
+    $smz = strtoupper(trim($selectedMainzone));
+    if ($smz === 'LNCR') {
+        foreach (['LUZON', 'NCR', 'LNCR'] as $mzKey) {
+            if (isset($alignedData[$mzKey])) $displayData[$mzKey] = $alignedData[$mzKey];
+        }
+    } elseif ($smz === 'VISMIN') {
+        foreach (['VISAYAS', 'MINDANAO', 'VISMIN'] as $mzKey) {
+            if (isset($alignedData[$mzKey])) $displayData[$mzKey] = $alignedData[$mzKey];
+        }
+    } else {
+        if (isset($alignedData[$selectedMainzone])) {
+            $displayData[$selectedMainzone] = $alignedData[$selectedMainzone];
         }
     }
+} elseif ($filterType === 'ByRegion' && $selectedRegion) {
+    foreach ($alignedData as $mz => $regions) {
+        if (isset($regions[$selectedRegion])) {
+            $rows = $regions[$selectedRegion];
+            if ($selectedArea) {
+                $rows = array_filter($rows, fn($row) => ($row['area'] ?? '') === $selectedArea);
+            }
+            if (!empty($rows)) $displayData[$mz][$selectedRegion] = array_values($rows);
+        }
+    }
+} else {
+    $displayData = $alignedData;
+}
+
+// Role Security Enforcement
+$securedDisplayData = [];
+if (!empty($displayData)) {
+    foreach ($displayData as $mainzone => $regions) {
+        if (in_array($userRole, ['Vpo-Checker','Vpo-Reviewer','Vpo-Approver'])) {
+            $uMz = strtoupper(trim($userMainzone));
+            $currMz = strtoupper(trim($mainzone));
+            if ($uMz === 'LNCR' && !in_array($currMz, ['LNCR', 'LUZON', 'NCR'])) continue;
+            elseif ($uMz === 'VISMIN' && !in_array($currMz, ['VISMIN', 'VISAYAS', 'MINDANAO'])) continue;
+            elseif ($uMz !== 'LNCR' && $uMz !== 'VISMIN' && $currMz !== $uMz) continue;
+        }
+
+        foreach ($regions as $region => $rows) {
+            if (($userRole === 'Am-Creator' || $userRole === 'Rm-Reviewer') && $region !== $userRegion) continue;
+
+            if ($userRole === 'Am-Creator') {
+                $rows = array_filter($rows, fn($row) => ($row['area'] ?? '') === $userArea);
+            }
+
+            if (!empty($rows)) {
+                $securedDisplayData[$mainzone][$region] = array_values($rows);
+            }
+        }
+    }
+    $displayData = $securedDisplayData;
 }
 
 /* =====================================================
@@ -176,10 +245,13 @@ foreach ($alignedData as $mz => $regions) {
 =====================================================*/
 $paymentMapping = [
     'CASH'             => 'CASH (Branch Cash-out)',
+    'BRANCH CASH OUT'  => 'CASH (Branch Cash-out)',
     'PAYMENT SOLUTION' => 'RFP (PAYMENT SOLUTION)',
     'PDC'              => 'RFP (PDC)',
     'WALLET'           => 'RFP (MCash)',
-    'RTA'              => 'RFP (Remit To Account)'
+    'MCASH'            => 'RFP (MCash)',
+    'RTA'              => 'RFP (Remit To Account)',
+    'BANK TRANSFER'    => 'RFP (Remit To Account)'
 ];
 
 $paymentMethods = [
@@ -191,16 +263,15 @@ $paymentMethods = [
 ];
 
 /* =====================================================
-   COUNTERS & PRE-CALCULATION (EXCLUDING VOID CONTRACTS)
+   ACCURATE COUNTERS & PRE-CALCULATION
 =====================================================*/
-$countDataArchiving = 0;
-$countUndefined = 0;
-$countPayments = array_fill_keys($paymentMethods, 0);
+$countRegisteredBranches = 0;
+$countUnmatchedBranches  = 0;
+$countDataArchiving      = 0;
+$countPayments           = array_fill_keys($paymentMethods, 0);
 
 $seenBranches = [];
-$seenUnmatchedBranches = [];
 $seenContracts = [];
-$seenBranchMetrics = [];
 
 foreach ($displayData as $mainzone => $regions) {
     foreach ($regions as $region => $rows) {
@@ -208,16 +279,12 @@ foreach ($displayData as $mainzone => $regions) {
 
         $groupedByBranch = [];
         foreach ($rows as $row) {
-            $bid = $row['branch_id'] ?? '';
-            if (!isset($groupedByBranch[$bid])) $groupedByBranch[$bid] = [];
-            $groupedByBranch[$bid][] = $row;
+            $bid = trim($row['branch_id'] ?? '');
+            if ($bid !== '') $groupedByBranch[$bid][] = $row;
         }
 
         foreach ($groupedByBranch as $branchId => $branchRows) {
-            if (empty($branchId)) continue;
-            if (!isset($seenBranches[$branchId])) {
-                $seenBranches[$branchId] = true;
-            }
+            $seenBranches[$branchId] = true;
 
             $hasMatch = false;
             foreach ($branchRows as $r) {
@@ -229,8 +296,10 @@ foreach ($displayData as $mainzone => $regions) {
                 }
             }
 
-            if (!$hasMatch && !isset($seenUnmatchedBranches[$branchId])) {
-                $seenUnmatchedBranches[$branchId] = true;
+            if ($hasMatch) {
+                $countRegisteredBranches++;
+            } else {
+                $countUnmatchedBranches++;
             }
 
             foreach ($branchRows as $r) {
@@ -240,26 +309,21 @@ foreach ($displayData as $mainzone => $regions) {
                     continue;
                 }
 
-                $rfpStatus = $contract['rfp_status'] ?? '';
-                $requestStatus = $contract['request_status'] ?? '';
-                $modeOfPayment = strtoupper(trim($contract['payment'] ?? ''));
-                $mappedMode = $paymentMapping[$modeOfPayment] ?? $modeOfPayment;
-
-                $isDataArchiving = (empty($rfpStatus) && in_array($requestStatus, ['Prepared', 'Created'])) ||
-                                   ($rfpStatus === 'Reviewed' && in_array($requestStatus, ['Ready', 'Approved', 'Reviewed']));
-
-                $isUndefined = (empty($rfpStatus) && in_array($requestStatus, ['Prepared', 'Created'])) ||
-                               ($rfpStatus === 'Reviewed' && $requestStatus === 'Ready');
-
                 if (!isset($seenContracts[$contractKey])) {
                     $seenContracts[$contractKey] = true;
 
-                    if ($isDataArchiving && !isset($seenBranchMetrics[$branchId])) {
-                        $seenBranchMetrics[$branchId] = true;
+                    $rfpStatus     = $contract['rfp_status'] ?? '';
+                    $requestStatus = $contract['request_status'] ?? '';
+                    $isArchived    = (empty($rfpStatus) && in_array($requestStatus, ['Prepared', 'Created'])) ||
+                                     ($rfpStatus === 'Reviewed' && in_array($requestStatus, ['Ready', 'Approved', 'Reviewed']));
+
+                    if ($isArchived) {
                         $countDataArchiving++;
                     }
 
-                    if ($isUndefined) $countUndefined++;
+                    $modeOfPayment = strtoupper(trim($contract['payment'] ?? ''));
+                    $mappedMode = $paymentMapping[$modeOfPayment] ?? $modeOfPayment;
+
                     if (isset($countPayments[$mappedMode])) {
                         $countPayments[$mappedMode]++;
                     }
@@ -270,7 +334,6 @@ foreach ($displayData as $mainzone => $regions) {
 }
 
 $countBranches = count($seenBranches);
-$countUnmatchedBranches = count($seenUnmatchedBranches);
 
 /* =====================================================
    HTML GENERATION FOR PDF
@@ -309,7 +372,7 @@ $html .= '<tr><th class="summary-header-sub">Metric</th><th class="summary-heade
 
 $summaryData = [
     'Total Branches'                         => $countBranches,
-    'Branch with registered active contract' => $countDataArchiving,
+    'Branch with registered active contract' => $countRegisteredBranches,
     'Branch without registered contracts'    => $countUnmatchedBranches,
     'Rental Archiving'                       => $countDataArchiving,
     'CASH (Branch Cash-out)'                 => $countPayments['CASH (Branch Cash-out)'],
@@ -445,10 +508,9 @@ if (class_exists('Dompdf\Options')) {
 }
 
 $dompdf->loadHtml($html);
-$dompdf->setPaper('A4', 'landscape'); // Landscape to fit 14 columns
+$dompdf->setPaper('A4', 'landscape');
 $dompdf->render();
 
-// Output the generated PDF to Browser
 $dompdf->stream('ho_full_report.pdf', ['Attachment' => true]);
 exit;
 ?>

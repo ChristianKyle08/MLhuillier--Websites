@@ -21,6 +21,8 @@ $feature_categories = [
         'encoder_services_control'                => 'Encoder Services Control',
         'encoder_avail_services'                  => 'Encoder Avail Services',
         'encoder_availed_services'                => 'Encoder Availed Services',
+        'encoder_rfp_approval_flow'               => 'Encoder RFP Approval Flow',
+        'encoder_all_pending_rfps'                => 'Encoder All Pending RFPs',
     ],
     'Cashier' => [
         'cashier_dashboard'                       => 'Cashier Dashboard',
@@ -35,6 +37,8 @@ $feature_categories = [
         'cashier_services_control'                => 'Cashier Services Control',
         'cashier_avail_services'                  => 'Cashier Avail Services',
         'cashier_availed_services'                => 'Cashier Availed Services',
+        'cashier_rfp_approval_flow'               => 'Cashier RFP Approval Flow',
+        'cashier_all_pending_rfps'                => 'Cashier All Pending RFPs',
     ],
     'Auditor' => [
         'auditor_dashboard'                       => 'Auditor Dashboard',
@@ -44,11 +48,14 @@ $feature_categories = [
         'auditor_product'                         => 'Auditor Product',
         'auditor_commission_config'               => 'Auditor Commission Config',
         'auditor_commission_release'              => 'Auditor Commission Release',
+        'auditor_registration'                    => 'Auditor Registration',
         'auditor_signature'                       => 'Auditor Signature',
         'auditor_gl_settings'                     => 'Auditor GL Settings',
         'auditor_services_control'                => 'Auditor Services Control',
         'auditor_avail_services'                  => 'Auditor Avail Services',
         'auditor_availed_services'                => 'Auditor Availed Services',
+        'auditor_rfp_approval_flow'               => 'Auditor RFP Approval Flow',
+        'auditor_all_pending_rfps'                => 'Auditor All Pending RFPs',
     ],
     'Finance' => [
         'finance_dashboard'                       => 'Finance Dashboard',
@@ -58,11 +65,14 @@ $feature_categories = [
         'finance_product'                         => 'Finance Product',
         'finance_commission_config'               => 'Finance Commission Config',
         'finance_commission_release'              => 'Finance Commission Release',
+        'finance_registration'                    => 'Finance Registration',
         'finance_save_signature'                  => 'Finance Save Signature',
         'finance_gl_settings'                     => 'Finance GL Settings',
         'finance_services_control'                => 'Finance Services Control',
         'finance_avail_services'                  => 'Finance Avail Services',
         'finance_availed_services'                => 'Finance Availed Services',
+        'finance_rfp_approval_flow'               => 'Finance RFP Approval Flow',
+        'finance_all_pending_rfps'                => 'Finance All Pending RFPs',
     ],
     'CFO' => [
         'cfo_dashboard'                           => 'CFO Dashboard',
@@ -72,11 +82,14 @@ $feature_categories = [
         'cfo_product'                             => 'CFO Product',
         'cfo_commission_config'                   => 'CFO Commission Config',
         'cfo_commission_release'                  => 'CFO Commission Release',
+        'cfo_registration'                        => 'CFO Registration',
         'cfo_save_signature'                      => 'CFO Save Signature',
         'cfo_gl_settings'                         => 'CFO GL Settings',
         'cfo_services_control'                    => 'CFO Services Control',
         'cfo_avail_services'                      => 'CFO Avail Services',
         'cfo_availed_services'                    => 'CFO Availed Services',
+        'cfo_rfp_approval_flow'                   => 'CFO RFP Approval Flow',
+        'cfo_all_pending_rfps'                   => 'CFO All Pending RFPs',
     ],
     'VPO (Vice President of Operations)' => [
         'vpo_dashboard'                           => 'VPO Dashboard',
@@ -86,11 +99,14 @@ $feature_categories = [
         'vpo_product'                             => 'VPO Product',
         'vpo_commission_config'                   => 'VPO Commission Config',
         'vpo_commission_release'                  => 'VPO Commission Release',
+        'vpo_registration'                        => 'VPO Registration',
         'vpo_save_signature'                      => 'VPO Save Signature',
         'vpo_gl_settings'                         => 'VPO GL Settings',
         'vpo_services_control'                    => 'VPO Services Control',
         'vpo_avail_services'                      => 'VPO Avail Services',
         'vpo_availed_services'                    => 'VPO Availed Services',
+        'vpo_rfp_approval_flow'                   => 'VPO RFP Approval Flow',
+        'vpo_all_pending_rfps'                   => 'VPO All Pending RFPs',
     ],
     'Operation Manager' => [
         'operation_manager_dashboard'             => 'Operation Manager Dashboard',
@@ -100,12 +116,26 @@ $feature_categories = [
         'operation_manager_product'               => 'Operation Manager Product',
         'operation_manager_commission_config'     => 'Operation Manager Commission Config',
         'operation_manager_commission_release'    => 'Operation Manager Commission Release',
+        'operation_manager_registration'          => 'Operation Manager Registration',
         'operation_manager_save_signature'        => 'Operation Manager Save Signature',
         'operation_manager_gl_settings'           => 'Operation Manager GL Settings',
         'operation_manager_services_control'      => 'Operation Manager Services Control',
         'operation_manager_avail_services'        => 'Operation Manager Avail Services',
         'operation_manager_availed_services'      => 'Operation Manager Availed Services',
+        'operation_manager_rfp_approval_flow'     => 'Operation Manager RFP Approval Flow',
+        'operation_manager_all_pending_rfps'     => 'Operation Manager All Pending RFPs',
     ]
+];
+
+// Mapping Category Names to User Role Values
+$roleKeyMap = [
+    'Encoder'                            => 'encoder',
+    'Cashier'                            => 'cashier',
+    'Auditor'                            => 'auditor',
+    'Finance'                            => 'finance',
+    'CFO'                                => 'cfo',
+    'VPO (Vice President of Operations)' => 'vpo',
+    'Operation Manager'                  => 'operation_manager'
 ];
 
 // Flat array map for quick display lookups
@@ -121,19 +151,16 @@ function parseUserFeatures($raw) {
     if (empty($raw)) return [];
     if (is_array($raw)) return $raw;
     
-    // Attempt 1: Standard JSON
     $decoded = json_decode($raw, true);
     if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
         return $decoded;
     }
     
-    // Attempt 2: PHP Serialized String
     $unserialized = @unserialize($raw);
     if ($unserialized !== false && is_array($unserialized)) {
         return $unserialized;
     }
 
-    // Attempt 3: Comma-separated string
     return array_filter(array_map('trim', explode(',', $raw)));
 }
 
@@ -242,14 +269,12 @@ $email     = $_SESSION['user_email'];
             }
         }
 
-        /* === TYPOGRAPHY === */
         .fw-800 { font-weight: 800; }
         .fw-700 { font-weight: 700; }
         .fw-600 { font-weight: 600; }
         .fw-500 { font-weight: 500; }
         .fs-7   { font-size: 0.875rem; }
 
-        /* === KPI CARDS === */
         .kpi-card {
             background: var(--surface-color);
             border-radius: 20px;
@@ -267,10 +292,7 @@ $email     = $_SESSION['user_email'];
         .kpi-card::before {
             content: '';
             position: absolute;
-            top: 0; 
-            left: 0; 
-            right: 0; 
-            height: 4px;
+            top: 0; left: 0; right: 0; height: 4px;
             background: var(--brand-gradient);
             opacity: 0;
             transition: opacity 0.3s ease;
@@ -281,19 +303,13 @@ $email     = $_SESSION['user_email'];
             box-shadow: 0 12px 25px -5px rgba(0,0,0,0.06);
         }
 
-        .kpi-card:hover::before { 
-            opacity: 1; 
-        }
+        .kpi-card:hover::before { opacity: 1; }
 
         .kpi-icon {
-            width: 56px; 
-            height: 56px;
+            width: 56px; height: 56px;
             border-radius: 16px;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            font-size: 1.5rem; 
-            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; flex-shrink: 0;
             box-shadow: inset 0 2px 4px rgba(255,255,255,0.5);
         }
 
@@ -303,7 +319,6 @@ $email     = $_SESSION['user_email'];
             line-height: 1.2;
         }
 
-        /* === MAIN CONTAINER CARD === */
         .modern-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -313,7 +328,6 @@ $email     = $_SESSION['user_email'];
             padding: 2rem;
         }
 
-        /* === SEARCH & FILTERS === */
         .search-input-group {
             border-radius: 99px;
             background: #f8fafc;
@@ -322,34 +336,23 @@ $email     = $_SESSION['user_email'];
         }
 
         .search-input-group .input-group-text {
-            background: transparent; 
-            border: none; 
-            color: #94a3b8; 
-            padding-left: 1.25rem;
+            background: transparent; border: none; color: #94a3b8; padding-left: 1.25rem;
         }
 
         .search-input-group .form-control {
-            border: none; 
-            background: transparent; 
-            padding: 0.75rem 1.25rem 0.75rem 0.5rem; 
-            font-weight: 500; 
-            font-size: 0.95rem; 
-            box-shadow: none !important;
+            border: none; background: transparent; padding: 0.75rem 1.25rem 0.75rem 0.5rem; 
+            font-weight: 500; font-size: 0.95rem; box-shadow: none !important;
         }
 
         .search-input-group:focus-within {
-            background: #fff;
-            border-color: var(--brand-accent);
+            background: #fff; border-color: var(--brand-accent);
             box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
         }
 
         .filter-select {
-            border-radius: 99px;
-            padding: 0.6rem 2.5rem 0.6rem 1.25rem;
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            color: var(--text-dark);
-            transition: all 0.2s ease;
+            border-radius: 99px; padding: 0.6rem 2.5rem 0.6rem 1.25rem;
+            background-color: #f8fafc; border: 1px solid #e2e8f0;
+            color: var(--text-dark); transition: all 0.2s ease;
         }
 
         .filter-select:focus {
@@ -357,246 +360,104 @@ $email     = $_SESSION['user_email'];
             box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
         }
 
-        /* === AVATAR & INITIALS === */
         .user-avatar-initials {
-            width: 48px; 
-            height: 48px;
+            width: 48px; height: 48px;
             background: var(--brand-gradient);
-            color: #fff; 
-            border-radius: 14px;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            font-weight: 800; 
-            font-size: 1rem;
+            color: #fff; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1rem;
             box-shadow: 0 4px 12px rgba(4, 78, 59, 0.25);
             position: relative;
         }
 
         .user-avatar-initials::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            border: 1px solid rgba(255,255,255,0.2);
+            content: ''; position: absolute; inset: 0;
+            border-radius: inherit; border: 1px solid rgba(255,255,255,0.2);
         }
 
-        /* === TABLE STYLING === */
         .table-premium {
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-top: 0.5rem;
+            border-collapse: separate; border-spacing: 0; margin-top: 0.5rem;
         }
 
         .table-premium thead th {
-            background: transparent;
-            color: #64748b;
-            font-weight: 700;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            padding: 1.25rem 1rem;
+            background: transparent; color: #64748b; font-weight: 700; font-size: 0.75rem;
+            text-transform: uppercase; letter-spacing: 0.08em; padding: 1.25rem 1rem;
             border-bottom: 2px solid #e2e8f0;
         }
 
         .table-premium tbody td {
-            padding: 1.25rem 1rem;
-            vertical-align: middle;
-            border-bottom: 1px solid #f1f5f9;
-            transition: background-color 0.2s ease;
+            padding: 1.25rem 1rem; vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9; transition: background-color 0.2s ease;
         }
 
-        .table-premium tbody tr {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
+        .table-premium tbody tr:hover td { background-color: #f8fafc; }
 
-        .table-premium tbody tr:hover td { 
-            background-color: #f8fafc; 
-        }
-
-        .table-premium tbody tr:hover td:first-child {
-            border-top-left-radius: 12px;
-            border-bottom-left-radius: 12px;
-        }
-
-        .table-premium tbody tr:hover td:last-child {
-            border-top-right-radius: 12px;
-            border-bottom-right-radius: 12px;
-        }
-
-        /* === BADGES & PULSE === */
         .badge-soft-role {
             background-color: var(--brand-primary-soft);
-            color: var(--brand-primary);
-            font-weight: 800;
-            font-size: 0.7rem;
-            padding: 0.4rem 0.85rem;
-            border-radius: 99px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border: 1px solid rgba(4, 78, 59, 0.1);
+            color: var(--brand-primary); font-weight: 800; font-size: 0.7rem;
+            padding: 0.4rem 0.85rem; border-radius: 99px; text-transform: uppercase;
+            letter-spacing: 0.05em; border: 1px solid rgba(4, 78, 59, 0.1);
         }
 
         .status-badge {
-            font-weight: 700; 
-            font-size: 0.8rem;
-            padding: 0.4rem 0.85rem; 
-            border-radius: 99px;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
+            font-weight: 700; font-size: 0.8rem; padding: 0.4rem 0.85rem; 
+            border-radius: 99px; display: inline-flex; align-items: center; gap: 0.4rem;
         }
 
         .status-active { 
-            background-color: rgba(34, 197, 94, 0.1); 
-            color: #15803d; 
-            border: 1px solid rgba(34, 197, 94, 0.2); 
+            background-color: rgba(34, 197, 94, 0.1); color: #15803d; border: 1px solid rgba(34, 197, 94, 0.2); 
         }
 
         .status-inactive { 
-            background-color: rgba(239, 68, 68, 0.1); 
-            color: #b91c1c; 
-            border: 1px solid rgba(239, 68, 68, 0.2); 
-        }
-        
-        .pulse-dot {
-            width: 6px; 
-            height: 6px; 
-            border-radius: 50%; 
-            display: inline-block;
-        }
-
-        .pulse-green { 
-            background: #22c55e; 
-            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); 
-            animation: pulseGreen 2s infinite; 
-        }
-
-        .pulse-red { 
-            background: #ef4444; 
-            box-shadow: 0 0 6px rgba(239, 68, 68, 0.5); 
-        }
-
-        @keyframes pulseGreen {
-            0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-            70%  { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+            background-color: rgba(239, 68, 68, 0.1); color: #b91c1c; border: 1px solid rgba(239, 68, 68, 0.2); 
         }
 
         .feature-badge {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.65rem;
-            border-radius: 8px;
-            font-weight: 600;
-            background-color: #f8fafc;
-            color: #475569;
-            border: 1px solid #e2e8f0;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            transition: all 0.2s ease;
+            font-size: 0.75rem; padding: 0.25rem 0.65rem; border-radius: 8px;
+            font-weight: 600; background-color: #f8fafc; color: #475569;
+            border: 1px solid #e2e8f0; display: inline-flex; align-items: center; gap: 0.35rem;
         }
 
-        .feature-badge:hover {
-            border-color: #cbd5e1;
-            background-color: #fff;
-        }
-
-        /* === ACTIONS === */
         .btn-edit-user {
-            background: #ffffff; 
-            color: var(--text-dark); 
-            border: 1px solid #cbd5e1;
-            border-radius: 12px; 
-            padding: 0.5rem 1rem; 
-            font-weight: 600; 
-            font-size: 0.85rem; 
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            background: #ffffff; color: var(--text-dark); border: 1px solid #cbd5e1;
+            border-radius: 12px; padding: 0.5rem 1rem; font-weight: 600; font-size: 0.85rem;
+            transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
         .btn-edit-user:hover {
-            background: var(--brand-primary); 
-            color: #fff; 
-            border-color: var(--brand-primary);
-            box-shadow: 0 4px 12px rgba(4, 78, 59, 0.2);
-            transform: translateY(-1px);
+            background: var(--brand-primary); color: #fff; border-color: var(--brand-primary);
+            box-shadow: 0 4px 12px rgba(4, 78, 59, 0.2); transform: translateY(-1px);
         }
 
-        /* === CATEGORIZED MODAL === */
         .modal-content { 
-            border-radius: 24px; 
-            border: none; 
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            border-radius: 24px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
             overflow: hidden;
         }
 
         .modal-header {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid #f1f5f9;
-            padding: 1.5rem 2rem;
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px);
+            border-bottom: 1px solid #f1f5f9; padding: 1.5rem 2rem;
         }
 
-        .modal-body { 
-            padding: 2rem; 
-            background: #fdfdfd; 
-        }
+        .modal-body { padding: 2rem; background: #fdfdfd; }
         
         .feature-category-card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 1.25rem;
-            margin-bottom: 1.25rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.01);
+            background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px;
+            padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 2px 10px rgba(0,0,0,0.01);
         }
 
         .feature-category-title {
-            font-size: 0.8rem; 
-            font-weight: 800; 
-            text-transform: uppercase;
-            color: var(--brand-primary); 
-            letter-spacing: 0.08em; 
-            margin-bottom: 1rem;
-            display: flex; 
-            align-items: center; 
-            gap: 0.5rem;
+            font-size: 0.8rem; font-weight: 800; text-transform: uppercase;
+            color: var(--brand-primary); letter-spacing: 0.08em; margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
         }
 
-        /* Custom Form Switch for Premium Feel */
         .form-switch .form-check-input {
-            width: 2.5em;
-            height: 1.25em;
-            margin-top: 0.15em;
-            cursor: pointer;
-            border-color: #cbd5e1;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%2394a3b8'/%3e%3c/svg%3e");
+            width: 2.5em; height: 1.25em; margin-top: 0.15em; cursor: pointer;
         }
 
         .form-switch .form-check-input:checked {
-            background-color: var(--brand-accent);
-            border-color: var(--brand-accent);
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
-        }
-
-        .form-switch .form-check-label {
-            cursor: pointer;
-            user-select: none;
-        }
-
-        /* Modal Form Inputs */
-        .form-control, .form-select {
-            border-radius: 12px;
-            border: 1px solid #cbd5e1;
-            padding: 0.65rem 1rem;
-            transition: all 0.2s ease;
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: var(--brand-accent);
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+            background-color: var(--brand-accent); border-color: var(--brand-accent);
         }
     </style>
 </head>
@@ -607,7 +468,6 @@ $email     = $_SESSION['user_email'];
 
     <div class="content-wrapper">
         
-        <!-- PAGE HEADER -->
         <div class="d-flex justify-content-between align-items-center mb-4 pb-2">
             <div>
                 <h3 class="fw-800 mb-2" style="color: var(--brand-primary); font-size: 2rem; letter-spacing: -0.02em;">
@@ -619,7 +479,6 @@ $email     = $_SESSION['user_email'];
             </div>
         </div>
 
-        <!-- METRICS / KPI CARDS ROW -->
         <div class="row g-4 mb-5">
             <div class="col-6 col-lg-3">
                 <div class="kpi-card">
@@ -627,7 +486,7 @@ $email     = $_SESSION['user_email'];
                         <i class="bi bi-people-fill"></i>
                     </div>
                     <div>
-                        <div class="text-muted fs-7 fw-700 text-uppercase letter-spacing">Total Users</div>
+                        <div class="text-muted fs-7 fw-700 text-uppercase">Total Users</div>
                         <div class="fw-800 kpi-card-value text-dark"><?= $total_users ?></div>
                     </div>
                 </div>
@@ -639,7 +498,7 @@ $email     = $_SESSION['user_email'];
                         <i class="bi bi-check-circle-fill"></i>
                     </div>
                     <div>
-                        <div class="text-muted fs-7 fw-700 text-uppercase letter-spacing">Active Accounts</div>
+                        <div class="text-muted fs-7 fw-700 text-uppercase">Active Accounts</div>
                         <div class="fw-800 kpi-card-value text-dark"><?= $active_users ?></div>
                     </div>
                 </div>
@@ -651,7 +510,7 @@ $email     = $_SESSION['user_email'];
                         <i class="bi bi-slash-circle-fill"></i>
                     </div>
                     <div>
-                        <div class="text-muted fs-7 fw-700 text-uppercase letter-spacing">Inactive</div>
+                        <div class="text-muted fs-7 fw-700 text-uppercase">Inactive</div>
                         <div class="fw-800 kpi-card-value text-dark"><?= $inactive_users ?></div>
                     </div>
                 </div>
@@ -663,17 +522,14 @@ $email     = $_SESSION['user_email'];
                         <i class="bi bi-shield-lock-fill"></i>
                     </div>
                     <div>
-                        <div class="text-muted fs-7 fw-700 text-uppercase letter-spacing">Active Grants</div>
+                        <div class="text-muted fs-7 fw-700 text-uppercase">Active Grants</div>
                         <div class="fw-800 kpi-card-value text-dark"><?= $total_assigned_features ?></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- MAIN DATA TABLE CONTAINER -->
         <div class="modern-card">
-            
-            <!-- TOOLBAR: SEARCH & FILTERS -->
             <div class="row g-3 align-items-center mb-4">
                 <div class="col-md-5">
                     <div class="input-group search-input-group">
@@ -749,10 +605,8 @@ $email     = $_SESSION['user_email'];
                             </td>
                             
                             <td class="fw-700 text-dark">@<?= htmlspecialchars($u['username']) ?></td>
-                            
                             <td class="text-muted fw-500"><?= htmlspecialchars($u['email']) ?></td>
                             
-                            <!-- ROLE & FEATURE BADGES DISPLAY -->
                             <td>
                                 <span class="badge-soft-role d-inline-block mb-2">
                                     <?= htmlspecialchars(str_replace('_', ' ', $u['role'])) ?>
@@ -789,25 +643,14 @@ $email     = $_SESSION['user_email'];
                                 </div>
                             </td>
                             
-                            <!-- STATUS PULSE -->
                             <td>
                                 <?php
-                                    $statusClass = 'status-inactive'; // fallback
-                                    $pulseClass = '';
+                                    $statusClass = 'status-inactive';
                                     if ($u['status'] === 'active') {
                                         $statusClass = 'status-active';
-                                        $pulseClass = 'pulse-green';
-                                    } elseif ($u['status'] === 'inactive') {
-                                        $statusClass = 'status-inactive';
-                                        $pulseClass = 'pulse-red';
-                                    } else if ($u['status'] === 'pending') {
-                                        // Pending state config
-                                        $statusClass = 'status-badge'; 
-                                        $pulseClass = 'pulse-dot bg-warning';
                                     }
                                 ?>
                                 <span class="status-badge <?= $statusClass ?>">
-                                    <span class="pulse-dot <?= $pulseClass ?>"></span>
                                     <?= ucfirst($u['status']) ?>
                                 </span>
                             </td>
@@ -866,7 +709,6 @@ $email     = $_SESSION['user_email'];
                     <div class="modal-body">
                         <input type="hidden" name="id" id="edit_id">
                         
-                        <!-- BASIC INFO -->
                         <div class="row g-4 mb-4 pb-2 border-bottom border-light">
                             <div class="col-md-6">
                                 <label class="form-label fw-700 text-dark">First Name</label>
@@ -879,7 +721,7 @@ $email     = $_SESSION['user_email'];
                             <div class="col-md-6">
                                 <label class="form-label fw-700 text-dark">Username</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light text-muted border-end-0 border-secondary-subtle">@</span>
+                                    <span class="input-group-text bg-light text-muted border-end-0">@</span>
                                     <input type="text" class="form-control border-start-0 ps-0" name="username" id="edit_username" required>
                                 </div>
                             </div>
@@ -909,7 +751,6 @@ $email     = $_SESSION['user_email'];
                             </div>
                         </div>
 
-                        <!-- CATEGORIZED PERMISSIONS -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="fw-800 text-dark mb-0 fs-5">
                                 <i class="bi bi-shield-lock-fill me-2" style="color: var(--brand-accent);"></i>Feature Access Controls
@@ -921,9 +762,7 @@ $email     = $_SESSION['user_email'];
                         </div>
 
                         <?php foreach ($feature_categories as $categoryName => $catFeatures): 
-                            $catRoleKey = strtolower($categoryName);
-                            if ($catRoleKey === 'operation manager') $catRoleKey = 'operation_manager';
-                            if (strpos($catRoleKey, 'vpo') !== false) $catRoleKey = 'vpo'; 
+                            $catRoleKey = $roleKeyMap[$categoryName] ?? strtolower($categoryName);
                         ?>
                             <div class="feature-category-card" data-role-target="<?= $catRoleKey ?>" style="display: none;">
                                 <div class="feature-category-title">
@@ -947,7 +786,7 @@ $email     = $_SESSION['user_email'];
                     </div>
                     <div class="modal-footer border-top-0 p-4 pt-0 justify-content-end bg-transparent">
                         <button type="button" class="btn btn-light fw-700 rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-success fw-700 rounded-pill px-5 border-0" style="background: var(--brand-gradient); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">Save Changes</button>
+                        <button type="submit" class="btn btn-success fw-700 rounded-pill px-5 border-0" style="background: var(--brand-gradient);">Save Changes</button>
                     </div>
                 </form>
             </div>
@@ -958,7 +797,6 @@ $email     = $_SESSION['user_email'];
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        /* Function to toggle feature categories based on role */
         function updateFeatureDisplay(role, resetHiddenCheckboxes = false) {
             document.querySelectorAll('.feature-category-card').forEach(card => {
                 if (card.dataset.roleTarget === role) {
@@ -972,12 +810,10 @@ $email     = $_SESSION['user_email'];
             });
         }
 
-        /* Listen for role dropdown changes to update UI dynamically */
         document.getElementById("edit_role").addEventListener("change", function() {
             updateFeatureDisplay(this.value, true); 
         });
 
-        /* Populating Modal on Edit Click */
         document.querySelectorAll(".editUserBtn").forEach(btn => {
             btn.addEventListener("click", function () {
                 const row = this.closest("tr");
@@ -992,10 +828,8 @@ $email     = $_SESSION['user_email'];
                 document.getElementById("edit_role").value = userRole;
                 document.getElementById("edit_status").value = this.dataset.status.trim();
 
-                // Clear existing switches
                 document.querySelectorAll('.feature-checkbox').forEach(chk => chk.checked = false); 
                 
-                // Show only the category for the selected role
                 updateFeatureDisplay(userRole, false);
                 
                 try {
@@ -1019,7 +853,6 @@ $email     = $_SESSION['user_email'];
             });
         });
 
-        /* Select All / Deselect All Controls (Affects only visible category) */
         const selectAllBtn = document.getElementById("selectAllFeatures");
         if (selectAllBtn) {
             selectAllBtn.addEventListener("click", () => {
@@ -1042,7 +875,6 @@ $email     = $_SESSION['user_email'];
             });
         }
 
-        /* AJAX Form Submit */
         document.getElementById("editUserForm").addEventListener("submit", async function(e) {
             e.preventDefault();
             const formData = new FormData(this);
@@ -1061,27 +893,23 @@ $email     = $_SESSION['user_email'];
                         text: data.message || "Permissions updated successfully!",
                         timer: 1500,
                         showConfirmButton: false,
-                        backdrop: `rgba(4, 78, 59, 0.4)`
                     }).then(() => location.reload());
                 } else {
                     Swal.fire({ 
                         icon: "error", 
                         title: "Update Failed", 
-                        text: data.error || "An error occurred.", 
-                        backdrop: `rgba(4, 78, 59, 0.4)` 
+                        text: data.error || "An error occurred."
                     });
                 }
             } catch (err) {
                 Swal.fire({ 
                     icon: "error", 
                     title: "Error", 
-                    text: err.message, 
-                    backdrop: `rgba(4, 78, 59, 0.4)` 
+                    text: err.message
                 });
             }
         });
 
-        /* Live Search & Filter Logic */
         const searchInput = document.getElementById('userSearch');
         const roleFilter = document.getElementById('roleFilter');
         const statusFilter = document.getElementById('statusFilter');
@@ -1100,11 +928,7 @@ $email     = $_SESSION['user_email'];
                 const matchesRole = !selectedRole || role === selectedRole;
                 const matchesStatus = !selectedStatus || status === selectedStatus;
 
-                if (matchesQuery && matchesRole && matchesStatus) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+                row.style.display = (matchesQuery && matchesRole && matchesStatus) ? '' : 'none';
             });
         }
 
